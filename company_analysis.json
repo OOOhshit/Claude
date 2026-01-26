@@ -1,0 +1,23 @@
+[
+  {
+    "company": "TotalEnergies",
+    "market_presence": "upstream, downstream, renewable, gas, chemicals",
+    "technologies": "ai, digital, iot, carbon capture",
+    "innovations": "Limited innovation content found",
+    "summary": "TotalEnergies operates in 5 identified market segments with 4 technology areas mentioned."
+  },
+  {
+    "company": "BP",
+    "market_presence": "upstream, downstream, renewable, gas",
+    "technologies": "ai, digital, automation, ccus, subsea",
+    "innovations": "Limited innovation content found",
+    "summary": "BP operates in 4 identified market segments with 5 technology areas mentioned."
+  },
+  {
+    "company": "Chevron",
+    "market_presence": "upstream, downstream, renewable, gas, chemicals",
+    "technologies": "artificial intelligence, ai, digital, robotics, carbon capture, ccus, subsea, deepwater",
+    "innovations": "Limited innovation content found",
+    "summary": "Chevron operates in 5 identified market segments with 8 technology areas mentioned."
+  }
+]

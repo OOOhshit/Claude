@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Qatar Energy",
+    "url": "https://www.qatarenergy.qa",
+    "country": "Qatar",
+    "description": "Qatar's national oil and gas company"
+  },
+  {
+    "name": "TotalEnergies",
+    "url": "https://totalenergies.com",
+    "country": "France",
+    "description": "French multinational integrated energy company"
+  },
+  {
+    "name": "ADNOC",
+    "url": "https://www.adnoc.ae",
+    "country": "UAE",
+    "description": "Abu Dhabi National Oil Company"
+  },
+  {
+    "name": "Eni",
+    "url": "https://www.eni.com",
+    "country": "Italy",
+    "description": "Italian multinational oil and gas company"
+  },
+  {
+    "name": "Neste",
+    "url": "https://www.neste.com",
+    "country": "Finland",
+    "description": "Finnish oil refining and renewable diesel company"
+  },
+  {
+    "name": "ExxonMobil",
+    "url": "https://corporate.exxonmobil.com",
+    "country": "USA",
+    "description": "American multinational oil and gas corporation"
+  },
+  {
+    "name": "Saudi Aramco",
+    "url": "https://www.aramco.com",
+    "country": "Saudi Arabia",
+    "description": "Saudi Arabian national petroleum and natural gas company"
+  },
+  {
+    "name": "Shell",
+    "url": "https://www.shell.com",
+    "country": "Netherlands/UK",
+    "description": "British-Dutch multinational oil and gas company"
+  },
+  {
+    "name": "Reliance",
+    "url": "https://www.ril.com",
+    "country": "India",
+    "description": "Indian multinational conglomerate with major oil and petrochemicals operations"
+  },
+  {
+    "name": "Petronas",
+    "url": "https://www.petronas.com",
+    "country": "Malaysia",
+    "description": "Malaysian national petroleum corporation"
+  },
+  {
+    "name": "BP",
+    "url": "https://www.bp.com",
+    "country": "UK",
+    "description": "British multinational oil and gas company"
+  }
+]

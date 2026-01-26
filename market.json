@@ -1,0 +1,245 @@
+{
+  "BusinessStructure": [
+    {
+      "name": "BL1 - Gas & Low-Carbon Energies",
+      "parent": null,
+      "sub_business_lines": [
+        {
+          "name": "1 - Gas & LNG",
+          "categories": [
+            {
+              "name": "Gas Monetisation",
+              "items": ["Gas Pipeline / Transmission / Gathering / Compression", "Gas Treatment / Purification", "GTL", "Liquefied Gas Terminal (not LNG)", "LNG Plant", "LNG Terminal", "NGL Recovery Plant", "Upstream Oil & Gas", "Others - Gas Monetisation"]
+            },
+            {
+              "name": "Upstream",
+              "items": ["Full Field Development", "Others - Upstream"]
+            },
+            {
+              "name": "Fertilizers",
+              "items": ["Conventional Ammonia/Urea"]
+            }
+          ]
+        },
+        {
+          "name": "2 – Low Carbon Solutions",
+          "categories": [
+            {
+              "name": "Hydrogen",
+              "items": ["Ammonia cracking", "Biogenic Hydrogen", "Blue Hydrogen", "Hydrogen Plant", "Methane Pyrolysis", "Natural Hydrogen", "Revamp/Decarbonization", "Syngas Plant", "Others - Hydrogen"]
+            },
+            {
+              "name": "Low Carbon Fuels",
+              "items": ["Biogas", "Blue Ammonia", "Blue Gas Power Plant (CCS)", "Blue GTL", "Blue Methanol", "Methanation"]
+            },
+            {
+              "name": "Gas Monetisation",
+              "items": ["Methanol (Grey)"]
+            }
+          ]
+        },
+        {
+          "name": "3 - Offshore",
+          "categories": [
+            {
+              "name": "Fixed",
+              "items": ["Artificial Island", "Compliant tower", "GBS", "Jacket & Deck", "Not specified yet", "Self Installing / Jack-up", "Others - Fixed"]
+            },
+            {
+              "name": "Floating",
+              "items": ["FLNG", "FPSO", "FPSO (Lease)", "Power Barge", "Other (FSO, FSRU...)", "Marine Carbon Capture", "Not specified yet", "Semi Sub", "Spar", "TLP", "Others - Floating"]
+            },
+            {
+              "name": "Marine Renewable Energies",
+              "items": ["Ocean Thermal Energies Energy Conversion (OTEC)", "Solar", "Tidal/current", "Waves", "Others - Marine Renewable Energies"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BL2 - Sustainable Fuels, Chemicals & Circularity",
+      "parent": null,
+      "sub_business_lines": [
+        {
+          "name": "1 - Sustainable Fuels & Refining",
+          "categories": [
+            {
+              "name": "Sustainable Fuels",
+              "items": ["Biodiesel", "Biomass / Waste to Fuels", "Ethanol 1G", "Ethanol 2G", "Renewable diesel (on-purpose)", "Renewable diesel (refinery repurposing or co-processing)", "SAF (on-purpose)", "SAF (refinery repurposing or co-processing)", "Others – Sustainable fuels"]
+            },
+            {
+              "name": "Refining",
+              "items": ["Grass-root / new unit", "Revamp / upgrade", "Others - Refining"]
+            }
+          ]
+        },
+        {
+          "name": "2 - Ethylene & NPK",
+          "categories": [
+            {
+              "name": "Fertilizers",
+              "items": ["Nitrogen Fertilizers", "Phosphate Fertilizers", "Phosphoric Acid", "Sulfuric Acid", "Others - Fertilizers"]
+            },
+            {
+              "name": "Ethylene",
+              "items": ["Cracking Furnace", "Ethylene Plant", "Ethylene Proprietary Equipment", "Ethylene Digital applications", "Others – Ethylene"]
+            },
+            {
+              "name": "Propylene & other Olefins",
+              "items": ["Propylene", "Others Propylene & other Olefins"]
+            },
+            {
+              "name": "Polyolefins",
+              "items": ["LDPE", "LLDPE/HDPE", "PP"]
+            }
+          ]
+        },
+        {
+          "name": "3 - Biochemical & Petrochemicals",
+          "categories": [
+            {
+              "name": "PetChems",
+              "items": ["PetChem monomers", "PetChem monomers/ Other chemicals", "PetChem polymers", "Others PetChems"]
+            },
+            {
+              "name": "Biochems",
+              "items": ["Bio monomers", "Bio polymers", "Sustainable Methanol (Enerkem Techno)", "Others Biochems"]
+            }
+          ]
+        },
+        {
+          "name": "4 - Circularity",
+          "categories": [
+            {
+              "name": "Chemical Recycling",
+              "items": ["r-PET", "r-Polyamides", "r-Polyolefins", "r-Polymers", "r-Polystyrenes", "r-PVC", "Others - Chemical Recycling"]
+            }
+          ]
+        },
+        {
+          "name": "5 - Reju",
+          "categories": [
+            {
+              "name": "Textile regeneration (in MDM)",
+              "items": ["Textile polyester"]
+            }
+          ]
+        },
+        {
+          "name": "6 – TEN - Green H2 / PtX",
+          "categories": []
+        }
+      ]
+    },
+    {
+      "name": "BL3 - Decarbonization Solutions",
+      "parent": null,
+      "sub_business_lines": [
+        {
+          "name": "3 - CO2 Management",
+          "categories": [
+            {
+              "name": "CO2 Management & Post-Combustion CC",
+              "items": ["Bio-Energy", "Cement/Lime", "Chemical", "CO2 storage and loading hubs", "Direct Air Capture", "Gas Monetisation", "Ocean Based Carbon Capture", "Offshore Facilities", "Other Industries", "Power Generation", "Pulp and Paper", "Waste to Energy"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BL4 - T.EN X - Consulting & Products",
+      "parent": null,
+      "sub_business_lines": [
+        {
+          "name": "1 - Genesis Advisory Services",
+          "categories": [
+            { "name": "Genesis Team", "items": [] },
+            { "name": "Marine Renewable Energies", "items": ["Fixed Wind"] },
+            { "name": "Upstream", "items": ["Subsea"] }
+          ]
+        },
+        {
+          "name": "2 – T.EN Marseille",
+          "categories": [{ "name": "T.EN Marseille", "items": [] }]
+        },
+        {
+          "name": "3 - PMC/OMC",
+          "categories": [
+            { "name": "Scope of work", "items": ["PMC"] },
+            { "name": "Infrastructure", "items": ["Infrastructure (PMC)"] }
+          ]
+        },
+        {
+          "name": "4 – OMC",
+          "categories": [
+            {
+              "name": "Scope of work",
+              "items": ["Operations Readiness", "Start-up, commissioning & Operations support", "Training services", "Inspection services", "Maintenance support & Turnaround management", "O&M Asset Management", "Other O&M"]
+            }
+          ]
+        },
+        {
+          "name": "5 – Loading Systems",
+          "categories": [{ "name": "Loading Systems Team", "items": [] }]
+        },
+        {
+          "name": "6 – Industries",
+          "categories": [
+            { "name": "Defense", "items": [] },
+            { "name": "Life sciences", "items": [] },
+            { "name": "Nuclear", "items": [] },
+            { "name": "Mining and Metals", "items": [] },
+            { "name": "Aerospace", "items": [] }
+          ]
+        },
+        {
+          "name": "8 – Krebs Ms",
+          "categories": [{ "name": "MS", "items": [] }]
+        }
+      ]
+    },
+    {
+      "name": "Green H2 / PtX",
+      "parent": null,
+      "sub_business_lines": [
+        {
+          "name": "1 – Rely - Green H2 / PtX",
+          "categories": [
+            {
+              "name": "Hydrogen",
+              "items": ["e-Methane", "Green Ammonia", "Green Hydrogen", "Green Liquefied Hydrogen", "Green Methanol", "LOHC", "Power-to-X"]
+            },
+            {
+              "name": "Sustainable Fuels",
+              "items": ["e-fuel"]
+            },
+            {
+              "name": "Renewable Power",
+              "items": ["Batteries", "Fuel cells", "Photovoltaic", "Others – Renewable Power"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Other Corporate",
+      "parent": null,
+      "sub_business_lines": [
+        {
+          "name": "1 – Other Corporate",
+          "categories": []
+        },
+        {
+          "name": "4. Floating Offshore Wind",
+          "categories": [
+            {
+              "name": "Marine Renewable Energies",
+              "items": ["Floating Wind", "Offshore Substation (FOW)"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

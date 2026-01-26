@@ -1,0 +1,24 @@
+Oil Companies Market & Technology Analysis Report
+==================================================
+
+Company: TotalEnergies
+Market Presence: upstream, downstream, renewable, gas, chemicals
+Technologies: ai, digital, iot, carbon capture
+Innovations: Limited innovation content found
+Summary: TotalEnergies operates in 5 identified market segments with 4 technology areas mentioned.
+----------------------------------------
+
+Company: BP
+Market Presence: upstream, downstream, renewable, gas
+Technologies: ai, digital, automation, ccus, subsea
+Innovations: Limited innovation content found
+Summary: BP operates in 4 identified market segments with 5 technology areas mentioned.
+----------------------------------------
+
+Company: Chevron
+Market Presence: upstream, downstream, renewable, gas, chemicals
+Technologies: artificial intelligence, ai, digital, robotics, carbon capture, ccus, subsea, deepwater
+Innovations: Limited innovation content found
+Summary: Chevron operates in 5 identified market segments with 8 technology areas mentioned.
+----------------------------------------
+

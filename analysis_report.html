@@ -1,0 +1,488 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Oil Companies Analysis Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .company { margin-bottom: 40px; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+            .company h2 { color: #2c5aa0; margin-top: 0; }
+            .section { margin: 20px 0; }
+            .section h3 { color: #444; }
+            .market-segment, .technology { 
+                background: #f5f5f5; margin: 5px 0; padding: 10px; border-radius: 4px; 
+            }
+            .new-market-opportunity {
+                background: linear-gradient(135deg, #fff3cd, #ffeaa7); 
+                margin: 5px 0; padding: 15px; border-radius: 6px;
+                border-left: 4px solid #f39c12;
+                position: relative;
+            }
+            .new-market-opportunity::before {
+                content: "🚨 NEW OPPORTUNITY";
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                background: #e74c3c;
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.7em;
+                font-weight: bold;
+            }
+            .confidence { font-weight: bold; color: #007700; }
+            .low-confidence { color: #cc7700; }
+            .evidence { font-size: 0.9em; color: #666; }
+            .score { font-size: 1.2em; font-weight: bold; }
+            .high-score { color: #007700; }
+            .medium-score { color: #cc7700; }
+            .low-score { color: #cc0000; }
+        </style>
+    </head>
+    <body>
+        <h1>Oil Companies Market & Technology Analysis Report</h1>
+        <p>Generated on: <span id="date"></span></p>
+        <script>document.getElementById('date').textContent = new Date().toLocaleString();</script>
+    
+        <div class="company">
+            <h2>TotalEnergies</h2>
+            
+            <div class="section">
+                <h3>Executive Summary</h3>
+                <p>TotalEnergies operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Carbon Tech, Automation, Iot Sensors. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Of Energy, Fossil Fuel. Global presence with operations in 9 regions.</p>
+            </div>
+            
+            <div class="section">
+                <h3>Market Segments</h3>
+        
+                <div class="market-segment">
+                    <strong>Downstream</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: refining (mentioned 8 times), petrochemical (mentioned 1 times), retail (mentioned 2 times), distribution (mentioned 1 times), fuel (mentioned 11 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Energy</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: solar (mentioned 12 times), wind (mentioned 21 times), renewable (mentioned 26 times), hydrogen (mentioned 8 times), biomass (mentioned 9 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Natural Gas</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: natural gas (mentioned 8 times), lng (mentioned 10 times), methane (mentioned 35 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Carbon Management</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: carbon capture (mentioned 4 times), carbon neutral (mentioned 4 times), net zero (mentioned 3 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Chemicals</strong> 
+                    <span class="confidence high-confidence">(81.0% confidence)</span>
+                    <div class="evidence">Evidence: chemicals (mentioned 2 times), petrochemicals (mentioned 4 times), plastics (mentioned 1 times), polymers (mentioned 2 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Co2 Management And Post-Combustion Cc</strong> 
+                    <span class="confidence medium-confidence">(60.0% confidence)</span>
+                    <div class="evidence">Evidence: power generation (mentioned 4 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Hydrogen</strong> 
+                    <span class="confidence medium-confidence">(45.0% confidence)</span>
+                    <div class="evidence">Evidence: green hydrogen (mentioned 3 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Low Carbon Fuels</strong> 
+                    <span class="confidence low-confidence">(30.0% confidence)</span>
+                    <div class="evidence">Evidence: biogas (mentioned 2 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Power</strong> 
+                    <span class="confidence low-confidence">(15.0% confidence)</span>
+                    <div class="evidence">Evidence: photovoltaic (mentioned 1 times)</div>
+                </div>
+            
+            </div>
+            
+            <div class="section">
+                <h3>Technologies</h3>
+        
+                <div class="technology">
+                    <strong>Carbon Tech</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Carbon Management</span>
+                    <span class="confidence high-confidence">(80.0% confidence)</span>
+                    <div class="evidence">Evidence: carbon capture (mentioned 4 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Automation</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Automation</span>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence">Evidence: autonomous (mentioned 1 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Iot Sensors</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence">Evidence: monitoring (mentioned 1 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Renewable Tech</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Renewable</span>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence">Evidence: wind turbines (mentioned 1 times)</div>
+                </div>
+            
+            </div>
+        
+            <div class="section">
+                <h3>🚨 New Market Opportunities</h3>
+            
+                    <div class="new-market-opportunity">
+                        <strong>Of Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 6 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Fossil Fuel</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Energy Transition</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 12 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Our Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 6 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Sustainable Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 12 times</div>
+                    </div>
+                
+            </div>
+            
+            <div class="section">
+                <h3>Sustainability & Innovation Metrics</h3>
+                <p>Sustainability Focus: <span class="score high-score">100.0%</span></p>
+                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
+            </div>
+            
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>Nigeria, India, Europe, France, Middle East, Africa, Norway, Usa, South America</p>
+            </div>
+        </div>
+        
+        <div class="company">
+            <h2>BP</h2>
+            
+            <div class="section">
+                <h3>Executive Summary</h3>
+                <p>BP operates primarily in Downstream, Renewable Energy, Carbon Management markets. Key technology focus areas include Digital Technologies, Subsea Technology, Automation. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including World Energy, The Energy. Global presence with operations in 16 regions.</p>
+            </div>
+            
+            <div class="section">
+                <h3>Market Segments</h3>
+        
+                <div class="market-segment">
+                    <strong>Downstream</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: refining (mentioned 1 times), retail (mentioned 4 times), marketing (mentioned 1 times), fuel (mentioned 5 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Energy</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: solar (mentioned 1 times), renewable (mentioned 2 times), biofuel (mentioned 5 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Carbon Management</strong> 
+                    <span class="confidence high-confidence">(78.0% confidence)</span>
+                    <div class="evidence">Evidence: net zero (mentioned 6 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Upstream</strong> 
+                    <span class="confidence high-confidence">(75.0% confidence)</span>
+                    <div class="evidence">Evidence: subsea (mentioned 5 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Polyolefins</strong> 
+                    <span class="confidence medium-confidence">(45.0% confidence)</span>
+                    <div class="evidence">Evidence: pp (mentioned 3 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Natural Gas</strong> 
+                    <span class="confidence low-confidence">(10.0% confidence)</span>
+                    <div class="evidence">Evidence: methane (mentioned 1 times)</div>
+                </div>
+            
+            </div>
+            
+            <div class="section">
+                <h3>Technologies</h3>
+        
+                <div class="technology">
+                    <strong>Digital Technologies</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Digital</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: ai (mentioned 4 times), analytics (mentioned 2 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Subsea Technology</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Subsea</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: subsea (mentioned 5 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Automation</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Automation</span>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence">Evidence: automation (mentioned 1 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Iot Sensors</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence">Evidence: monitoring (mentioned 1 times)</div>
+                </div>
+            
+            </div>
+        
+            <div class="section">
+                <h3>🚨 New Market Opportunities</h3>
+            
+                    <div class="new-market-opportunity">
+                        <strong>World Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>The Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 7 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Upstream Business</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence medium-confidence">(60.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 3 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Energy Transition</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence medium-confidence">(60.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 3 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Ways Technology</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
+                        <span class="confidence medium-confidence">(60.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 3 times</div>
+                    </div>
+                
+            </div>
+            
+            <div class="section">
+                <h3>Sustainability & Innovation Metrics</h3>
+                <p>Sustainability Focus: <span class="score high-score">100.0%</span></p>
+                <p>Innovation Score: <span class="score medium-score">53.3%</span></p>
+            </div>
+            
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>India, Egypt, Europe, France, Saudi Arabia, Middle East, Africa, Australia, Norway, Usa, Netherlands, Uk, Asia Pacific, Singapore, Mexico, Canada</p>
+            </div>
+        </div>
+        
+        <div class="company">
+            <h2>Chevron</h2>
+            
+            <div class="section">
+                <h3>Executive Summary</h3>
+                <p>Chevron operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Digital Technologies, Subsea Technology, Carbon Tech. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Drive Business, Of Energy. Global presence with operations in 6 regions.</p>
+            </div>
+            
+            <div class="section">
+                <h3>Market Segments</h3>
+        
+                <div class="market-segment">
+                    <strong>Downstream</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: refining (mentioned 3 times), retail (mentioned 2 times), distribution (mentioned 2 times), fuel (mentioned 6 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Energy</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: wind (mentioned 1 times), renewable (mentioned 10 times), hydrogen (mentioned 13 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Natural Gas</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: natural gas (mentioned 13 times), lng (mentioned 2 times), pipeline (mentioned 4 times), methane (mentioned 34 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Carbon Management</strong> 
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: carbon capture (mentioned 15 times), ccus (mentioned 10 times), carbon storage (mentioned 1 times), net zero (mentioned 1 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Upstream</strong> 
+                    <span class="confidence high-confidence">(75.0% confidence)</span>
+                    <div class="evidence">Evidence: subsea (mentioned 5 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Chemicals</strong> 
+                    <span class="confidence medium-confidence">(45.0% confidence)</span>
+                    <div class="evidence">Evidence: chemicals (mentioned 2 times), petrochemicals (mentioned 3 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Co2 Management And Post-Combustion Cc</strong> 
+                    <span class="confidence medium-confidence">(45.0% confidence)</span>
+                    <div class="evidence">Evidence: chemical (mentioned 1 times), power generation (mentioned 2 times)</div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Hydrogen</strong> 
+                    <span class="confidence low-confidence">(15.0% confidence)</span>
+                    <div class="evidence">Evidence: lohc (mentioned 1 times)</div>
+                </div>
+            
+            </div>
+            
+            <div class="section">
+                <h3>Technologies</h3>
+        
+                <div class="technology">
+                    <strong>Digital Technologies</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Digital</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: artificial intelligence (mentioned 1 times), ai (mentioned 6 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Subsea Technology</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Subsea</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: subsea (mentioned 5 times), deepwater (mentioned 7 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Carbon Tech</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Carbon Management</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence">Evidence: carbon capture (mentioned 15 times), ccus (mentioned 10 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Iot Sensors</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
+                    <span class="confidence medium-confidence">(60.0% confidence)</span>
+                    <div class="evidence">Evidence: monitoring (mentioned 2 times), connected (mentioned 1 times)</div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Renewable Tech</strong> 
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Renewable</span>
+                    <span class="confidence low-confidence">(40.0% confidence)</span>
+                    <div class="evidence">Evidence: energy storage (mentioned 1 times), hydrogen production (mentioned 1 times)</div>
+                </div>
+            
+            </div>
+        
+            <div class="section">
+                <h3>🚨 New Market Opportunities</h3>
+            
+                    <div class="new-market-opportunity">
+                        <strong>Drive Business</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Of Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 5 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Chevron Technology</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 8 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Us Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Future Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence">Evidence: Mentioned 5 times</div>
+                    </div>
+                
+            </div>
+            
+            <div class="section">
+                <h3>Sustainability & Innovation Metrics</h3>
+                <p>Sustainability Focus: <span class="score high-score">75.0%</span></p>
+                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
+            </div>
+            
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>Europe, Australia, Usa, Angola, Mexico, Canada</p>
+            </div>
+        </div>
+        
+    </body>
+    </html>
+    
