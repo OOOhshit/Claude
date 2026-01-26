@@ -1,83 +1,175 @@
 [
   {
-    "company": "TotalEnergies",
+    "company": "ADNOC",
     "market_segments": [
       {
         "name": "Downstream",
         "confidence": 0.95,
         "evidence": [
-          "refining (mentioned 8 times)",
-          "petrochemical (mentioned 1 times)",
-          "retail (mentioned 2 times)",
-          "distribution (mentioned 1 times)",
-          "fuel (mentioned 11 times)"
+          {
+            "keyword": "refining",
+            "mention_count": 1,
+            "urls": [
+              "https://www.adnoc.ae/en/adnoc-refining"
+            ]
+          },
+          {
+            "keyword": "marketing",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ]
       },
       {
         "name": "Renewable Energy",
         "confidence": 0.95,
         "evidence": [
-          "solar (mentioned 12 times)",
-          "wind (mentioned 21 times)",
-          "renewable (mentioned 26 times)",
-          "hydrogen (mentioned 8 times)",
-          "biomass (mentioned 9 times)"
+          {
+            "keyword": "renewable",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          },
+          {
+            "keyword": "hydrogen",
+            "mention_count": 14,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ]
       },
       {
         "name": "Natural Gas",
         "confidence": 0.95,
         "evidence": [
-          "natural gas (mentioned 8 times)",
-          "lng (mentioned 10 times)",
-          "methane (mentioned 35 times)"
+          {
+            "keyword": "natural gas",
+            "mention_count": 26,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          },
+          {
+            "keyword": "lng",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chemicals",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "chemicals",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ]
       },
       {
         "name": "Carbon Management",
         "confidence": 0.95,
         "evidence": [
-          "carbon capture (mentioned 4 times)",
-          "carbon neutral (mentioned 4 times)",
-          "net zero (mentioned 3 times)"
-        ]
-      },
-      {
-        "name": "Chemicals",
-        "confidence": 0.8099999999999999,
-        "evidence": [
-          "chemicals (mentioned 2 times)",
-          "petrochemicals (mentioned 4 times)",
-          "plastics (mentioned 1 times)",
-          "polymers (mentioned 2 times)"
-        ]
-      },
-      {
-        "name": "Co2 Management And Post-Combustion Cc",
-        "confidence": 0.6,
-        "evidence": [
-          "power generation (mentioned 4 times)"
-        ]
-      },
-      {
-        "name": "Hydrogen",
-        "confidence": 0.45,
-        "evidence": [
-          "green hydrogen (mentioned 3 times)"
-        ]
-      },
-      {
-        "name": "Low Carbon Fuels",
-        "confidence": 0.3,
-        "evidence": [
-          "biogas (mentioned 2 times)"
-        ]
-      },
-      {
-        "name": "Renewable Power",
-        "confidence": 0.15,
-        "evidence": [
-          "photovoltaic (mentioned 1 times)"
+          {
+            "keyword": "carbon capture",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ]
       }
     ],
@@ -85,185 +177,132 @@
       {
         "name": "Carbon Tech",
         "category": "Carbon Management",
-        "confidence": 0.8,
+        "confidence": 0.95,
         "evidence": [
-          "carbon capture (mentioned 4 times)"
-        ]
-      },
-      {
-        "name": "Automation",
-        "category": "Automation",
-        "confidence": 0.2,
-        "evidence": [
-          "autonomous (mentioned 1 times)"
-        ]
-      },
-      {
-        "name": "Iot Sensors",
-        "category": "IoT",
-        "confidence": 0.2,
-        "evidence": [
-          "monitoring (mentioned 1 times)"
-        ]
-      },
-      {
-        "name": "Renewable Tech",
-        "category": "Renewable",
-        "confidence": 0.2,
-        "evidence": [
-          "wind turbines (mentioned 1 times)"
+          {
+            "keyword": "carbon capture",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ]
       }
     ],
     "new_market_opportunities": [
       {
-        "name": "Of Energy",
+        "name": "Strategymaximum Energy",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 6 times"
+          {
+            "keyword": "strategymaximum energy",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ],
         "potential_category": "New Energy Solutions"
       },
       {
-        "name": "Fossil Fuel",
+        "name": "Its Business",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 4 times"
+          {
+            "keyword": "its business",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ],
-        "potential_category": "New Energy Solutions"
-      },
-      {
-        "name": "Energy Transition",
-        "confidence": 0.8,
-        "evidence": [
-          "Mentioned 12 times"
-        ],
-        "potential_category": "New Energy Solutions"
-      },
-      {
-        "name": "Our Energy",
-        "confidence": 0.8,
-        "evidence": [
-          "Mentioned 6 times"
-        ],
-        "potential_category": "New Energy Solutions"
-      },
-      {
-        "name": "Sustainable Energy",
-        "confidence": 0.8,
-        "evidence": [
-          "Mentioned 12 times"
-        ],
-        "potential_category": "New Energy Solutions"
-      }
-    ],
-    "sustainability_focus": 1.0,
-    "innovation_score": 1.0,
-    "geographic_presence": [
-      "Nigeria",
-      "India",
-      "Europe",
-      "France",
-      "Middle East",
-      "Africa",
-      "Norway",
-      "Usa",
-      "South America"
-    ],
-    "summary": "TotalEnergies operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Carbon Tech, Automation, Iot Sensors. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Of Energy, Fossil Fuel. Global presence with operations in 9 regions."
-  },
-  {
-    "company": "BP",
-    "market_segments": [
-      {
-        "name": "Downstream",
-        "confidence": 0.95,
-        "evidence": [
-          "refining (mentioned 1 times)",
-          "retail (mentioned 4 times)",
-          "marketing (mentioned 1 times)",
-          "fuel (mentioned 5 times)"
-        ]
+        "potential_category": "Emerging Market"
       },
       {
         "name": "Renewable Energy",
-        "confidence": 0.95,
-        "evidence": [
-          "solar (mentioned 1 times)",
-          "renewable (mentioned 2 times)",
-          "biofuel (mentioned 5 times)"
-        ]
-      },
-      {
-        "name": "Carbon Management",
-        "confidence": 0.78,
-        "evidence": [
-          "net zero (mentioned 6 times)"
-        ]
-      },
-      {
-        "name": "Upstream",
-        "confidence": 0.75,
-        "evidence": [
-          "subsea (mentioned 5 times)"
-        ]
-      },
-      {
-        "name": "Polyolefins",
-        "confidence": 0.45,
-        "evidence": [
-          "pp (mentioned 3 times)"
-        ]
-      },
-      {
-        "name": "Natural Gas",
-        "confidence": 0.1,
-        "evidence": [
-          "methane (mentioned 1 times)"
-        ]
-      }
-    ],
-    "technologies": [
-      {
-        "name": "Digital Technologies",
-        "category": "Digital",
-        "confidence": 0.95,
-        "evidence": [
-          "ai (mentioned 4 times)",
-          "analytics (mentioned 2 times)"
-        ]
-      },
-      {
-        "name": "Subsea Technology",
-        "category": "Subsea",
-        "confidence": 0.95,
-        "evidence": [
-          "subsea (mentioned 5 times)"
-        ]
-      },
-      {
-        "name": "Automation",
-        "category": "Automation",
-        "confidence": 0.2,
-        "evidence": [
-          "automation (mentioned 1 times)"
-        ]
-      },
-      {
-        "name": "Iot Sensors",
-        "category": "IoT",
-        "confidence": 0.2,
-        "evidence": [
-          "monitoring (mentioned 1 times)"
-        ]
-      }
-    ],
-    "new_market_opportunities": [
-      {
-        "name": "World Energy",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 4 times"
+          {
+            "keyword": "renewable energy",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Changing Energy",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "changing energy",
+            "mention_count": 13,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ],
         "potential_category": "New Energy Solutions"
       },
@@ -271,127 +310,86 @@
         "name": "The Energy",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 7 times"
+          {
+            "keyword": "the energy",
+            "mention_count": 41,
+            "urls": [
+              "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+              "https://www.adnoc.ae/en/our-business/hydrogen",
+              "https://www.adnoc.ae/en/adnoc-offshore",
+              "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+              "https://www.adnoc.ae/en/adnoc-refining",
+              "https://www.adnoc.ae/en/ourstrategy",
+              "https://www.adnoc.ae/en/towards-net-zero/helping-customers-reduce-emissions",
+              "https://www.adnoc.ae/en/our-story/who-we-are",
+              "https://www.adnoc.ae/en/al-yasat-petroleum",
+              "https://www.adnoc.ae/en/adnoc-sour-gas",
+              "https://www.adnoc.ae/en/adnoc-city-gas",
+              "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+              "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+              "https://www.adnoc.ae/en/adnoc-onshore"
+            ]
+          }
         ],
         "potential_category": "New Energy Solutions"
-      },
-      {
-        "name": "Upstream Business",
-        "confidence": 0.6,
-        "evidence": [
-          "Mentioned 3 times"
-        ],
-        "potential_category": "Emerging Market"
-      },
-      {
-        "name": "Energy Transition",
-        "confidence": 0.6,
-        "evidence": [
-          "Mentioned 3 times"
-        ],
-        "potential_category": "New Energy Solutions"
-      },
-      {
-        "name": "Ways Technology",
-        "confidence": 0.6,
-        "evidence": [
-          "Mentioned 3 times"
-        ],
-        "potential_category": "Technology Innovation"
       }
     ],
     "sustainability_focus": 1.0,
-    "innovation_score": 0.5333333333333333,
+    "innovation_score": 1.0,
     "geographic_presence": [
-      "India",
-      "Egypt",
-      "Europe",
-      "France",
-      "Saudi Arabia",
-      "Middle East",
-      "Africa",
-      "Australia",
-      "Norway",
-      "Usa",
-      "Netherlands",
-      "Uk",
-      "Asia Pacific",
-      "Singapore",
-      "Mexico",
-      "Canada"
+      "Uae"
     ],
-    "summary": "BP operates primarily in Downstream, Renewable Energy, Carbon Management markets. Key technology focus areas include Digital Technologies, Subsea Technology, Automation. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including World Energy, The Energy. Global presence with operations in 16 regions."
+    "summary": "ADNOC operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Carbon Tech. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Strategymaximum Energy, Its Business. "
   },
   {
-    "company": "Chevron",
+    "company": "Eni",
     "market_segments": [
       {
-        "name": "Downstream",
-        "confidence": 0.95,
-        "evidence": [
-          "refining (mentioned 3 times)",
-          "retail (mentioned 2 times)",
-          "distribution (mentioned 2 times)",
-          "fuel (mentioned 6 times)"
-        ]
-      },
-      {
         "name": "Renewable Energy",
-        "confidence": 0.95,
+        "confidence": 0.8400000000000001,
         "evidence": [
-          "wind (mentioned 1 times)",
-          "renewable (mentioned 10 times)",
-          "hydrogen (mentioned 13 times)"
-        ]
-      },
-      {
-        "name": "Natural Gas",
-        "confidence": 0.95,
-        "evidence": [
-          "natural gas (mentioned 13 times)",
-          "lng (mentioned 2 times)",
-          "pipeline (mentioned 4 times)",
-          "methane (mentioned 34 times)"
+          {
+            "keyword": "solar",
+            "mention_count": 3,
+            "urls": [
+              "https://www.eni.com/visual-design/infographics/hpc6-longform/en/",
+              "https://www.eni.com/en-IT/actions/energy-transition-technologies/renewable-energies.html"
+            ]
+          },
+          {
+            "keyword": "wind",
+            "mention_count": 2,
+            "urls": [
+              "https://www.eni.com/visual-design/infographics/hpc6-longform/en/"
+            ]
+          },
+          {
+            "keyword": "renewable",
+            "mention_count": 1,
+            "urls": [
+              "https://www.eni.com/en-IT/products.html"
+            ]
+          },
+          {
+            "keyword": "biofuel",
+            "mention_count": 1,
+            "urls": [
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          }
         ]
       },
       {
         "name": "Carbon Management",
-        "confidence": 0.95,
+        "confidence": 0.39,
         "evidence": [
-          "carbon capture (mentioned 15 times)",
-          "ccus (mentioned 10 times)",
-          "carbon storage (mentioned 1 times)",
-          "net zero (mentioned 1 times)"
-        ]
-      },
-      {
-        "name": "Upstream",
-        "confidence": 0.75,
-        "evidence": [
-          "subsea (mentioned 5 times)"
-        ]
-      },
-      {
-        "name": "Chemicals",
-        "confidence": 0.45,
-        "evidence": [
-          "chemicals (mentioned 2 times)",
-          "petrochemicals (mentioned 3 times)"
-        ]
-      },
-      {
-        "name": "Co2 Management And Post-Combustion Cc",
-        "confidence": 0.45,
-        "evidence": [
-          "chemical (mentioned 1 times)",
-          "power generation (mentioned 2 times)"
-        ]
-      },
-      {
-        "name": "Hydrogen",
-        "confidence": 0.15,
-        "evidence": [
-          "lohc (mentioned 1 times)"
+          {
+            "keyword": "net zero",
+            "mention_count": 3,
+            "urls": [
+              "https://www.eni.com/visual-design/infographics/hpc6-longform/en/"
+            ]
+          }
         ]
       }
     ],
@@ -401,17 +399,569 @@
         "category": "Digital",
         "confidence": 0.95,
         "evidence": [
-          "artificial intelligence (mentioned 1 times)",
-          "ai (mentioned 6 times)"
+          {
+            "keyword": "artificial intelligence",
+            "mention_count": 5,
+            "urls": [
+              "https://www.eni.com/en-IT/careers/job-opportunities/professional-areas/eni-trade-biofuels.html",
+              "https://www.eni.com/en-IT/sustainability/decarbonization/carbon-offset-solutions.html",
+              "https://www.eni.com/en-IT/sustainability/people-community/sustainable-development-alliance.html",
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          },
+          {
+            "keyword": "ai",
+            "mention_count": 8,
+            "urls": [
+              "https://www.eni.com/en-IT/careers/job-opportunities/professional-areas/eni-trade-biofuels.html",
+              "https://www.eni.com/visual-design/infographics/hpc6-longform/en/",
+              "https://www.eni.com/en-IT/sustainability/decarbonization/carbon-offset-solutions.html",
+              "https://www.eni.com/en-IT/sustainability/people-community/sustainable-development-alliance.html"
+            ]
+          }
+        ]
+      }
+    ],
+    "new_market_opportunities": [
+      {
+        "name": "The Energy",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "the energy",
+            "mention_count": 4,
+            "urls": [
+              "https://www.eni.com/visual-design/infographics/hpc6-longform/en/",
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Energy Transition",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "energy transition",
+            "mention_count": 4,
+            "urls": [
+              "https://www.eni.com/visual-design/infographics/hpc6-longform/en/",
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Global Energy",
+        "confidence": 0.6,
+        "evidence": [
+          {
+            "keyword": "global energy",
+            "mention_count": 3,
+            "urls": [
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Of Energy",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "of energy",
+            "mention_count": 1,
+            "urls": [
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Sustainable Energy",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "sustainable energy",
+            "mention_count": 1,
+            "urls": [
+              "https://www.eni.com/en-IT/products/home.html"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      }
+    ],
+    "sustainability_focus": 0.55,
+    "innovation_score": 0.9333333333333333,
+    "geographic_presence": [
+      "Egypt",
+      "Angola",
+      "Nigeria",
+      "Africa"
+    ],
+    "summary": "Eni operates primarily in Renewable Energy, Carbon Management markets. Key technology focus areas include Digital Technologies. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including The Energy, Energy Transition. "
+  },
+  {
+    "company": "Neste",
+    "market_segments": [
+      {
+        "name": "Downstream",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "refining",
+            "mention_count": 1,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/innovation"
+            ]
+          },
+          {
+            "keyword": "marketing",
+            "mention_count": 5,
+            "urls": [
+              "https://www.neste.com/sponsorships-marketing-cooperations-and-charitable-contributions-neste"
+            ]
+          },
+          {
+            "keyword": "distribution",
+            "mention_count": 1,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/neste-my-renewable-diesel"
+            ]
+          },
+          {
+            "keyword": "fuel",
+            "mention_count": 38,
+            "urls": [
+              "https://www.neste.com/about-neste",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+              "https://www.neste.com/products-and-innovation/raw-materials",
+              "https://www.neste.com/products-and-innovation/neste-my-renewable-diesel",
+              "https://www.neste.com/products-and-innovation",
+              "https://www.neste.com/about-neste/people-and-careers/work-with-us",
+              "https://www.neste.com/sustainability"
+            ]
+          }
         ]
       },
+      {
+        "name": "Renewable Energy",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "renewable",
+            "mention_count": 74,
+            "urls": [
+              "https://www.neste.com/about-neste",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+              "https://www.neste.com/products-and-innovation/raw-materials",
+              "https://www.neste.com/products-and-innovation/neste-my-renewable-diesel",
+              "https://www.neste.com/products-and-innovation/innovation",
+              "https://www.neste.com/products-and-innovation",
+              "https://www.neste.com/about-neste/people-and-careers/work-with-us",
+              "https://www.neste.com/summerwithneste",
+              "https://www.neste.com/sustainability"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chemicals",
+        "confidence": 0.63,
+        "evidence": [
+          {
+            "keyword": "chemicals",
+            "mention_count": 3,
+            "urls": [
+              "https://www.neste.com/products-and-innovation"
+            ]
+          },
+          {
+            "keyword": "plastics",
+            "mention_count": 1,
+            "urls": [
+              "https://www.neste.com/about-neste/people-and-careers/work-with-us"
+            ]
+          },
+          {
+            "keyword": "polymers",
+            "mention_count": 3,
+            "urls": [
+              "https://www.neste.com/products-and-innovation"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Co2 Management And Post-Combustion Cc",
+        "confidence": 0.45,
+        "evidence": [
+          {
+            "keyword": "chemical",
+            "mention_count": 3,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/raw-materials",
+              "https://www.neste.com/about-neste/people-and-careers/work-with-us"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbon Management",
+        "confidence": 0.39,
+        "evidence": [
+          {
+            "keyword": "carbon neutral",
+            "mention_count": 1,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/sustainable-aviation"
+            ]
+          },
+          {
+            "keyword": "net zero",
+            "mention_count": 2,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/sustainable-aviation",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste"
+            ]
+          }
+        ]
+      }
+    ],
+    "technologies": [],
+    "new_market_opportunities": [
+      {
+        "name": "Transport Sector",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "transport sector",
+            "mention_count": 7,
+            "urls": [
+              "https://www.neste.com/about-neste",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+              "https://www.neste.com/products-and-innovation/neste-my-renewable-diesel",
+              "https://www.neste.com/products-and-innovation/marine-products",
+              "https://www.neste.com/products-and-innovation",
+              "https://www.neste.com/sustainability"
+            ]
+          }
+        ],
+        "potential_category": "Emerging Market"
+      },
+      {
+        "name": "Jet Fuel",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "jet fuel",
+            "mention_count": 6,
+            "urls": [
+              "https://www.neste.com/about-neste",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+              "https://www.neste.com/products-and-innovation",
+              "https://www.neste.com/sustainability"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Aviation Fuel",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "aviation fuel",
+            "mention_count": 15,
+            "urls": [
+              "https://www.neste.com/about-neste",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation",
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+              "https://www.neste.com/products-and-innovation/neste-my-renewable-diesel",
+              "https://www.neste.com/products-and-innovation",
+              "https://www.neste.com/about-neste/people-and-careers/work-with-us",
+              "https://www.neste.com/sustainability"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Fossil Fuel",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "fossil fuel",
+            "mention_count": 4,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+              "https://www.neste.com/sustainability"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Aviation Industry",
+        "confidence": 0.6,
+        "evidence": [
+          {
+            "keyword": "aviation industry",
+            "mention_count": 3,
+            "urls": [
+              "https://www.neste.com/products-and-innovation/sustainable-aviation"
+            ]
+          }
+        ],
+        "potential_category": "Emerging Market"
+      }
+    ],
+    "sustainability_focus": 1.0,
+    "innovation_score": 1.0,
+    "geographic_presence": [
+      "Europe"
+    ],
+    "summary": "Neste operates primarily in Downstream, Renewable Energy, Chemicals markets. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Transport Sector, Jet Fuel. "
+  },
+  {
+    "company": "ExxonMobil",
+    "market_segments": [
+      {
+        "name": "Renewable Energy",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "renewable",
+            "mention_count": 4,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/transforming-transportation",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          },
+          {
+            "keyword": "hydrogen",
+            "mention_count": 22,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Natural Gas",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "natural gas",
+            "mention_count": 11,
+            "urls": [
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          },
+          {
+            "keyword": "lng",
+            "mention_count": 6,
+            "urls": [
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          },
+          {
+            "keyword": "pipeline",
+            "mention_count": 1,
+            "urls": [
+              "https://corporate.exxonmobil.com/community/stem"
+            ]
+          },
+          {
+            "keyword": "methane",
+            "mention_count": 15,
+            "urls": [
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chemicals",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "chemicals",
+            "mention_count": 5,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          },
+          {
+            "keyword": "petrochemicals",
+            "mention_count": 2,
+            "urls": [
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities"
+            ]
+          },
+          {
+            "keyword": "plastics",
+            "mention_count": 11,
+            "urls": [
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities",
+              "https://corporate.exxonmobil.com/what-we-do/materials-for-modern-living/advanced-recycling-technology"
+            ]
+          },
+          {
+            "keyword": "polymers",
+            "mention_count": 4,
+            "urls": [
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbon Management",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "carbon capture",
+            "mention_count": 17,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          },
+          {
+            "keyword": "net zero",
+            "mention_count": 9,
+            "urls": [
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Co2 Management And Post-Combustion Cc",
+        "confidence": 0.95,
+        "evidence": [
+          {
+            "keyword": "chemical",
+            "mention_count": 15,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/what-we-do/materials-for-modern-living/advanced-recycling-technology"
+            ]
+          },
+          {
+            "keyword": "power generation",
+            "mention_count": 5,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Downstream",
+        "confidence": 0.9,
+        "evidence": [
+          {
+            "keyword": "refining",
+            "mention_count": 2,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen"
+            ]
+          },
+          {
+            "keyword": "petrochemical",
+            "mention_count": 2,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical"
+            ]
+          },
+          {
+            "keyword": "fuel",
+            "mention_count": 4,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/what-we-do/transforming-transportation",
+              "https://corporate.exxonmobil.com/community/stem"
+            ]
+          },
+          {
+            "keyword": "gasoline",
+            "mention_count": 1,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Renewable Power",
+        "confidence": 0.3,
+        "evidence": [
+          {
+            "keyword": "batteries",
+            "mention_count": 2,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/transforming-transportation",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
+        ]
+      }
+    ],
+    "technologies": [
       {
         "name": "Subsea Technology",
         "category": "Subsea",
         "confidence": 0.95,
         "evidence": [
-          "subsea (mentioned 5 times)",
-          "deepwater (mentioned 7 times)"
+          {
+            "keyword": "deepwater",
+            "mention_count": 6,
+            "urls": [
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          }
         ]
       },
       {
@@ -419,8 +969,16 @@
         "category": "Carbon Management",
         "confidence": 0.95,
         "evidence": [
-          "carbon capture (mentioned 15 times)",
-          "ccus (mentioned 10 times)"
+          {
+            "keyword": "carbon capture",
+            "mention_count": 17,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
         ]
       },
       {
@@ -428,72 +986,289 @@
         "category": "IoT",
         "confidence": 0.6,
         "evidence": [
-          "monitoring (mentioned 2 times)",
-          "connected (mentioned 1 times)"
-        ]
-      },
-      {
-        "name": "Renewable Tech",
-        "category": "Renewable",
-        "confidence": 0.4,
-        "evidence": [
-          "energy storage (mentioned 1 times)",
-          "hydrogen production (mentioned 1 times)"
+          {
+            "keyword": "monitoring",
+            "mention_count": 3,
+            "urls": [
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          }
         ]
       }
     ],
     "new_market_opportunities": [
       {
-        "name": "Drive Business",
+        "name": "The Energy",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 4 times"
-        ],
-        "potential_category": "Emerging Market"
-      },
-      {
-        "name": "Of Energy",
-        "confidence": 0.8,
-        "evidence": [
-          "Mentioned 5 times"
+          {
+            "keyword": "the energy",
+            "mention_count": 11,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          }
         ],
         "potential_category": "New Energy Solutions"
       },
       {
-        "name": "Chevron Technology",
+        "name": "And Technology",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 8 times"
+          {
+            "keyword": "and technology",
+            "mention_count": 4,
+            "urls": [
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/what-we-do/energy-supply"
+            ]
+          }
         ],
         "potential_category": "Technology Innovation"
       },
       {
-        "name": "Us Energy",
+        "name": "Or Industry",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 4 times"
+          {
+            "keyword": "or industry",
+            "mention_count": 4,
+            "urls": [
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities"
+            ]
+          }
         ],
-        "potential_category": "New Energy Solutions"
+        "potential_category": "Emerging Market"
       },
       {
-        "name": "Future Energy",
+        "name": "Our Business",
         "confidence": 0.8,
         "evidence": [
-          "Mentioned 5 times"
+          {
+            "keyword": "our business",
+            "mention_count": 4,
+            "urls": [
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts",
+              "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+              "https://corporate.exxonmobil.com/corporate-governance"
+            ]
+          }
+        ],
+        "potential_category": "Emerging Market"
+      },
+      {
+        "name": "Emission Fuel",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "keyword": "emission fuel",
+            "mention_count": 13,
+            "urls": [
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+              "https://corporate.exxonmobil.com/what-we-do/transforming-transportation",
+              "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities",
+              "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions"
+            ]
+          }
         ],
         "potential_category": "New Energy Solutions"
       }
     ],
-    "sustainability_focus": 0.75,
+    "sustainability_focus": 1.0,
     "innovation_score": 1.0,
     "geographic_presence": [
-      "Europe",
-      "Australia",
-      "Usa",
-      "Angola",
+      "Africa",
+      "Middle East",
+      "Venezuela",
+      "Asia Pacific",
       "Mexico",
-      "Canada"
+      "Canada",
+      "Angola",
+      "Argentina",
+      "India",
+      "Europe",
+      "North America"
     ],
-    "summary": "Chevron operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Digital Technologies, Subsea Technology, Carbon Tech. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Drive Business, Of Energy. Global presence with operations in 6 regions."
+    "summary": "ExxonMobil operates primarily in Renewable Energy, Natural Gas, Chemicals markets. Key technology focus areas include Subsea Technology, Carbon Tech, Iot Sensors. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including The Energy, And Technology. Global presence with operations in 11 regions."
+  },
+  {
+    "company": "Petronas",
+    "market_segments": [
+      {
+        "name": "Co2 Management And Post-Combustion Cc",
+        "confidence": 0.3,
+        "evidence": [
+          {
+            "keyword": "chemical",
+            "mention_count": 2,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Downstream",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "fuel",
+            "mention_count": 2,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbon Management",
+        "confidence": 0.13,
+        "evidence": [
+          {
+            "keyword": "carbon capture",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/media/media-releases/petronas-ccs-ventures-sdn-bhd-receives-malaysias-first-offshore-assessment"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Renewable Energy",
+        "confidence": 0.12,
+        "evidence": [
+          {
+            "keyword": "renewable",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ]
+      }
+    ],
+    "technologies": [
+      {
+        "name": "Iot Sensors",
+        "category": "IoT",
+        "confidence": 0.4,
+        "evidence": [
+          {
+            "keyword": "connected",
+            "mention_count": 2,
+            "urls": [
+              "https://www.petronas.com/flow/social-impact/spirit-gresik-reviving-natural-ecosystems-and-empowering-local-communities-0",
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbon Tech",
+        "category": "Carbon Management",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "carbon capture",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/media/media-releases/petronas-ccs-ventures-sdn-bhd-receives-malaysias-first-offshore-assessment"
+            ]
+          }
+        ]
+      }
+    ],
+    "new_market_opportunities": [
+      {
+        "name": "To Market",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "to market",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/flow/social-impact/spirit-gresik-reviving-natural-ecosystems-and-empowering-local-communities-0"
+            ]
+          }
+        ],
+        "potential_category": "Emerging Market"
+      },
+      {
+        "name": "Performance Technology",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "performance technology",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ],
+        "potential_category": "Technology Innovation"
+      },
+      {
+        "name": "Fluid Technology",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "fluid technology",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ],
+        "potential_category": "Technology Innovation"
+      },
+      {
+        "name": "With Energy",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "with energy",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      },
+      {
+        "name": "Renewable Energy",
+        "confidence": 0.2,
+        "evidence": [
+          {
+            "keyword": "renewable energy",
+            "mention_count": 1,
+            "urls": [
+              "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation"
+            ]
+          }
+        ],
+        "potential_category": "New Energy Solutions"
+      }
+    ],
+    "sustainability_focus": 0.25,
+    "innovation_score": 0.3333333333333333,
+    "geographic_presence": [
+      "Uk",
+      "Usa"
+    ],
+    "summary": "Petronas operates primarily in Co2 Management And Post-Combustion Cc, Downstream, Carbon Management markets. Key technology focus areas include Iot Sensors, Carbon Tech. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including To Market, Performance Technology. "
   }
 ]

@@ -1,0 +1,597 @@
+[
+  {
+    "url": "https://www.qatarenergy.qa",
+    "company": "Qatar Energy",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://totalenergies.com",
+    "company": "TotalEnergies",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/our-business-low-carbon-solutions",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/our-business/hydrogen",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/adnoc-offshore",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/our-projects/offshore-electrification",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/adnoc-refining",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/ourstrategy",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/towards-net-zero/helping-customers-reduce-emissions",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/our-story/who-we-are",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/al-yasat-petroleum",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/adnoc-sour-gas",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/adnoc-city-gas",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/empowering-people-and-driving-prosperity/promoting-workforce-diversity-and-gender-balance",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/our-projects/crude-flexibility",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/our-projects/waste-heat-recovery-project",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.adnoc.ae/en/adnoc-onshore",
+    "company": "ADNOC",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/renewable-energies/solar-thermal.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/carbon-capture-utilization-storage.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/careers/job-opportunities/professional-areas/eni-trade-biofuels.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/biofuels/biomass-ecofining.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/renewable-energies/energy-storage.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/visual-design/infographics/hpc6-longform/en/",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/products.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/sustainability/decarbonization/carbon-offset-solutions.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/sustainability/people-community/sustainable-development-alliance.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/products/home.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/governance.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/biofuels.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/renewable-energies.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/actions/energy-transition-technologies/geosciences/digital-geoscience.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.eni.com/en-IT/sustainability.html",
+    "company": "Eni",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/about-neste",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation/sustainable-aviation",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation/raw-materials",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation/neste-my-renewable-diesel",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation/innovation",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation/marine-products",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/products-and-innovation",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/about-neste/people-and-careers/work-with-us",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/summerwithneste",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/sponsorships-marketing-cooperations-and-charitable-contributions-neste",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/sustainability/human-rights/modern-slavery-statement",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/sustainability/sustainability-at-neste/code-of-conduct/report-concern",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.neste.com/sustainability",
+    "company": "Neste",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/working-with-suppliers",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/what-we-do/transforming-transportation",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/what-we-do/materials-for-modern-living/advanced-recycling-technology",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/corporate-governance",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/community/stem",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://corporate.exxonmobil.com/what-we-do/energy-supply",
+    "company": "ExxonMobil",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.aramco.com",
+    "company": "Saudi Aramco",
+    "status": "error",
+    "status_code": null,
+    "error": "Failed to access main page - site may block scrapers"
+  },
+  {
+    "url": "https://www.shell.com",
+    "company": "Shell",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.ril.com",
+    "company": "Reliance",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/media/media-releases/petronas-ccs-ventures-sdn-bhd-receives-malaysias-first-offshore-assessment",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/liquefied-natural-gas",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/flow/social-impact/spirit-gresik-reviving-natural-ecosystems-and-empowering-local-communities-0",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/chemicals",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/carbon-management",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/carbon-management?utm_source=referral&utm_medium=click&utm_campaign=PETRONAS - Carbon Management",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/talent-development-education",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/malaysia-petroleum-management",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/development-production",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/gas-power",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/refining",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/media/media-releases/petronas-and-staatsolie-declare-commerciality-sloanea-field-marking-surinames",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/progressing-energy/gas-business",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.petronas.com/partner-us/vendor-announcements",
+    "company": "Petronas",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  },
+  {
+    "url": "https://www.bp.com",
+    "company": "BP",
+    "status": "success",
+    "status_code": 200,
+    "error": null
+  }
+]

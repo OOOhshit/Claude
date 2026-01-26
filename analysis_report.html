@@ -37,6 +37,17 @@
             .high-score { color: #007700; }
             .medium-score { color: #cc7700; }
             .low-score { color: #cc0000; }
+            .completeness-section { background: #f0f8ff; border: 1px solid #007acc; padding: 15px; border-radius: 8px; margin-top: 20px; }
+            .completeness-score { font-size: 1.3em; font-weight: bold; }
+            .score-high { color: #28a745; }
+            .score-medium { color: #ffc107; }
+            .score-low { color: #dc3545; }
+            .suggestion-item { background: #fff; padding: 10px; margin: 5px 0; border-left: 3px solid #007acc; }
+            .suggestion-high { border-left-color: #dc3545; }
+            .suggestion-medium { border-left-color: #ffc107; }
+            .suggestion-low { border-left-color: #28a745; }
+            .verification-step { background: #e8f4f8; padding: 10px; margin: 5px 0; border-radius: 4px; }
+            .step-title { font-weight: bold; color: #2c5aa0; }
         </style>
     </head>
     <body>
@@ -45,68 +56,44 @@
         <script>document.getElementById('date').textContent = new Date().toLocaleString();</script>
     
         <div class="company">
-            <h2>TotalEnergies</h2>
+            <h2>ADNOC</h2>
             
             <div class="section">
                 <h3>Executive Summary</h3>
-                <p>TotalEnergies operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Carbon Tech, Automation, Iot Sensors. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Of Energy, Fossil Fuel. Global presence with operations in 9 regions.</p>
+                <p>ADNOC operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Carbon Tech. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Strategymaximum Energy, Its Business. </p>
             </div>
             
             <div class="section">
                 <h3>Market Segments</h3>
         
                 <div class="market-segment">
-                    <strong>Downstream</strong> 
+                    <strong>Downstream</strong>
                     <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: refining (mentioned 8 times), petrochemical (mentioned 1 times), retail (mentioned 2 times), distribution (mentioned 1 times), fuel (mentioned 11 times)</div>
+                    <div class="evidence"><strong>refining</strong> (1x) - Sources: <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a><br><strong>marketing</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                 </div>
             
                 <div class="market-segment">
-                    <strong>Renewable Energy</strong> 
+                    <strong>Renewable Energy</strong>
                     <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: solar (mentioned 12 times), wind (mentioned 21 times), renewable (mentioned 26 times), hydrogen (mentioned 8 times), biomass (mentioned 9 times)</div>
+                    <div class="evidence"><strong>renewable</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a><br><strong>hydrogen</strong> (14x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                 </div>
             
                 <div class="market-segment">
-                    <strong>Natural Gas</strong> 
+                    <strong>Natural Gas</strong>
                     <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: natural gas (mentioned 8 times), lng (mentioned 10 times), methane (mentioned 35 times)</div>
+                    <div class="evidence"><strong>natural gas</strong> (26x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a><br><strong>lng</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                 </div>
             
                 <div class="market-segment">
-                    <strong>Carbon Management</strong> 
+                    <strong>Chemicals</strong>
                     <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: carbon capture (mentioned 4 times), carbon neutral (mentioned 4 times), net zero (mentioned 3 times)</div>
+                    <div class="evidence"><strong>chemicals</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                 </div>
             
                 <div class="market-segment">
-                    <strong>Chemicals</strong> 
-                    <span class="confidence high-confidence">(81.0% confidence)</span>
-                    <div class="evidence">Evidence: chemicals (mentioned 2 times), petrochemicals (mentioned 4 times), plastics (mentioned 1 times), polymers (mentioned 2 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Co2 Management And Post-Combustion Cc</strong> 
-                    <span class="confidence medium-confidence">(60.0% confidence)</span>
-                    <div class="evidence">Evidence: power generation (mentioned 4 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Hydrogen</strong> 
-                    <span class="confidence medium-confidence">(45.0% confidence)</span>
-                    <div class="evidence">Evidence: green hydrogen (mentioned 3 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Low Carbon Fuels</strong> 
-                    <span class="confidence low-confidence">(30.0% confidence)</span>
-                    <div class="evidence">Evidence: biogas (mentioned 2 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Renewable Power</strong> 
-                    <span class="confidence low-confidence">(15.0% confidence)</span>
-                    <div class="evidence">Evidence: photovoltaic (mentioned 1 times)</div>
+                    <strong>Carbon Management</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>carbon capture</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                 </div>
             
             </div>
@@ -115,31 +102,10 @@
                 <h3>Technologies</h3>
         
                 <div class="technology">
-                    <strong>Carbon Tech</strong> 
+                    <strong>Carbon Tech</strong>
                     <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Carbon Management</span>
-                    <span class="confidence high-confidence">(80.0% confidence)</span>
-                    <div class="evidence">Evidence: carbon capture (mentioned 4 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Automation</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Automation</span>
-                    <span class="confidence low-confidence">(20.0% confidence)</span>
-                    <div class="evidence">Evidence: autonomous (mentioned 1 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Iot Sensors</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
-                    <span class="confidence low-confidence">(20.0% confidence)</span>
-                    <div class="evidence">Evidence: monitoring (mentioned 1 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Renewable Tech</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Renewable</span>
-                    <span class="confidence low-confidence">(20.0% confidence)</span>
-                    <div class="evidence">Evidence: wind turbines (mentioned 1 times)</div>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>carbon capture</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                 </div>
             
             </div>
@@ -148,172 +114,38 @@
                 <h3>🚨 New Market Opportunities</h3>
             
                     <div class="new-market-opportunity">
-                        <strong>Of Energy</strong>
+                        <strong>Strategymaximum Energy</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
                         <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 6 times</div>
+                        <div class="evidence"><strong>strategymaximum energy</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                     </div>
                 
                     <div class="new-market-opportunity">
-                        <strong>Fossil Fuel</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <strong>Its Business</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
                         <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                        <div class="evidence"><strong>its business</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                     </div>
                 
                     <div class="new-market-opportunity">
-                        <strong>Energy Transition</strong>
+                        <strong>Renewable Energy</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
                         <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 12 times</div>
+                        <div class="evidence"><strong>renewable energy</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                     </div>
                 
                     <div class="new-market-opportunity">
-                        <strong>Our Energy</strong>
+                        <strong>Changing Energy</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
                         <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 6 times</div>
-                    </div>
-                
-                    <div class="new-market-opportunity">
-                        <strong>Sustainable Energy</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
-                        <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 12 times</div>
-                    </div>
-                
-            </div>
-            
-            <div class="section">
-                <h3>Sustainability & Innovation Metrics</h3>
-                <p>Sustainability Focus: <span class="score high-score">100.0%</span></p>
-                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
-            </div>
-            
-            <div class="section">
-                <h3>Geographic Presence</h3>
-                <p>Nigeria, India, Europe, France, Middle East, Africa, Norway, Usa, South America</p>
-            </div>
-        </div>
-        
-        <div class="company">
-            <h2>BP</h2>
-            
-            <div class="section">
-                <h3>Executive Summary</h3>
-                <p>BP operates primarily in Downstream, Renewable Energy, Carbon Management markets. Key technology focus areas include Digital Technologies, Subsea Technology, Automation. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including World Energy, The Energy. Global presence with operations in 16 regions.</p>
-            </div>
-            
-            <div class="section">
-                <h3>Market Segments</h3>
-        
-                <div class="market-segment">
-                    <strong>Downstream</strong> 
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: refining (mentioned 1 times), retail (mentioned 4 times), marketing (mentioned 1 times), fuel (mentioned 5 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Renewable Energy</strong> 
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: solar (mentioned 1 times), renewable (mentioned 2 times), biofuel (mentioned 5 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Carbon Management</strong> 
-                    <span class="confidence high-confidence">(78.0% confidence)</span>
-                    <div class="evidence">Evidence: net zero (mentioned 6 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Upstream</strong> 
-                    <span class="confidence high-confidence">(75.0% confidence)</span>
-                    <div class="evidence">Evidence: subsea (mentioned 5 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Polyolefins</strong> 
-                    <span class="confidence medium-confidence">(45.0% confidence)</span>
-                    <div class="evidence">Evidence: pp (mentioned 3 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Natural Gas</strong> 
-                    <span class="confidence low-confidence">(10.0% confidence)</span>
-                    <div class="evidence">Evidence: methane (mentioned 1 times)</div>
-                </div>
-            
-            </div>
-            
-            <div class="section">
-                <h3>Technologies</h3>
-        
-                <div class="technology">
-                    <strong>Digital Technologies</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Digital</span>
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: ai (mentioned 4 times), analytics (mentioned 2 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Subsea Technology</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Subsea</span>
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: subsea (mentioned 5 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Automation</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Automation</span>
-                    <span class="confidence low-confidence">(20.0% confidence)</span>
-                    <div class="evidence">Evidence: automation (mentioned 1 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Iot Sensors</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
-                    <span class="confidence low-confidence">(20.0% confidence)</span>
-                    <div class="evidence">Evidence: monitoring (mentioned 1 times)</div>
-                </div>
-            
-            </div>
-        
-            <div class="section">
-                <h3>🚨 New Market Opportunities</h3>
-            
-                    <div class="new-market-opportunity">
-                        <strong>World Energy</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
-                        <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                        <div class="evidence"><strong>changing energy</strong> (13x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                     </div>
                 
                     <div class="new-market-opportunity">
                         <strong>The Energy</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
                         <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 7 times</div>
-                    </div>
-                
-                    <div class="new-market-opportunity">
-                        <strong>Upstream Business</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
-                        <span class="confidence medium-confidence">(60.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 3 times</div>
-                    </div>
-                
-                    <div class="new-market-opportunity">
-                        <strong>Energy Transition</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
-                        <span class="confidence medium-confidence">(60.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 3 times</div>
-                    </div>
-                
-                    <div class="new-market-opportunity">
-                        <strong>Ways Technology</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
-                        <span class="confidence medium-confidence">(60.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 3 times</div>
+                        <div class="evidence"><strong>the energy</strong> (41x) - Sources: <a href="https://www.adnoc.ae/en/our-business-low-carbon-solutions" target="_blank">https://www.adnoc.ae/en/our-business-low-carbon-so...</a>, <a href="https://www.adnoc.ae/en/our-business/hydrogen" target="_blank">https://www.adnoc.ae/en/our-business/hydrogen</a>, <a href="https://www.adnoc.ae/en/adnoc-offshore" target="_blank">https://www.adnoc.ae/en/adnoc-offshore</a>, <a href="https://www.adnoc.ae/en/our-projects/offshore-electrification" target="_blank">https://www.adnoc.ae/en/our-projects/offshore-elec...</a>, <a href="https://www.adnoc.ae/en/adnoc-refining" target="_blank">https://www.adnoc.ae/en/adnoc-refining</a></div>
                     </div>
                 
             </div>
@@ -321,72 +153,80 @@
             <div class="section">
                 <h3>Sustainability & Innovation Metrics</h3>
                 <p>Sustainability Focus: <span class="score high-score">100.0%</span></p>
-                <p>Innovation Score: <span class="score medium-score">53.3%</span></p>
+                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
             </div>
-            
+
             <div class="section">
                 <h3>Geographic Presence</h3>
-                <p>India, Egypt, Europe, France, Saudi Arabia, Middle East, Africa, Australia, Norway, Usa, Netherlands, Uk, Asia Pacific, Singapore, Mexico, Canada</p>
+                <p>Uae</p>
             </div>
+        
+            <div class="completeness-section">
+                <h3>Analysis Completeness Check</h3>
+                <p>Completeness Score: <span class="completeness-score score-medium">63%</span></p>
+                <p>Pages Analyzed: 15</p>
+                <p>Overall Assessment: <strong>MEDIUM - Reasonable coverage but room for improvement.</strong></p>
+                <h4>Suggestions for Improvement:</h4>
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Missing content types: technology, sustainability, research
+                    <br><em>Recommendation:</em> Try searching the company website manually for pages related to: technology, sustainability, research. These sections may use different URLs or require navigation through menus.
+                </div>
+                        
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Limited technology detection
+                    <br><em>Recommendation:</em> Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website.
+                </div>
+                        
+                <div class="suggestion-item suggestion-low">
+                    <strong>[LOW]</strong> Limited geographic information
+                    <br><em>Recommendation:</em> Check for "Our Locations", "Global Operations", or "Where We Operate" sections that may list geographic presence.
+                </div>
+                        <h4>Verification Steps to Ensure Completeness:</h4>
+                <div class="verification-step">
+                    <span class="step-title">Manual Website Review</span>
+                    <p>Visit the company website and navigate through main menu items to identify any missed sections.</p>
+                <p><em>URLs to check:</em> https://www.adnoc.ae/about, https://www.adnoc.ae/investors, https://www.adnoc.ae/sustainability</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Annual Reports</span>
+                    <p>Annual reports often contain comprehensive market and technology information. Search for PDF downloads.</p>
+                <p><em>Search terms:</em> ADNOC annual report, ADNOC investor relations</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Cross-Reference with News</span>
+                    <p>Recent news articles may reveal market activities not yet reflected on the corporate website.</p>
+                <p><em>Search terms:</em> ADNOC technology, ADNOC new market, ADNOC expansion</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Regional Websites</span>
+                    <p>Companies often have regional websites with localized content that may provide additional insights.</p>
+                <p><em>Note:</em> Look for language/region selectors on the main website</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Review Social Media & Press Releases</span>
+                    <p>Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.</p>
+                <p><em>Search terms:</em> ADNOC LinkedIn, ADNOC press releases</p></div>
+            </div>
+                
         </div>
         
         <div class="company">
-            <h2>Chevron</h2>
+            <h2>Eni</h2>
             
             <div class="section">
                 <h3>Executive Summary</h3>
-                <p>Chevron operates primarily in Downstream, Renewable Energy, Natural Gas markets. Key technology focus areas include Digital Technologies, Subsea Technology, Carbon Tech. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Drive Business, Of Energy. Global presence with operations in 6 regions.</p>
+                <p>Eni operates primarily in Renewable Energy, Carbon Management markets. Key technology focus areas include Digital Technologies. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including The Energy, Energy Transition. </p>
             </div>
             
             <div class="section">
                 <h3>Market Segments</h3>
         
                 <div class="market-segment">
-                    <strong>Downstream</strong> 
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: refining (mentioned 3 times), retail (mentioned 2 times), distribution (mentioned 2 times), fuel (mentioned 6 times)</div>
+                    <strong>Renewable Energy</strong>
+                    <span class="confidence high-confidence">(84.0% confidence)</span>
+                    <div class="evidence"><strong>solar</strong> (3x) - Sources: <a href="https://www.eni.com/visual-design/infographics/hpc6-longform/en/" target="_blank">https://www.eni.com/visual-design/infographics/hpc...</a>, <a href="https://www.eni.com/en-IT/actions/energy-transition-technologies/renewable-energies.html" target="_blank">https://www.eni.com/en-IT/actions/energy-transitio...</a><br><strong>wind</strong> (2x) - Sources: <a href="https://www.eni.com/visual-design/infographics/hpc6-longform/en/" target="_blank">https://www.eni.com/visual-design/infographics/hpc...</a><br><strong>renewable</strong> (1x) - Sources: <a href="https://www.eni.com/en-IT/products.html" target="_blank">https://www.eni.com/en-IT/products.html</a><br><strong>biofuel</strong> (1x) - Sources: <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a></div>
                 </div>
             
                 <div class="market-segment">
-                    <strong>Renewable Energy</strong> 
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: wind (mentioned 1 times), renewable (mentioned 10 times), hydrogen (mentioned 13 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Natural Gas</strong> 
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: natural gas (mentioned 13 times), lng (mentioned 2 times), pipeline (mentioned 4 times), methane (mentioned 34 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Carbon Management</strong> 
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: carbon capture (mentioned 15 times), ccus (mentioned 10 times), carbon storage (mentioned 1 times), net zero (mentioned 1 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Upstream</strong> 
-                    <span class="confidence high-confidence">(75.0% confidence)</span>
-                    <div class="evidence">Evidence: subsea (mentioned 5 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Chemicals</strong> 
-                    <span class="confidence medium-confidence">(45.0% confidence)</span>
-                    <div class="evidence">Evidence: chemicals (mentioned 2 times), petrochemicals (mentioned 3 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Co2 Management And Post-Combustion Cc</strong> 
-                    <span class="confidence medium-confidence">(45.0% confidence)</span>
-                    <div class="evidence">Evidence: chemical (mentioned 1 times), power generation (mentioned 2 times)</div>
-                </div>
-            
-                <div class="market-segment">
-                    <strong>Hydrogen</strong> 
-                    <span class="confidence low-confidence">(15.0% confidence)</span>
-                    <div class="evidence">Evidence: lohc (mentioned 1 times)</div>
+                    <strong>Carbon Management</strong>
+                    <span class="confidence low-confidence">(39.0% confidence)</span>
+                    <div class="evidence"><strong>net zero</strong> (3x) - Sources: <a href="https://www.eni.com/visual-design/infographics/hpc6-longform/en/" target="_blank">https://www.eni.com/visual-design/infographics/hpc...</a></div>
                 </div>
             
             </div>
@@ -395,38 +235,10 @@
                 <h3>Technologies</h3>
         
                 <div class="technology">
-                    <strong>Digital Technologies</strong> 
+                    <strong>Digital Technologies</strong>
                     <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Digital</span>
                     <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: artificial intelligence (mentioned 1 times), ai (mentioned 6 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Subsea Technology</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Subsea</span>
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: subsea (mentioned 5 times), deepwater (mentioned 7 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Carbon Tech</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Carbon Management</span>
-                    <span class="confidence high-confidence">(95.0% confidence)</span>
-                    <div class="evidence">Evidence: carbon capture (mentioned 15 times), ccus (mentioned 10 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Iot Sensors</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
-                    <span class="confidence medium-confidence">(60.0% confidence)</span>
-                    <div class="evidence">Evidence: monitoring (mentioned 2 times), connected (mentioned 1 times)</div>
-                </div>
-            
-                <div class="technology">
-                    <strong>Renewable Tech</strong> 
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Renewable</span>
-                    <span class="confidence low-confidence">(40.0% confidence)</span>
-                    <div class="evidence">Evidence: energy storage (mentioned 1 times), hydrogen production (mentioned 1 times)</div>
+                    <div class="evidence"><strong>artificial intelligence</strong> (5x) - Sources: <a href="https://www.eni.com/en-IT/careers/job-opportunities/professional-areas/eni-trade-biofuels.html" target="_blank">https://www.eni.com/en-IT/careers/job-opportunitie...</a>, <a href="https://www.eni.com/en-IT/sustainability/decarbonization/carbon-offset-solutions.html" target="_blank">https://www.eni.com/en-IT/sustainability/decarboni...</a>, <a href="https://www.eni.com/en-IT/sustainability/people-community/sustainable-development-alliance.html" target="_blank">https://www.eni.com/en-IT/sustainability/people-co...</a>, <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a><br><strong>ai</strong> (8x) - Sources: <a href="https://www.eni.com/en-IT/careers/job-opportunities/professional-areas/eni-trade-biofuels.html" target="_blank">https://www.eni.com/en-IT/careers/job-opportunitie...</a>, <a href="https://www.eni.com/visual-design/infographics/hpc6-longform/en/" target="_blank">https://www.eni.com/visual-design/infographics/hpc...</a>, <a href="https://www.eni.com/en-IT/sustainability/decarbonization/carbon-offset-solutions.html" target="_blank">https://www.eni.com/en-IT/sustainability/decarboni...</a>, <a href="https://www.eni.com/en-IT/sustainability/people-community/sustainable-development-alliance.html" target="_blank">https://www.eni.com/en-IT/sustainability/people-co...</a></div>
                 </div>
             
             </div>
@@ -435,52 +247,549 @@
                 <h3>🚨 New Market Opportunities</h3>
             
                     <div class="new-market-opportunity">
-                        <strong>Drive Business</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <strong>The Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
                         <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 4 times</div>
+                        <div class="evidence"><strong>the energy</strong> (4x) - Sources: <a href="https://www.eni.com/visual-design/infographics/hpc6-longform/en/" target="_blank">https://www.eni.com/visual-design/infographics/hpc...</a>, <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Energy Transition</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>energy transition</strong> (4x) - Sources: <a href="https://www.eni.com/visual-design/infographics/hpc6-longform/en/" target="_blank">https://www.eni.com/visual-design/infographics/hpc...</a>, <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Global Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence medium-confidence">(60.0% confidence)</span>
+                        <div class="evidence"><strong>global energy</strong> (3x) - Sources: <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a></div>
                     </div>
                 
                     <div class="new-market-opportunity">
                         <strong>Of Energy</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
-                        <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 5 times</div>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>of energy</strong> (1x) - Sources: <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a></div>
                     </div>
                 
                     <div class="new-market-opportunity">
-                        <strong>Chevron Technology</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
-                        <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 8 times</div>
-                    </div>
-                
-                    <div class="new-market-opportunity">
-                        <strong>Us Energy</strong>
+                        <strong>Sustainable Energy</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
-                        <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 4 times</div>
-                    </div>
-                
-                    <div class="new-market-opportunity">
-                        <strong>Future Energy</strong>
-                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
-                        <span class="confidence high-confidence">(80.0% confidence)</span>
-                        <div class="evidence">Evidence: Mentioned 5 times</div>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>sustainable energy</strong> (1x) - Sources: <a href="https://www.eni.com/en-IT/products/home.html" target="_blank">https://www.eni.com/en-IT/products/home.html</a></div>
                     </div>
                 
             </div>
             
             <div class="section">
                 <h3>Sustainability & Innovation Metrics</h3>
-                <p>Sustainability Focus: <span class="score high-score">75.0%</span></p>
-                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
+                <p>Sustainability Focus: <span class="score medium-score">55.0%</span></p>
+                <p>Innovation Score: <span class="score high-score">93.3%</span></p>
+            </div>
+
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>Egypt, Angola, Nigeria, Africa</p>
+            </div>
+        
+            <div class="completeness-section">
+                <h3>Analysis Completeness Check</h3>
+                <p>Completeness Score: <span class="completeness-score score-medium">64%</span></p>
+                <p>Pages Analyzed: 15</p>
+                <p>Overall Assessment: <strong>MEDIUM - Reasonable coverage but room for improvement.</strong></p>
+                <h4>Suggestions for Improvement:</h4>
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Missing content types: market
+                    <br><em>Recommendation:</em> Try searching the company website manually for pages related to: market. These sections may use different URLs or require navigation through menus.
+                </div>
+                        
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Limited technology detection
+                    <br><em>Recommendation:</em> Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website.
+                </div>
+                        <h4>Verification Steps to Ensure Completeness:</h4>
+                <div class="verification-step">
+                    <span class="step-title">Manual Website Review</span>
+                    <p>Visit the company website and navigate through main menu items to identify any missed sections.</p>
+                <p><em>URLs to check:</em> https://www.eni.com/about, https://www.eni.com/investors, https://www.eni.com/sustainability</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Annual Reports</span>
+                    <p>Annual reports often contain comprehensive market and technology information. Search for PDF downloads.</p>
+                <p><em>Search terms:</em> Eni annual report, Eni investor relations</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Cross-Reference with News</span>
+                    <p>Recent news articles may reveal market activities not yet reflected on the corporate website.</p>
+                <p><em>Search terms:</em> Eni technology, Eni new market, Eni expansion</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Regional Websites</span>
+                    <p>Companies often have regional websites with localized content that may provide additional insights.</p>
+                <p><em>Note:</em> Look for language/region selectors on the main website</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Review Social Media & Press Releases</span>
+                    <p>Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.</p>
+                <p><em>Search terms:</em> Eni LinkedIn, Eni press releases</p></div>
+            </div>
+                
+        </div>
+        
+        <div class="company">
+            <h2>Neste</h2>
+            
+            <div class="section">
+                <h3>Executive Summary</h3>
+                <p>Neste operates primarily in Downstream, Renewable Energy, Chemicals markets. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including Transport Sector, Jet Fuel. </p>
             </div>
             
             <div class="section">
-                <h3>Geographic Presence</h3>
-                <p>Europe, Australia, Usa, Angola, Mexico, Canada</p>
+                <h3>Market Segments</h3>
+        
+                <div class="market-segment">
+                    <strong>Downstream</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>refining</strong> (1x) - Sources: <a href="https://www.neste.com/products-and-innovation/innovation" target="_blank">https://www.neste.com/products-and-innovation/inno...</a><br><strong>marketing</strong> (5x) - Sources: <a href="https://www.neste.com/sponsorships-marketing-cooperations-and-charitable-contributions-neste" target="_blank">https://www.neste.com/sponsorships-marketing-coope...</a><br><strong>distribution</strong> (1x) - Sources: <a href="https://www.neste.com/products-and-innovation/neste-my-renewable-diesel" target="_blank">https://www.neste.com/products-and-innovation/nest...</a><br><strong>fuel</strong> (38x) - Sources: <a href="https://www.neste.com/about-neste" target="_blank">https://www.neste.com/about-neste</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/raw-materials" target="_blank">https://www.neste.com/products-and-innovation/raw-...</a>, <a href="https://www.neste.com/products-and-innovation/neste-my-renewable-diesel" target="_blank">https://www.neste.com/products-and-innovation/nest...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Energy</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>renewable</strong> (74x) - Sources: <a href="https://www.neste.com/about-neste" target="_blank">https://www.neste.com/about-neste</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/raw-materials" target="_blank">https://www.neste.com/products-and-innovation/raw-...</a>, <a href="https://www.neste.com/products-and-innovation/neste-my-renewable-diesel" target="_blank">https://www.neste.com/products-and-innovation/nest...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Chemicals</strong>
+                    <span class="confidence medium-confidence">(63.0% confidence)</span>
+                    <div class="evidence"><strong>chemicals</strong> (3x) - Sources: <a href="https://www.neste.com/products-and-innovation" target="_blank">https://www.neste.com/products-and-innovation</a><br><strong>plastics</strong> (1x) - Sources: <a href="https://www.neste.com/about-neste/people-and-careers/work-with-us" target="_blank">https://www.neste.com/about-neste/people-and-caree...</a><br><strong>polymers</strong> (3x) - Sources: <a href="https://www.neste.com/products-and-innovation" target="_blank">https://www.neste.com/products-and-innovation</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Co2 Management And Post-Combustion Cc</strong>
+                    <span class="confidence medium-confidence">(45.0% confidence)</span>
+                    <div class="evidence"><strong>chemical</strong> (3x) - Sources: <a href="https://www.neste.com/products-and-innovation/raw-materials" target="_blank">https://www.neste.com/products-and-innovation/raw-...</a>, <a href="https://www.neste.com/about-neste/people-and-careers/work-with-us" target="_blank">https://www.neste.com/about-neste/people-and-caree...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Carbon Management</strong>
+                    <span class="confidence low-confidence">(39.0% confidence)</span>
+                    <div class="evidence"><strong>carbon neutral</strong> (1x) - Sources: <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a><br><strong>net zero</strong> (2x) - Sources: <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a></div>
+                </div>
+            
             </div>
+            
+            <div class="section">
+                <h3>Technologies</h3>
+        
+            </div>
+        
+            <div class="section">
+                <h3>🚨 New Market Opportunities</h3>
+            
+                    <div class="new-market-opportunity">
+                        <strong>Transport Sector</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>transport sector</strong> (7x) - Sources: <a href="https://www.neste.com/about-neste" target="_blank">https://www.neste.com/about-neste</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/neste-my-renewable-diesel" target="_blank">https://www.neste.com/products-and-innovation/nest...</a>, <a href="https://www.neste.com/products-and-innovation/marine-products" target="_blank">https://www.neste.com/products-and-innovation/mari...</a>, <a href="https://www.neste.com/products-and-innovation" target="_blank">https://www.neste.com/products-and-innovation</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Jet Fuel</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>jet fuel</strong> (6x) - Sources: <a href="https://www.neste.com/about-neste" target="_blank">https://www.neste.com/about-neste</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation" target="_blank">https://www.neste.com/products-and-innovation</a>, <a href="https://www.neste.com/sustainability" target="_blank">https://www.neste.com/sustainability</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Aviation Fuel</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>aviation fuel</strong> (15x) - Sources: <a href="https://www.neste.com/about-neste" target="_blank">https://www.neste.com/about-neste</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/products-and-innovation/neste-my-renewable-diesel" target="_blank">https://www.neste.com/products-and-innovation/nest...</a>, <a href="https://www.neste.com/products-and-innovation" target="_blank">https://www.neste.com/products-and-innovation</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Fossil Fuel</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>fossil fuel</strong> (4x) - Sources: <a href="https://www.neste.com/products-and-innovation/sustainable-aviation/case-stories/aviation/dhl-and-neste" target="_blank">https://www.neste.com/products-and-innovation/sust...</a>, <a href="https://www.neste.com/sustainability" target="_blank">https://www.neste.com/sustainability</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Aviation Industry</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence medium-confidence">(60.0% confidence)</span>
+                        <div class="evidence"><strong>aviation industry</strong> (3x) - Sources: <a href="https://www.neste.com/products-and-innovation/sustainable-aviation" target="_blank">https://www.neste.com/products-and-innovation/sust...</a></div>
+                    </div>
+                
+            </div>
+            
+            <div class="section">
+                <h3>Sustainability & Innovation Metrics</h3>
+                <p>Sustainability Focus: <span class="score high-score">100.0%</span></p>
+                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
+            </div>
+
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>Europe</p>
+            </div>
+        
+            <div class="completeness-section">
+                <h3>Analysis Completeness Check</h3>
+                <p>Completeness Score: <span class="completeness-score score-medium">61%</span></p>
+                <p>Pages Analyzed: 14</p>
+                <p>Overall Assessment: <strong>MEDIUM - Reasonable coverage but room for improvement.</strong></p>
+                <h4>Suggestions for Improvement:</h4>
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Missing content types: research
+                    <br><em>Recommendation:</em> Try searching the company website manually for pages related to: research. These sections may use different URLs or require navigation through menus.
+                </div>
+                        
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Limited technology detection
+                    <br><em>Recommendation:</em> Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website.
+                </div>
+                        
+                <div class="suggestion-item suggestion-low">
+                    <strong>[LOW]</strong> Limited geographic information
+                    <br><em>Recommendation:</em> Check for "Our Locations", "Global Operations", or "Where We Operate" sections that may list geographic presence.
+                </div>
+                        <h4>Verification Steps to Ensure Completeness:</h4>
+                <div class="verification-step">
+                    <span class="step-title">Manual Website Review</span>
+                    <p>Visit the company website and navigate through main menu items to identify any missed sections.</p>
+                <p><em>URLs to check:</em> https://www.neste.com/about, https://www.neste.com/investors, https://www.neste.com/sustainability</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Annual Reports</span>
+                    <p>Annual reports often contain comprehensive market and technology information. Search for PDF downloads.</p>
+                <p><em>Search terms:</em> Neste annual report, Neste investor relations</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Cross-Reference with News</span>
+                    <p>Recent news articles may reveal market activities not yet reflected on the corporate website.</p>
+                <p><em>Search terms:</em> Neste technology, Neste new market, Neste expansion</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Regional Websites</span>
+                    <p>Companies often have regional websites with localized content that may provide additional insights.</p>
+                <p><em>Note:</em> Look for language/region selectors on the main website</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Review Social Media & Press Releases</span>
+                    <p>Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.</p>
+                <p><em>Search terms:</em> Neste LinkedIn, Neste press releases</p></div>
+            </div>
+                
+        </div>
+        
+        <div class="company">
+            <h2>ExxonMobil</h2>
+            
+            <div class="section">
+                <h3>Executive Summary</h3>
+                <p>ExxonMobil operates primarily in Renewable Energy, Natural Gas, Chemicals markets. Key technology focus areas include Subsea Technology, Carbon Tech, Iot Sensors. The company shows strong commitment to sustainability and clean energy transition. High innovation activity with significant R&D investments. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including The Energy, And Technology. Global presence with operations in 11 regions.</p>
+            </div>
+            
+            <div class="section">
+                <h3>Market Segments</h3>
+        
+                <div class="market-segment">
+                    <strong>Renewable Energy</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>renewable</strong> (4x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/transforming-transportation" target="_blank">https://corporate.exxonmobil.com/what-we-do/transf...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a><br><strong>hydrogen</strong> (22x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Natural Gas</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>natural gas</strong> (11x) - Sources: <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/energy-supply" target="_blank">https://corporate.exxonmobil.com/what-we-do/energy...</a><br><strong>lng</strong> (6x) - Sources: <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/energy-supply" target="_blank">https://corporate.exxonmobil.com/what-we-do/energy...</a><br><strong>pipeline</strong> (1x) - Sources: <a href="https://corporate.exxonmobil.com/community/stem" target="_blank">https://corporate.exxonmobil.com/community/stem</a><br><strong>methane</strong> (15x) - Sources: <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Chemicals</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>chemicals</strong> (5x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a><br><strong>petrochemicals</strong> (2x) - Sources: <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a><br><strong>plastics</strong> (11x) - Sources: <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/materials-for-modern-living/advanced-recycling-technology" target="_blank">https://corporate.exxonmobil.com/what-we-do/materi...</a><br><strong>polymers</strong> (4x) - Sources: <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Carbon Management</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>carbon capture</strong> (17x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a><br><strong>net zero</strong> (9x) - Sources: <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Co2 Management And Post-Combustion Cc</strong>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>chemical</strong> (15x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/materials-for-modern-living/advanced-recycling-technology" target="_blank">https://corporate.exxonmobil.com/what-we-do/materi...</a><br><strong>power generation</strong> (5x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Downstream</strong>
+                    <span class="confidence high-confidence">(90.0% confidence)</span>
+                    <div class="evidence"><strong>refining</strong> (2x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a><br><strong>petrochemical</strong> (2x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a><br><strong>fuel</strong> (4x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/transforming-transportation" target="_blank">https://corporate.exxonmobil.com/what-we-do/transf...</a>, <a href="https://corporate.exxonmobil.com/community/stem" target="_blank">https://corporate.exxonmobil.com/community/stem</a><br><strong>gasoline</strong> (1x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Power</strong>
+                    <span class="confidence low-confidence">(30.0% confidence)</span>
+                    <div class="evidence"><strong>batteries</strong> (2x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/transforming-transportation" target="_blank">https://corporate.exxonmobil.com/what-we-do/transf...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a></div>
+                </div>
+            
+            </div>
+            
+            <div class="section">
+                <h3>Technologies</h3>
+        
+                <div class="technology">
+                    <strong>Subsea Technology</strong>
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Subsea</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>deepwater</strong> (6x) - Sources: <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/energy-supply" target="_blank">https://corporate.exxonmobil.com/what-we-do/energy...</a></div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Carbon Tech</strong>
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Carbon Management</span>
+                    <span class="confidence high-confidence">(95.0% confidence)</span>
+                    <div class="evidence"><strong>carbon capture</strong> (17x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/advancing-climate-solutions" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a></div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Iot Sensors</strong>
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
+                    <span class="confidence medium-confidence">(60.0% confidence)</span>
+                    <div class="evidence"><strong>monitoring</strong> (3x) - Sources: <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/energy-supply" target="_blank">https://corporate.exxonmobil.com/what-we-do/energy...</a></div>
+                </div>
+            
+            </div>
+        
+            <div class="section">
+                <h3>🚨 New Market Opportunities</h3>
+            
+                    <div class="new-market-opportunity">
+                        <strong>The Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>the energy</strong> (11x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>And Technology</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>and technology</strong> (4x) - Sources: <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/energy-supply" target="_blank">https://corporate.exxonmobil.com/what-we-do/energy...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Or Industry</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>or industry</strong> (4x) - Sources: <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Our Business</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>our business</strong> (4x) - Sources: <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/chemical" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities/managing-socioeconomic-impacts" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/who-we-are/our-global-organization/business-divisions/upstream" target="_blank">https://corporate.exxonmobil.com/who-we-are/our-gl...</a>, <a href="https://corporate.exxonmobil.com/corporate-governance" target="_blank">https://corporate.exxonmobil.com/corporate-governa...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Emission Fuel</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence high-confidence">(80.0% confidence)</span>
+                        <div class="evidence"><strong>emission fuel</strong> (13x) - Sources: <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/carbon-capture-and-storage" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/meeting-societys-critical-needs-energy-products" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/delivering-industrial-solutions/hydrogen" target="_blank">https://corporate.exxonmobil.com/what-we-do/delive...</a>, <a href="https://corporate.exxonmobil.com/what-we-do/transforming-transportation" target="_blank">https://corporate.exxonmobil.com/what-we-do/transf...</a>, <a href="https://corporate.exxonmobil.com/sustainability-and-reports/sustainability/contributing-to-communities" target="_blank">https://corporate.exxonmobil.com/sustainability-an...</a></div>
+                    </div>
+                
+            </div>
+            
+            <div class="section">
+                <h3>Sustainability & Innovation Metrics</h3>
+                <p>Sustainability Focus: <span class="score high-score">100.0%</span></p>
+                <p>Innovation Score: <span class="score high-score">100.0%</span></p>
+            </div>
+
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>Africa, Middle East, Venezuela, Asia Pacific, Mexico, Canada, Angola, Argentina, India, Europe, North America</p>
+            </div>
+        
+            <div class="completeness-section">
+                <h3>Analysis Completeness Check</h3>
+                <p>Completeness Score: <span class="completeness-score score-high">84%</span></p>
+                <p>Pages Analyzed: 15</p>
+                <p>Overall Assessment: <strong>HIGH - Good coverage of company information.</strong></p>
+                <h4>Suggestions for Improvement:</h4>
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Missing content types: sustainability, research
+                    <br><em>Recommendation:</em> Try searching the company website manually for pages related to: sustainability, research. These sections may use different URLs or require navigation through menus.
+                </div>
+                        <h4>Verification Steps to Ensure Completeness:</h4>
+                <div class="verification-step">
+                    <span class="step-title">Manual Website Review</span>
+                    <p>Visit the company website and navigate through main menu items to identify any missed sections.</p>
+                <p><em>URLs to check:</em> https://corporate.exxonmobil.com/about, https://corporate.exxonmobil.com/investors, https://corporate.exxonmobil.com/sustainability</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Annual Reports</span>
+                    <p>Annual reports often contain comprehensive market and technology information. Search for PDF downloads.</p>
+                <p><em>Search terms:</em> ExxonMobil annual report, ExxonMobil investor relations</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Cross-Reference with News</span>
+                    <p>Recent news articles may reveal market activities not yet reflected on the corporate website.</p>
+                <p><em>Search terms:</em> ExxonMobil technology, ExxonMobil new market, ExxonMobil expansion</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Regional Websites</span>
+                    <p>Companies often have regional websites with localized content that may provide additional insights.</p>
+                <p><em>Note:</em> Look for language/region selectors on the main website</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Review Social Media & Press Releases</span>
+                    <p>Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.</p>
+                <p><em>Search terms:</em> ExxonMobil LinkedIn, ExxonMobil press releases</p></div>
+            </div>
+                
+        </div>
+        
+        <div class="company">
+            <h2>Petronas</h2>
+            
+            <div class="section">
+                <h3>Executive Summary</h3>
+                <p>Petronas operates primarily in Co2 Management And Post-Combustion Cc, Downstream, Carbon Management markets. Key technology focus areas include Iot Sensors, Carbon Tech. [ALERT] EMERGING OPPORTUNITIES: Potential new markets identified including To Market, Performance Technology. </p>
+            </div>
+            
+            <div class="section">
+                <h3>Market Segments</h3>
+        
+                <div class="market-segment">
+                    <strong>Co2 Management And Post-Combustion Cc</strong>
+                    <span class="confidence low-confidence">(30.0% confidence)</span>
+                    <div class="evidence"><strong>chemical</strong> (2x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Downstream</strong>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence"><strong>fuel</strong> (2x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Carbon Management</strong>
+                    <span class="confidence low-confidence">(13.0% confidence)</span>
+                    <div class="evidence"><strong>carbon capture</strong> (1x) - Sources: <a href="https://www.petronas.com/media/media-releases/petronas-ccs-ventures-sdn-bhd-receives-malaysias-first-offshore-assessment" target="_blank">https://www.petronas.com/media/media-releases/petr...</a></div>
+                </div>
+            
+                <div class="market-segment">
+                    <strong>Renewable Energy</strong>
+                    <span class="confidence low-confidence">(12.0% confidence)</span>
+                    <div class="evidence"><strong>renewable</strong> (1x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                </div>
+            
+            </div>
+            
+            <div class="section">
+                <h3>Technologies</h3>
+        
+                <div class="technology">
+                    <strong>Iot Sensors</strong>
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IoT</span>
+                    <span class="confidence low-confidence">(40.0% confidence)</span>
+                    <div class="evidence"><strong>connected</strong> (2x) - Sources: <a href="https://www.petronas.com/flow/social-impact/spirit-gresik-reviving-natural-ecosystems-and-empowering-local-communities-0" target="_blank">https://www.petronas.com/flow/social-impact/spirit...</a>, <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                </div>
+            
+                <div class="technology">
+                    <strong>Carbon Tech</strong>
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">Carbon Management</span>
+                    <span class="confidence low-confidence">(20.0% confidence)</span>
+                    <div class="evidence"><strong>carbon capture</strong> (1x) - Sources: <a href="https://www.petronas.com/media/media-releases/petronas-ccs-ventures-sdn-bhd-receives-malaysias-first-offshore-assessment" target="_blank">https://www.petronas.com/media/media-releases/petr...</a></div>
+                </div>
+            
+            </div>
+        
+            <div class="section">
+                <h3>🚨 New Market Opportunities</h3>
+            
+                    <div class="new-market-opportunity">
+                        <strong>To Market</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Emerging Market</span>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>to market</strong> (1x) - Sources: <a href="https://www.petronas.com/flow/social-impact/spirit-gresik-reviving-natural-ecosystems-and-empowering-local-communities-0" target="_blank">https://www.petronas.com/flow/social-impact/spirit...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Performance Technology</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>performance technology</strong> (1x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Fluid Technology</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">Technology Innovation</span>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>fluid technology</strong> (1x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>With Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>with energy</strong> (1x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                    </div>
+                
+                    <div class="new-market-opportunity">
+                        <strong>Renewable Energy</strong>
+                        <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">New Energy Solutions</span>
+                        <span class="confidence low-confidence">(20.0% confidence)</span>
+                        <div class="evidence"><strong>renewable energy</strong> (1x) - Sources: <a href="https://www.petronas.com/flow/technology/petronas-trackside-fluid-engineers-fuelling-formula-ones-innovation" target="_blank">https://www.petronas.com/flow/technology/petronas-...</a></div>
+                    </div>
+                
+            </div>
+            
+            <div class="section">
+                <h3>Sustainability & Innovation Metrics</h3>
+                <p>Sustainability Focus: <span class="score low-score">25.0%</span></p>
+                <p>Innovation Score: <span class="score medium-score">33.3%</span></p>
+            </div>
+
+            <div class="section">
+                <h3>Geographic Presence</h3>
+                <p>Uk, Usa</p>
+            </div>
+        
+            <div class="completeness-section">
+                <h3>Analysis Completeness Check</h3>
+                <p>Completeness Score: <span class="completeness-score score-high">73%</span></p>
+                <p>Pages Analyzed: 15</p>
+                <p>Overall Assessment: <strong>HIGH - Good coverage of company information.</strong></p>
+                <h4>Suggestions for Improvement:</h4>
+                <div class="suggestion-item suggestion-medium">
+                    <strong>[MEDIUM]</strong> Missing content types: sustainability
+                    <br><em>Recommendation:</em> Try searching the company website manually for pages related to: sustainability. These sections may use different URLs or require navigation through menus.
+                </div>
+                        
+                <div class="suggestion-item suggestion-low">
+                    <strong>[LOW]</strong> Limited geographic information
+                    <br><em>Recommendation:</em> Check for "Our Locations", "Global Operations", or "Where We Operate" sections that may list geographic presence.
+                </div>
+                        <h4>Verification Steps to Ensure Completeness:</h4>
+                <div class="verification-step">
+                    <span class="step-title">Manual Website Review</span>
+                    <p>Visit the company website and navigate through main menu items to identify any missed sections.</p>
+                <p><em>URLs to check:</em> https://www.petronas.com/about, https://www.petronas.com/investors, https://www.petronas.com/sustainability</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Annual Reports</span>
+                    <p>Annual reports often contain comprehensive market and technology information. Search for PDF downloads.</p>
+                <p><em>Search terms:</em> Petronas annual report, Petronas investor relations</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Cross-Reference with News</span>
+                    <p>Recent news articles may reveal market activities not yet reflected on the corporate website.</p>
+                <p><em>Search terms:</em> Petronas technology, Petronas new market, Petronas expansion</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Check Regional Websites</span>
+                    <p>Companies often have regional websites with localized content that may provide additional insights.</p>
+                <p><em>Note:</em> Look for language/region selectors on the main website</p></div>
+                <div class="verification-step">
+                    <span class="step-title">Review Social Media & Press Releases</span>
+                    <p>Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.</p>
+                <p><em>Search terms:</em> Petronas LinkedIn, Petronas press releases</p></div>
+            </div>
+                
         </div>
         
     </body>
