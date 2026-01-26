@@ -9,11 +9,13 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, unquote
+from urllib.robotparser import RobotFileParser
 import time
 import logging
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 import re
 from dataclasses import dataclass, asdict
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -38,13 +40,26 @@ class CompanyAnalysis:
 class OilCompanyScanner:
     def __init__(self):
         self.session = requests.Session()
+        # Use more realistic browser headers to avoid detection
         self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0'
         })
         self.scraped_content: List[ScrapedContent] = []
         self.analysis_results: List[CompanyAnalysis] = []
         self.market_keywords = self.load_market_keywords()
         self.visited_urls: List[Dict] = []  # Track all visited URLs with status
+        self.robots_cache: Dict[str, RobotFileParser] = {}  # Cache robots.txt parsers
+        self.blocked_sites: List[Dict] = []  # Track sites that block scraping
         
     def load_companies(self, filename: str = 'companies.json') -> List[Dict]:
         """Load company data from JSON file"""
@@ -103,7 +118,141 @@ class OilCompanyScanner:
         except Exception as e:
             logger.error(f"Error loading market keywords: {str(e)}")
             return set(['technology', 'innovation', 'market', 'business', 'energy'])
-    
+
+    def get_robots_parser(self, base_url: str) -> Optional[RobotFileParser]:
+        """Fetch and parse robots.txt for a domain"""
+        parsed = urlparse(base_url)
+        domain = f"{parsed.scheme}://{parsed.netloc}"
+
+        if domain in self.robots_cache:
+            return self.robots_cache[domain]
+
+        robots_url = f"{domain}/robots.txt"
+        logger.info(f"[ROBOTS] Checking robots.txt at {robots_url}")
+
+        try:
+            response = self.session.get(robots_url, timeout=10)
+            rp = RobotFileParser()
+            rp.set_url(robots_url)
+
+            if response.status_code == 200:
+                rp.parse(response.text.splitlines())
+                logger.info(f"[ROBOTS] Successfully parsed robots.txt for {domain}")
+
+                # Check for crawl delay
+                crawl_delay = rp.crawl_delay('*')
+                if crawl_delay:
+                    logger.info(f"[ROBOTS] Crawl delay for {domain}: {crawl_delay} seconds")
+            else:
+                # No robots.txt means everything is allowed
+                logger.info(f"[ROBOTS] No robots.txt found for {domain} (status {response.status_code}), assuming allowed")
+                rp.parse([])  # Empty rules = allow all
+
+            self.robots_cache[domain] = rp
+            return rp
+
+        except Exception as e:
+            logger.warning(f"[ROBOTS] Could not fetch robots.txt for {domain}: {str(e)}")
+            # If we can't fetch robots.txt, create permissive parser
+            rp = RobotFileParser()
+            rp.parse([])
+            self.robots_cache[domain] = rp
+            return rp
+
+    def is_url_allowed(self, url: str) -> bool:
+        """Check if URL is allowed by robots.txt"""
+        rp = self.get_robots_parser(url)
+        if rp is None:
+            return True
+
+        user_agent = self.session.headers.get('User-Agent', '*')
+        allowed = rp.can_fetch(user_agent, url)
+
+        if not allowed:
+            logger.warning(f"[ROBOTS] URL blocked by robots.txt: {url}")
+            self.blocked_sites.append({
+                'url': url,
+                'reason': 'Blocked by robots.txt',
+                'suggestion': 'Visit this page manually in a browser'
+            })
+
+        return allowed
+
+    def get_crawl_delay(self, url: str) -> float:
+        """Get crawl delay from robots.txt, default to 1 second"""
+        rp = self.get_robots_parser(url)
+        if rp:
+            delay = rp.crawl_delay('*')
+            if delay:
+                return max(delay, 1.0)  # At least 1 second
+        return 1.0  # Default delay
+
+    def request_with_retry(self, url: str, max_retries: int = 3) -> Optional[requests.Response]:
+        """Make HTTP request with retry logic and exponential backoff"""
+        for attempt in range(max_retries):
+            try:
+                # Add small random delay to appear more human-like
+                if attempt > 0:
+                    wait_time = (2 ** attempt) + random.uniform(0.5, 1.5)
+                    logger.info(f"[RETRY] Waiting {wait_time:.1f}s before retry {attempt + 1}/{max_retries}")
+                    time.sleep(wait_time)
+
+                response = self.session.get(url, timeout=20)
+
+                # Check for blocking responses
+                if response.status_code == 403:
+                    logger.warning(f"[BLOCKED] Access forbidden (403) for {url}")
+                    self.blocked_sites.append({
+                        'url': url,
+                        'reason': 'Access forbidden (403) - Site may block scrapers',
+                        'suggestion': 'Visit manually or check if site requires login/cookies'
+                    })
+                    return None
+                elif response.status_code == 429:
+                    logger.warning(f"[RATE LIMITED] Too many requests (429) for {url}")
+                    if attempt < max_retries - 1:
+                        continue  # Retry with backoff
+                    return None
+                elif response.status_code >= 500:
+                    logger.warning(f"[SERVER ERROR] Status {response.status_code} for {url}")
+                    if attempt < max_retries - 1:
+                        continue  # Retry
+                    return None
+
+                response.raise_for_status()
+                return response
+
+            except requests.exceptions.Timeout:
+                logger.warning(f"[TIMEOUT] Request timed out for {url} (attempt {attempt + 1}/{max_retries})")
+                if attempt == max_retries - 1:
+                    self.blocked_sites.append({
+                        'url': url,
+                        'reason': 'Request timeout - Site may be slow or blocking',
+                        'suggestion': 'Try visiting manually or check network connectivity'
+                    })
+            except requests.exceptions.SSLError as e:
+                logger.error(f"[SSL ERROR] SSL certificate error for {url}: {str(e)}")
+                self.blocked_sites.append({
+                    'url': url,
+                    'reason': f'SSL certificate error: {str(e)}',
+                    'suggestion': 'Site may have certificate issues, try visiting in browser'
+                })
+                return None
+            except requests.exceptions.ConnectionError as e:
+                logger.warning(f"[CONNECTION ERROR] Could not connect to {url}: {str(e)}")
+                if attempt == max_retries - 1:
+                    self.blocked_sites.append({
+                        'url': url,
+                        'reason': 'Connection failed - Site may be down or blocking',
+                        'suggestion': 'Check if site is accessible in browser'
+                    })
+            except Exception as e:
+                logger.error(f"[ERROR] Unexpected error for {url}: {str(e)}")
+                if attempt == max_retries - 1:
+                    return None
+
+        return None
+
     def find_relevant_links(self, base_url: str, soup: BeautifulSoup) -> List[str]:
         """Find links related to markets from market.json and general business topics"""
         # Combine market keywords with general business keywords
@@ -156,12 +305,33 @@ class OilCompanyScanner:
         return sorted_links[:15]  # Increased from 10 to 15 for better coverage
     
     def scrape_page(self, url: str, company_name: str = "") -> str:
-        """Scrape content from a single page"""
+        """Scrape content from a single page with robots.txt checking and retry logic"""
         logger.info(f"[URL VISIT] Visiting: {url}")
 
+        # Check robots.txt first
+        if not self.is_url_allowed(url):
+            self.visited_urls.append({
+                'url': url,
+                'company': company_name,
+                'status': 'blocked',
+                'status_code': None,
+                'error': 'Blocked by robots.txt'
+            })
+            return ""
+
         try:
-            response = self.session.get(url, timeout=20)
-            response.raise_for_status()
+            # Use retry logic
+            response = self.request_with_retry(url)
+
+            if response is None:
+                self.visited_urls.append({
+                    'url': url,
+                    'company': company_name,
+                    'status': 'error',
+                    'status_code': None,
+                    'error': 'Failed after retries - site may block scrapers'
+                })
+                return ""
 
             # Track successful visit
             self.visited_urls.append({
@@ -199,17 +369,6 @@ class OilCompanyScanner:
             content = re.sub(r'\s+', ' ', content)
             return content[:5000]  # Limit content length
 
-        except requests.exceptions.RequestException as e:
-            error_msg = str(e)
-            self.visited_urls.append({
-                'url': url,
-                'company': company_name,
-                'status': 'error',
-                'status_code': None,
-                'error': error_msg
-            })
-            logger.error(f"[URL ERROR] {url} - Error: {error_msg}")
-            return ""
         except Exception as e:
             error_msg = str(e)
             self.visited_urls.append({
@@ -239,16 +398,43 @@ class OilCompanyScanner:
             return 'general'
     
     def scan_company(self, company: Dict) -> None:
-        """Scan a single company's website"""
+        """Scan a single company's website with robots.txt respect and retry logic"""
         company_name = company['name']
         main_url = company['url']
         logger.info(f"Scanning {company_name} at {main_url}")
-        logger.info(f"[URL VISIT] Visiting main page: {main_url}")
+
+        # Check robots.txt first
+        if not self.is_url_allowed(main_url):
+            logger.warning(f"[BLOCKED] {company_name} main page blocked by robots.txt")
+            self.visited_urls.append({
+                'url': main_url,
+                'company': company_name,
+                'status': 'blocked',
+                'status_code': None,
+                'error': 'Blocked by robots.txt - manual research required'
+            })
+            return
+
+        # Get crawl delay from robots.txt
+        crawl_delay = self.get_crawl_delay(main_url)
+        logger.info(f"[ROBOTS] Using crawl delay of {crawl_delay}s for {company_name}")
 
         try:
-            # Get the main page
-            response = self.session.get(main_url, timeout=20)
-            response.raise_for_status()
+            logger.info(f"[URL VISIT] Visiting main page: {main_url}")
+
+            # Use retry logic for main page
+            response = self.request_with_retry(main_url)
+
+            if response is None:
+                self.visited_urls.append({
+                    'url': main_url,
+                    'company': company_name,
+                    'status': 'error',
+                    'status_code': None,
+                    'error': 'Failed to access main page - site may block scrapers'
+                })
+                logger.error(f"[BLOCKED] Could not access {company_name} - manual research recommended")
+                return
 
             # Track main page visit
             self.visited_urls.append({
@@ -266,18 +452,25 @@ class OilCompanyScanner:
             relevant_links = self.find_relevant_links(main_url, soup)
             logger.info(f"Found {len(relevant_links)} relevant links for {company_name}")
 
+            # Filter out links blocked by robots.txt
+            allowed_links = [link for link in relevant_links if self.is_url_allowed(link)]
+            if len(allowed_links) < len(relevant_links):
+                logger.info(f"[ROBOTS] {len(relevant_links) - len(allowed_links)} links blocked by robots.txt")
+
             # Scrape each relevant page
-            for link in relevant_links:
-                time.sleep(1)  # Be respectful with requests
+            for link in allowed_links:
+                # Respect crawl delay
+                time.sleep(crawl_delay)
                 content = self.scrape_page(link, company_name)
 
                 if content:
                     title = ""
                     try:
-                        page_response = self.session.get(link, timeout=20)
-                        page_soup = BeautifulSoup(page_response.content, 'html.parser')
-                        title_tag = page_soup.find('title')
-                        title = title_tag.get_text() if title_tag else ""
+                        page_response = self.request_with_retry(link)
+                        if page_response:
+                            page_soup = BeautifulSoup(page_response.content, 'html.parser')
+                            title_tag = page_soup.find('title')
+                            title = title_tag.get_text() if title_tag else ""
                     except:
                         pass
 
@@ -294,17 +487,6 @@ class OilCompanyScanner:
                     self.scraped_content.append(scraped_data)
                     logger.info(f"Scraped {page_type} page: {title[:50]}...")
 
-        except requests.exceptions.RequestException as e:
-            error_msg = str(e)
-            self.visited_urls.append({
-                'url': main_url,
-                'company': company_name,
-                'status': 'error',
-                'status_code': None,
-                'error': error_msg
-            })
-            logger.error(f"[URL ERROR] {main_url} - Error: {error_msg}")
-            logger.error(f"Error scanning {company_name}: {error_msg}")
         except Exception as e:
             error_msg = str(e)
             self.visited_urls.append({
@@ -416,16 +598,31 @@ class OilCompanyScanner:
         # Log URL visit summary
         success_count = sum(1 for url in self.visited_urls if url['status'] == 'success')
         error_count = sum(1 for url in self.visited_urls if url['status'] == 'error')
-        logger.info(f"[URL SUMMARY] Total URLs visited: {len(self.visited_urls)}, Success: {success_count}, Errors: {error_count}")
+        blocked_count = sum(1 for url in self.visited_urls if url['status'] == 'blocked')
+        logger.info(f"[URL SUMMARY] Total URLs: {len(self.visited_urls)}, Success: {success_count}, Errors: {error_count}, Blocked: {blocked_count}")
 
-        # Log all errors in a dedicated section
-        if error_count > 0:
-            logger.warning("=" * 50)
-            logger.warning("[URL ERROR SUMMARY] The following URLs had errors:")
+        # Save blocked sites with suggestions for manual research
+        if self.blocked_sites:
+            with open('blocked_sites.json', 'w', encoding='utf-8') as f:
+                json.dump(self.blocked_sites, f, indent=2, ensure_ascii=False)
+            logger.info(f"[BLOCKED SITES] {len(self.blocked_sites)} sites require manual research - see blocked_sites.json")
+
+        # Log all errors and blocked sites
+        if error_count > 0 or blocked_count > 0:
+            logger.warning("=" * 60)
+            logger.warning("[MANUAL RESEARCH REQUIRED] The following sites need manual checking:")
             for url_info in self.visited_urls:
-                if url_info['status'] == 'error':
-                    logger.warning(f"  - {url_info['url']} ({url_info['company']}): {url_info['error']}")
-            logger.warning("=" * 50)
+                if url_info['status'] in ['error', 'blocked']:
+                    logger.warning(f"  - {url_info['url']} ({url_info['company']})")
+                    logger.warning(f"    Reason: {url_info['error']}")
+
+            if self.blocked_sites:
+                logger.warning("")
+                logger.warning("[SUGGESTIONS FOR BLOCKED SITES]:")
+                for site in self.blocked_sites:
+                    logger.warning(f"  - {site['url']}")
+                    logger.warning(f"    Suggestion: {site['suggestion']}")
+            logger.warning("=" * 60)
 
         # Create a readable summary report
         with open('analysis_report.txt', 'w', encoding='utf-8') as f:
