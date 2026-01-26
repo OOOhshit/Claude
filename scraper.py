@@ -8,7 +8,7 @@ This script scans oil company websites to identify their market presence and tec
 import json
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, unquote
 import time
 import logging
 from typing import List, Dict, Set
@@ -121,7 +121,9 @@ class OilCompanyScanner:
             text = link.get_text().lower().strip()
             title = link.get('title', '').lower()
             
-            full_url = urljoin(base_url, link['href'])
+            # Decode any pre-encoded URLs and join properly
+            href_decoded = unquote(link['href'])
+            full_url = urljoin(base_url, href_decoded)
             
             # Only include links from the same domain
             if urlparse(full_url).netloc != urlparse(base_url).netloc:
@@ -158,7 +160,7 @@ class OilCompanyScanner:
         logger.info(f"[URL VISIT] Visiting: {url}")
 
         try:
-            response = self.session.get(url, timeout=10)
+            response = self.session.get(url, timeout=20)
             response.raise_for_status()
 
             # Track successful visit
@@ -245,7 +247,7 @@ class OilCompanyScanner:
 
         try:
             # Get the main page
-            response = self.session.get(main_url, timeout=10)
+            response = self.session.get(main_url, timeout=20)
             response.raise_for_status()
 
             # Track main page visit
@@ -272,7 +274,7 @@ class OilCompanyScanner:
                 if content:
                     title = ""
                     try:
-                        page_response = self.session.get(link, timeout=10)
+                        page_response = self.session.get(link, timeout=20)
                         page_soup = BeautifulSoup(page_response.content, 'html.parser')
                         title_tag = page_soup.find('title')
                         title = title_tag.get_text() if title_tag else ""
