@@ -174,58 +174,92 @@ class AIAnalyzer:
             logger.error(f"Error extracting market segments from JSON: {str(e)}")
             return {}
     
-    def extract_market_segments(self, content: str) -> List[MarketSegment]:
-        """Extract market segments from content with confidence scores"""
+    def extract_market_segments(self, content: str, url_content_map: Dict[str, str] = None) -> List[MarketSegment]:
+        """Extract market segments from content with confidence scores and URL tracking"""
         segments = []
         content_lower = content.lower()
-        
+
         for segment_name, segment_data in self.market_keywords.items():
             evidence = []
             keyword_count = 0
-            
+
             for keyword in segment_data['keywords']:
                 matches = len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_lower))
                 if matches > 0:
                     keyword_count += matches
-                    evidence.append(f"{keyword} (mentioned {matches} times)")
-            
+                    # Find URLs where this keyword appears
+                    if url_content_map:
+                        urls_with_keyword = []
+                        for url, page_content in url_content_map.items():
+                            if re.search(r'\b' + re.escape(keyword) + r'\b', page_content.lower()):
+                                urls_with_keyword.append(url)
+                        if urls_with_keyword:
+                            evidence.append({
+                                'keyword': keyword,
+                                'mention_count': matches,
+                                'urls': urls_with_keyword
+                            })
+                    else:
+                        evidence.append({
+                            'keyword': keyword,
+                            'mention_count': matches,
+                            'urls': []
+                        })
+
             if keyword_count > 0:
                 # Calculate confidence based on keyword frequency and weight
                 confidence = min(0.95, (keyword_count * segment_data['weight']) / 10)
-                
+
                 segments.append(MarketSegment(
                     name=segment_name.replace('_', ' ').title(),
                     confidence=confidence,
                     evidence=evidence[:5]  # Limit evidence items
                 ))
-        
+
         return sorted(segments, key=lambda x: x.confidence, reverse=True)
     
-    def extract_technologies(self, content: str) -> List[Technology]:
-        """Extract technologies from content with categorization"""
+    def extract_technologies(self, content: str, url_content_map: Dict[str, str] = None) -> List[Technology]:
+        """Extract technologies from content with categorization and URL tracking"""
         technologies = []
         content_lower = content.lower()
-        
+
         for tech_name, tech_data in self.technology_keywords.items():
             evidence = []
             keyword_count = 0
-            
+
             for keyword in tech_data['keywords']:
                 matches = len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_lower))
                 if matches > 0:
                     keyword_count += matches
-                    evidence.append(f"{keyword} (mentioned {matches} times)")
-            
+                    # Find URLs where this keyword appears
+                    if url_content_map:
+                        urls_with_keyword = []
+                        for url, page_content in url_content_map.items():
+                            if re.search(r'\b' + re.escape(keyword) + r'\b', page_content.lower()):
+                                urls_with_keyword.append(url)
+                        if urls_with_keyword:
+                            evidence.append({
+                                'keyword': keyword,
+                                'mention_count': matches,
+                                'urls': urls_with_keyword
+                            })
+                    else:
+                        evidence.append({
+                            'keyword': keyword,
+                            'mention_count': matches,
+                            'urls': []
+                        })
+
             if keyword_count > 0:
                 confidence = min(0.95, keyword_count / 5)
-                
+
                 technologies.append(Technology(
                     name=tech_name.replace('_', ' ').title(),
                     category=tech_data['category'],
                     confidence=confidence,
                     evidence=evidence[:3]
                 ))
-        
+
         return sorted(technologies, key=lambda x: x.confidence, reverse=True)
     
     def calculate_sustainability_focus(self, content: str) -> float:
@@ -268,6 +302,118 @@ class AIAnalyzer:
         
         return list(set(present_regions))
     
+    def generate_completeness_suggestions(self, company_name: str, scraped_data: List[Dict], profile: CompanyProfile) -> Dict:
+        """Generate suggestions to improve analysis completeness"""
+        suggestions = {
+            'company': company_name,
+            'completeness_score': 0.0,
+            'pages_analyzed': len(scraped_data),
+            'suggestions': [],
+            'missing_areas': [],
+            'verification_steps': []
+        }
+
+        # Check page count
+        if len(scraped_data) < 5:
+            suggestions['suggestions'].append({
+                'priority': 'HIGH',
+                'issue': 'Low number of pages analyzed',
+                'recommendation': f'Only {len(scraped_data)} pages were analyzed. Consider increasing the link limit or checking if the website has accessibility restrictions.'
+            })
+
+        # Check content diversity (page types)
+        page_types = [item.get('page_type', 'general') for item in scraped_data]
+        page_type_counts = {}
+        for pt in page_types:
+            page_type_counts[pt] = page_type_counts.get(pt, 0) + 1
+
+        expected_types = ['technology', 'market', 'sustainability', 'research']
+        missing_types = [t for t in expected_types if t not in page_type_counts]
+        if missing_types:
+            suggestions['missing_areas'].extend(missing_types)
+            suggestions['suggestions'].append({
+                'priority': 'MEDIUM',
+                'issue': f'Missing content types: {", ".join(missing_types)}',
+                'recommendation': f'Try searching the company website manually for pages related to: {", ".join(missing_types)}. These sections may use different URLs or require navigation through menus.'
+            })
+
+        # Check market segment coverage
+        if len(profile.market_segments) < 2:
+            suggestions['suggestions'].append({
+                'priority': 'MEDIUM',
+                'issue': 'Limited market segment detection',
+                'recommendation': 'Check if the company has annual reports, investor presentations, or business unit pages that might contain more detailed market information.'
+            })
+
+        # Check technology coverage
+        if len(profile.technologies) < 2:
+            suggestions['suggestions'].append({
+                'priority': 'MEDIUM',
+                'issue': 'Limited technology detection',
+                'recommendation': 'Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website.'
+            })
+
+        # Check geographic presence
+        if len(profile.geographic_presence) < 3:
+            suggestions['suggestions'].append({
+                'priority': 'LOW',
+                'issue': 'Limited geographic information',
+                'recommendation': 'Check for "Our Locations", "Global Operations", or "Where We Operate" sections that may list geographic presence.'
+            })
+
+        # Verification steps for thoroughness
+        suggestions['verification_steps'] = [
+            {
+                'step': 'Manual Website Review',
+                'description': 'Visit the company website and navigate through main menu items to identify any missed sections.',
+                'urls_to_check': [
+                    f'{scraped_data[0].get("url", "").split("/")[0]}//{scraped_data[0].get("url", "").split("/")[2]}/about' if scraped_data else '',
+                    f'{scraped_data[0].get("url", "").split("/")[0]}//{scraped_data[0].get("url", "").split("/")[2]}/investors' if scraped_data else '',
+                    f'{scraped_data[0].get("url", "").split("/")[0]}//{scraped_data[0].get("url", "").split("/")[2]}/sustainability' if scraped_data else '',
+                ]
+            },
+            {
+                'step': 'Check Annual Reports',
+                'description': 'Annual reports often contain comprehensive market and technology information. Search for PDF downloads.',
+                'search_terms': [f'{company_name} annual report', f'{company_name} investor relations']
+            },
+            {
+                'step': 'Cross-Reference with News',
+                'description': 'Recent news articles may reveal market activities not yet reflected on the corporate website.',
+                'search_terms': [f'{company_name} technology', f'{company_name} new market', f'{company_name} expansion']
+            },
+            {
+                'step': 'Check Regional Websites',
+                'description': 'Companies often have regional websites with localized content that may provide additional insights.',
+                'note': 'Look for language/region selectors on the main website'
+            },
+            {
+                'step': 'Review Social Media & Press Releases',
+                'description': 'Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.',
+                'search_terms': [f'{company_name} LinkedIn', f'{company_name} press releases']
+            }
+        ]
+
+        # Calculate completeness score
+        score = 0.0
+        score += min(0.3, len(scraped_data) / 15 * 0.3)  # Up to 30% for page count
+        score += min(0.2, len(page_type_counts) / 5 * 0.2)  # Up to 20% for content diversity
+        score += min(0.2, len(profile.market_segments) / 5 * 0.2)  # Up to 20% for market segments
+        score += min(0.15, len(profile.technologies) / 4 * 0.15)  # Up to 15% for technologies
+        score += min(0.15, len(profile.geographic_presence) / 10 * 0.15)  # Up to 15% for geography
+
+        suggestions['completeness_score'] = round(score, 2)
+
+        # Add overall assessment
+        if score < 0.4:
+            suggestions['overall_assessment'] = 'LOW - Analysis may be incomplete. Review suggestions carefully.'
+        elif score < 0.7:
+            suggestions['overall_assessment'] = 'MEDIUM - Reasonable coverage but room for improvement.'
+        else:
+            suggestions['overall_assessment'] = 'HIGH - Good coverage of company information.'
+
+        return suggestions
+
     def generate_summary(self, profile: CompanyProfile) -> str:
         """Generate a comprehensive summary including new market opportunities"""
         top_markets = [seg.name for seg in profile.market_segments[:3]]
@@ -293,10 +439,10 @@ class AIAnalyzer:
         
         return summary
     
-    def detect_new_market_opportunities(self, content: str) -> List[NewMarketOpportunity]:
+    def detect_new_market_opportunities(self, content: str, url_content_map: Dict[str, str] = None) -> List[NewMarketOpportunity]:
         """Detect potentially new markets not in our known market list"""
         content_lower = content.lower()
-        
+
         # Look for market indicators that might represent new opportunities
         new_market_patterns = [
             r'\b(\w+\s+(?:market|sector|industry|business|energy|fuel|technology))\b',
@@ -306,9 +452,9 @@ class AIAnalyzer:
             r'\b(\w+\s+transition)\b',
             r'\b(future\s+of\s+\w+)\b'
         ]
-        
+
         potential_new_markets = set()
-        
+
         for pattern in new_market_patterns:
             matches = re.findall(pattern, content_lower)
             for match in matches:
@@ -317,16 +463,15 @@ class AIAnalyzer:
                 if not any(known in clean_match or clean_match in known for known in self.known_markets):
                     if len(clean_match) > 5 and len(clean_match) < 50:  # Reasonable length
                         potential_new_markets.add(clean_match)
-        
+
         # Convert to NewMarketOpportunity objects with evidence
         new_opportunities = []
         for market in potential_new_markets:
             # Find evidence in content
-            evidence = []
             market_mentions = content_lower.count(market)
             if market_mentions > 0:
                 confidence = min(0.8, market_mentions / 5)  # Max 80% confidence
-                
+
                 # Try to categorize the new market
                 potential_category = "Emerging Market"
                 if any(term in market for term in ['energy', 'fuel', 'power']):
@@ -335,34 +480,53 @@ class AIAnalyzer:
                     potential_category = "Technology Innovation"
                 elif any(term in market for term in ['chemical', 'material']):
                     potential_category = "New Materials/Chemicals"
-                
-                evidence.append(f"Mentioned {market_mentions} times")
-                
+
+                # Find URLs where this market is mentioned
+                urls_with_market = []
+                if url_content_map:
+                    for url, page_content in url_content_map.items():
+                        if market in page_content.lower():
+                            urls_with_market.append(url)
+
+                evidence = [{
+                    'keyword': market,
+                    'mention_count': market_mentions,
+                    'urls': urls_with_market
+                }]
+
                 new_opportunities.append(NewMarketOpportunity(
                     name=market.title(),
                     confidence=confidence,
                     evidence=evidence,
                     potential_category=potential_category
                 ))
-        
+
         # Sort by confidence
         return sorted(new_opportunities, key=lambda x: x.confidence, reverse=True)[:5]  # Top 5
     
     def analyze_company_content(self, company_name: str, scraped_data: List[Dict]) -> CompanyProfile:
         """Perform comprehensive AI analysis on company content"""
         logger.info(f"Analyzing content for {company_name}")
-        
+
+        # Build URL to content map for tracking keyword sources
+        url_content_map = {}
+        for item in scraped_data:
+            url = item.get('url', '')
+            content = item.get('content', '')
+            if url and content:
+                url_content_map[url] = content
+
         # Combine all content
         all_content = " ".join([item.get('content', '') for item in scraped_data])
-        
-        # Extract different aspects
-        market_segments = self.extract_market_segments(all_content)
-        technologies = self.extract_technologies(all_content)
+
+        # Extract different aspects with URL tracking
+        market_segments = self.extract_market_segments(all_content, url_content_map)
+        technologies = self.extract_technologies(all_content, url_content_map)
         sustainability_focus = self.calculate_sustainability_focus(all_content)
         innovation_score = self.calculate_innovation_score(all_content)
         geographic_presence = self.extract_geographic_presence(all_content)
-        new_market_opportunities = self.detect_new_market_opportunities(all_content)
-        
+        new_market_opportunities = self.detect_new_market_opportunities(all_content, url_content_map)
+
         # Create profile
         profile = CompanyProfile(
             company=company_name,
@@ -374,10 +538,10 @@ class AIAnalyzer:
             new_market_opportunities=new_market_opportunities,
             summary=""
         )
-        
+
         # Generate summary
         profile.summary = self.generate_summary(profile)
-        
+
         return profile
     
     def analyze_all_companies(self, scraped_content: List[Dict]) -> List[CompanyProfile]:
@@ -409,7 +573,7 @@ class AIAnalyzer:
                     {
                         'name': seg.name,
                         'confidence': seg.confidence,
-                        'evidence': seg.evidence
+                        'evidence': seg.evidence  # Now contains keyword, mention_count, and urls
                     }
                     for seg in profile.market_segments
                 ],
@@ -418,7 +582,7 @@ class AIAnalyzer:
                         'name': tech.name,
                         'category': tech.category,
                         'confidence': tech.confidence,
-                        'evidence': tech.evidence
+                        'evidence': tech.evidence  # Now contains keyword, mention_count, and urls
                     }
                     for tech in profile.technologies
                 ],
@@ -426,7 +590,7 @@ class AIAnalyzer:
                     {
                         'name': opp.name,
                         'confidence': opp.confidence,
-                        'evidence': opp.evidence,
+                        'evidence': opp.evidence,  # Now contains keyword, mention_count, and urls
                         'potential_category': opp.potential_category
                     }
                     for opp in profile.new_market_opportunities
@@ -437,9 +601,9 @@ class AIAnalyzer:
                 'summary': profile.summary
             }
             results.append(profile_dict)
-        
+
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
-        
+
         logger.info(f"AI analysis results saved to {filename}")
         return results

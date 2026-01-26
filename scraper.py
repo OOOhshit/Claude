@@ -44,6 +44,7 @@ class OilCompanyScanner:
         self.scraped_content: List[ScrapedContent] = []
         self.analysis_results: List[CompanyAnalysis] = []
         self.market_keywords = self.load_market_keywords()
+        self.visited_urls: List[Dict] = []  # Track all visited URLs with status
         
     def load_companies(self, filename: str = 'companies.json') -> List[Dict]:
         """Load company data from JSON file"""
@@ -152,40 +153,71 @@ class OilCompanyScanner:
         logger.info(f"Found {len(sorted_links)} relevant links (showing top 15)")
         return sorted_links[:15]  # Increased from 10 to 15 for better coverage
     
-    def scrape_page(self, url: str) -> str:
+    def scrape_page(self, url: str, company_name: str = "") -> str:
         """Scrape content from a single page"""
+        logger.info(f"[URL VISIT] Visiting: {url}")
+
         try:
             response = self.session.get(url, timeout=10)
             response.raise_for_status()
-            
+
+            # Track successful visit
+            self.visited_urls.append({
+                'url': url,
+                'company': company_name,
+                'status': 'success',
+                'status_code': response.status_code,
+                'error': None
+            })
+            logger.info(f"[URL SUCCESS] {url} - Status: {response.status_code}")
+
             soup = BeautifulSoup(response.content, 'html.parser')
-            
+
             # Remove script and style elements
             for script in soup(["script", "style"]):
                 script.decompose()
-            
+
             # Extract main content
             content_selectors = [
                 'main', '[role="main"]', '.main-content', '.content',
                 '.article', 'article', '.page-content'
             ]
-            
+
             content = ""
             for selector in content_selectors:
                 element = soup.select_one(selector)
                 if element:
                     content = element.get_text(strip=True)
                     break
-            
+
             if not content:
                 content = soup.get_text(strip=True)
-            
+
             # Clean up the content
             content = re.sub(r'\s+', ' ', content)
             return content[:5000]  # Limit content length
-            
+
+        except requests.exceptions.RequestException as e:
+            error_msg = str(e)
+            self.visited_urls.append({
+                'url': url,
+                'company': company_name,
+                'status': 'error',
+                'status_code': None,
+                'error': error_msg
+            })
+            logger.error(f"[URL ERROR] {url} - Error: {error_msg}")
+            return ""
         except Exception as e:
-            logger.error(f"Error scraping {url}: {str(e)}")
+            error_msg = str(e)
+            self.visited_urls.append({
+                'url': url,
+                'company': company_name,
+                'status': 'error',
+                'status_code': None,
+                'error': error_msg
+            })
+            logger.error(f"[URL ERROR] {url} - Error: {error_msg}")
             return ""
     
     def categorize_page(self, url: str, title: str, content: str) -> str:
@@ -206,23 +238,37 @@ class OilCompanyScanner:
     
     def scan_company(self, company: Dict) -> None:
         """Scan a single company's website"""
-        logger.info(f"Scanning {company['name']} at {company['url']}")
-        
+        company_name = company['name']
+        main_url = company['url']
+        logger.info(f"Scanning {company_name} at {main_url}")
+        logger.info(f"[URL VISIT] Visiting main page: {main_url}")
+
         try:
             # Get the main page
-            response = self.session.get(company['url'], timeout=10)
+            response = self.session.get(main_url, timeout=10)
             response.raise_for_status()
+
+            # Track main page visit
+            self.visited_urls.append({
+                'url': main_url,
+                'company': company_name,
+                'status': 'success',
+                'status_code': response.status_code,
+                'error': None
+            })
+            logger.info(f"[URL SUCCESS] {main_url} - Status: {response.status_code}")
+
             soup = BeautifulSoup(response.content, 'html.parser')
-            
+
             # Find relevant links
-            relevant_links = self.find_relevant_links(company['url'], soup)
-            logger.info(f"Found {len(relevant_links)} relevant links for {company['name']}")
-            
+            relevant_links = self.find_relevant_links(main_url, soup)
+            logger.info(f"Found {len(relevant_links)} relevant links for {company_name}")
+
             # Scrape each relevant page
             for link in relevant_links:
                 time.sleep(1)  # Be respectful with requests
-                content = self.scrape_page(link)
-                
+                content = self.scrape_page(link, company_name)
+
                 if content:
                     title = ""
                     try:
@@ -232,22 +278,42 @@ class OilCompanyScanner:
                         title = title_tag.get_text() if title_tag else ""
                     except:
                         pass
-                    
+
                     page_type = self.categorize_page(link, title, content)
-                    
+
                     scraped_data = ScrapedContent(
-                        company=company['name'],
+                        company=company_name,
                         url=link,
                         title=title,
                         content=content,
                         page_type=page_type
                     )
-                    
+
                     self.scraped_content.append(scraped_data)
                     logger.info(f"Scraped {page_type} page: {title[:50]}...")
-            
+
+        except requests.exceptions.RequestException as e:
+            error_msg = str(e)
+            self.visited_urls.append({
+                'url': main_url,
+                'company': company_name,
+                'status': 'error',
+                'status_code': None,
+                'error': error_msg
+            })
+            logger.error(f"[URL ERROR] {main_url} - Error: {error_msg}")
+            logger.error(f"Error scanning {company_name}: {error_msg}")
         except Exception as e:
-            logger.error(f"Error scanning {company['name']}: {str(e)}")
+            error_msg = str(e)
+            self.visited_urls.append({
+                'url': main_url,
+                'company': company_name,
+                'status': 'error',
+                'status_code': None,
+                'error': error_msg
+            })
+            logger.error(f"[URL ERROR] {main_url} - Error: {error_msg}")
+            logger.error(f"Error scanning {company_name}: {error_msg}")
     
     def analyze_with_ai(self, company_data: List[ScrapedContent]) -> CompanyAnalysis:
         """Analyze scraped content using AI (placeholder for now)"""
@@ -335,17 +401,35 @@ class OilCompanyScanner:
         scraped_data = [asdict(content) for content in self.scraped_content]
         with open('scraped_content.json', 'w', encoding='utf-8') as f:
             json.dump(scraped_data, f, indent=2, ensure_ascii=False)
-        
+
         # Save analysis results
         analysis_data = [asdict(analysis) for analysis in self.analysis_results]
         with open('company_analysis.json', 'w', encoding='utf-8') as f:
             json.dump(analysis_data, f, indent=2, ensure_ascii=False)
-        
+
+        # Save visited URLs log
+        with open('visited_urls.json', 'w', encoding='utf-8') as f:
+            json.dump(self.visited_urls, f, indent=2, ensure_ascii=False)
+
+        # Log URL visit summary
+        success_count = sum(1 for url in self.visited_urls if url['status'] == 'success')
+        error_count = sum(1 for url in self.visited_urls if url['status'] == 'error')
+        logger.info(f"[URL SUMMARY] Total URLs visited: {len(self.visited_urls)}, Success: {success_count}, Errors: {error_count}")
+
+        # Log all errors in a dedicated section
+        if error_count > 0:
+            logger.warning("=" * 50)
+            logger.warning("[URL ERROR SUMMARY] The following URLs had errors:")
+            for url_info in self.visited_urls:
+                if url_info['status'] == 'error':
+                    logger.warning(f"  - {url_info['url']} ({url_info['company']}): {url_info['error']}")
+            logger.warning("=" * 50)
+
         # Create a readable summary report
         with open('analysis_report.txt', 'w', encoding='utf-8') as f:
             f.write("Oil Companies Market & Technology Analysis Report\n")
             f.write("=" * 50 + "\n\n")
-            
+
             for analysis in self.analysis_results:
                 f.write(f"Company: {analysis.company}\n")
                 f.write(f"Market Presence: {analysis.market_presence}\n")
@@ -353,8 +437,8 @@ class OilCompanyScanner:
                 f.write(f"Innovations: {analysis.innovations}\n")
                 f.write(f"Summary: {analysis.summary}\n")
                 f.write("-" * 40 + "\n\n")
-        
-        logger.info("Results saved to scraped_content.json, company_analysis.json, and analysis_report.txt")
+
+        logger.info("Results saved to scraped_content.json, company_analysis.json, visited_urls.json, and analysis_report.txt")
 
 if __name__ == "__main__":
     scanner = OilCompanyScanner()
