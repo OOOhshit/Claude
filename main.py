@@ -23,7 +23,32 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def create_detailed_report(analysis_results):
+def format_evidence_with_urls(evidence_list):
+    """Format evidence list with URLs for HTML display"""
+    if not evidence_list:
+        return "No evidence found"
+
+    formatted_items = []
+    for item in evidence_list:
+        if isinstance(item, dict):
+            # New format with keyword, mention_count, and urls
+            keyword = item.get('keyword', '')
+            count = item.get('mention_count', 0)
+            urls = item.get('urls', [])
+
+            if urls:
+                url_links = ', '.join([f'<a href="{url}" target="_blank">{url[:50]}...</a>' if len(url) > 50 else f'<a href="{url}" target="_blank">{url}</a>' for url in urls[:5]])
+                formatted_items.append(f"<strong>{keyword}</strong> ({count}x) - Sources: {url_links}")
+            else:
+                formatted_items.append(f"<strong>{keyword}</strong> ({count}x)")
+        else:
+            # Legacy string format
+            formatted_items.append(str(item))
+
+    return "<br>".join(formatted_items)
+
+
+def create_detailed_report(analysis_results, completeness_suggestions=None):
     """Create a detailed HTML report"""
     html_content = """
     <!DOCTYPE html>
@@ -64,6 +89,17 @@ def create_detailed_report(analysis_results):
             .high-score { color: #007700; }
             .medium-score { color: #cc7700; }
             .low-score { color: #cc0000; }
+            .completeness-section { background: #f0f8ff; border: 1px solid #007acc; padding: 15px; border-radius: 8px; margin-top: 20px; }
+            .completeness-score { font-size: 1.3em; font-weight: bold; }
+            .score-high { color: #28a745; }
+            .score-medium { color: #ffc107; }
+            .score-low { color: #dc3545; }
+            .suggestion-item { background: #fff; padding: 10px; margin: 5px 0; border-left: 3px solid #007acc; }
+            .suggestion-high { border-left-color: #dc3545; }
+            .suggestion-medium { border-left-color: #ffc107; }
+            .suggestion-low { border-left-color: #28a745; }
+            .verification-step { background: #e8f4f8; padding: 10px; margin: 5px 0; border-radius: 4px; }
+            .step-title { font-weight: bold; color: #2c5aa0; }
         </style>
     </head>
     <body>
@@ -91,11 +127,13 @@ def create_detailed_report(analysis_results):
         for segment in result.get('market_segments', []):
             conf_score = segment['confidence']
             conf_class = "high-confidence" if conf_score > 0.7 else "medium-confidence" if conf_score > 0.4 else "low-confidence"
+            # Format evidence with URLs
+            evidence_html = format_evidence_with_urls(segment['evidence'])
             html_content += f"""
                 <div class="market-segment">
-                    <strong>{segment['name']}</strong> 
+                    <strong>{segment['name']}</strong>
                     <span class="confidence {conf_class}">({conf_score:.1%} confidence)</span>
-                    <div class="evidence">Evidence: {', '.join(segment['evidence'])}</div>
+                    <div class="evidence">{evidence_html}</div>
                 </div>
             """
         
@@ -109,12 +147,14 @@ def create_detailed_report(analysis_results):
         for tech in result.get('technologies', []):
             conf_score = tech['confidence']
             conf_class = "high-confidence" if conf_score > 0.7 else "medium-confidence" if conf_score > 0.4 else "low-confidence"
+            # Format evidence with URLs
+            evidence_html = format_evidence_with_urls(tech['evidence'])
             html_content += f"""
                 <div class="technology">
-                    <strong>{tech['name']}</strong> 
+                    <strong>{tech['name']}</strong>
                     <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">{tech['category']}</span>
                     <span class="confidence {conf_class}">({conf_score:.1%} confidence)</span>
-                    <div class="evidence">Evidence: {', '.join(tech['evidence'])}</div>
+                    <div class="evidence">{evidence_html}</div>
                 </div>
             """
         
@@ -134,12 +174,14 @@ def create_detailed_report(analysis_results):
             for opportunity in result['new_market_opportunities']:
                 conf_score = opportunity['confidence']
                 conf_class = "high-confidence" if conf_score > 0.6 else "medium-confidence" if conf_score > 0.3 else "low-confidence"
+                # Format evidence with URLs
+                evidence_html = format_evidence_with_urls(opportunity['evidence'])
                 html_content += f"""
                     <div class="new-market-opportunity">
                         <strong>{opportunity['name']}</strong>
                         <span style="background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">{opportunity['potential_category']}</span>
                         <span class="confidence {conf_class}">({conf_score:.1%} confidence)</span>
-                        <div class="evidence">Evidence: {', '.join(opportunity['evidence'])}</div>
+                        <div class="evidence">{evidence_html}</div>
                     </div>
                 """
             html_content += """
@@ -152,11 +194,62 @@ def create_detailed_report(analysis_results):
                 <p>Sustainability Focus: <span class="score {sustainability_class}">{result['sustainability_focus']:.1%}</span></p>
                 <p>Innovation Score: <span class="score {innovation_class}">{result['innovation_score']:.1%}</span></p>
             </div>
-            
+
             <div class="section">
                 <h3>Geographic Presence</h3>
                 <p>{', '.join(result['geographic_presence']) if result['geographic_presence'] else 'Limited geographic information found'}</p>
             </div>
+        """
+
+        # Add completeness suggestions section
+        if completeness_suggestions:
+            company_suggestions = next((s for s in completeness_suggestions if s['company'] == result['company']), None)
+            if company_suggestions:
+                score = company_suggestions['completeness_score']
+                score_class = "score-high" if score >= 0.7 else "score-medium" if score >= 0.4 else "score-low"
+                html_content += f"""
+            <div class="completeness-section">
+                <h3>Analysis Completeness Check</h3>
+                <p>Completeness Score: <span class="completeness-score {score_class}">{score:.0%}</span></p>
+                <p>Pages Analyzed: {company_suggestions['pages_analyzed']}</p>
+                <p>Overall Assessment: <strong>{company_suggestions.get('overall_assessment', 'N/A')}</strong></p>
+                """
+
+                if company_suggestions.get('suggestions'):
+                    html_content += "<h4>Suggestions for Improvement:</h4>"
+                    for suggestion in company_suggestions['suggestions']:
+                        priority = suggestion.get('priority', 'LOW')
+                        priority_class = f"suggestion-{priority.lower()}"
+                        html_content += f"""
+                <div class="suggestion-item {priority_class}">
+                    <strong>[{priority}]</strong> {suggestion.get('issue', '')}
+                    <br><em>Recommendation:</em> {suggestion.get('recommendation', '')}
+                </div>
+                        """
+
+                if company_suggestions.get('verification_steps'):
+                    html_content += "<h4>Verification Steps to Ensure Completeness:</h4>"
+                    for step in company_suggestions['verification_steps']:
+                        html_content += f"""
+                <div class="verification-step">
+                    <span class="step-title">{step.get('step', '')}</span>
+                    <p>{step.get('description', '')}</p>
+                """
+                        if step.get('urls_to_check'):
+                            valid_urls = [u for u in step['urls_to_check'] if u]
+                            if valid_urls:
+                                html_content += f"<p><em>URLs to check:</em> {', '.join(valid_urls)}</p>"
+                        if step.get('search_terms'):
+                            html_content += f"<p><em>Search terms:</em> {', '.join(step['search_terms'])}</p>"
+                        if step.get('note'):
+                            html_content += f"<p><em>Note:</em> {step['note']}</p>"
+                        html_content += "</div>"
+
+                html_content += """
+            </div>
+                """
+
+        html_content += """
         </div>
         """
     
@@ -216,7 +309,27 @@ def main():
         # Run AI analysis
         logger.info("Step 4: Running AI analysis...")
         company_profiles = analyzer.analyze_all_companies(scraped_data)
-        
+
+        # Generate completeness suggestions for each company
+        logger.info("Step 4b: Generating completeness suggestions...")
+        completeness_suggestions = []
+        company_scraped_map = {}
+        for item in scraped_data:
+            company = item.get('company', 'Unknown')
+            if company not in company_scraped_map:
+                company_scraped_map[company] = []
+            company_scraped_map[company].append(item)
+
+        for profile in company_profiles:
+            company_data = company_scraped_map.get(profile.company, [])
+            suggestions = analyzer.generate_completeness_suggestions(profile.company, company_data, profile)
+            completeness_suggestions.append(suggestions)
+
+        # Save completeness suggestions
+        with open('completeness_suggestions.json', 'w', encoding='utf-8') as f:
+            json.dump(completeness_suggestions, f, indent=2, ensure_ascii=False)
+        logger.info("Completeness suggestions saved to completeness_suggestions.json")
+
         # Save AI analysis results
         analysis_results = analyzer.save_analysis(company_profiles)
         
@@ -224,7 +337,7 @@ def main():
         logger.info("Step 5: Generating reports...")
         
         # Create detailed HTML report
-        create_detailed_report(analysis_results)
+        create_detailed_report(analysis_results, completeness_suggestions)
         
         # Create summary CSV for easy data analysis
         import csv
@@ -249,10 +362,12 @@ def main():
         
         logger.info("Analysis complete! Generated files:")
         logger.info("- scraped_content.json: Raw scraped data")
-        logger.info("- ai_analysis_results.json: Detailed AI analysis")
+        logger.info("- visited_urls.json: All URLs visited during scanning")
+        logger.info("- ai_analysis_results.json: Detailed AI analysis with source URLs")
+        logger.info("- completeness_suggestions.json: Suggestions for improving analysis")
         logger.info("- analysis_report.html: Interactive HTML report")
         logger.info("- company_summary.csv: Summary data for spreadsheet analysis")
-        logger.info("- scanner.log: Execution log")
+        logger.info("- scanner.log: Execution log with all URL visits and errors")
         
     except Exception as e:
         logger.error(f"Analysis failed: {str(e)}")
