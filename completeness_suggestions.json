@@ -1,0 +1,320 @@
+[
+  {
+    "company": "ADNOC",
+    "completeness_score": 0.63,
+    "pages_analyzed": 15,
+    "suggestions": [
+      {
+        "priority": "MEDIUM",
+        "issue": "Missing content types: technology, sustainability, research",
+        "recommendation": "Try searching the company website manually for pages related to: technology, sustainability, research. These sections may use different URLs or require navigation through menus."
+      },
+      {
+        "priority": "MEDIUM",
+        "issue": "Limited technology detection",
+        "recommendation": "Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website."
+      },
+      {
+        "priority": "LOW",
+        "issue": "Limited geographic information",
+        "recommendation": "Check for \"Our Locations\", \"Global Operations\", or \"Where We Operate\" sections that may list geographic presence."
+      }
+    ],
+    "missing_areas": [
+      "technology",
+      "sustainability",
+      "research"
+    ],
+    "verification_steps": [
+      {
+        "step": "Manual Website Review",
+        "description": "Visit the company website and navigate through main menu items to identify any missed sections.",
+        "urls_to_check": [
+          "https://www.adnoc.ae/about",
+          "https://www.adnoc.ae/investors",
+          "https://www.adnoc.ae/sustainability"
+        ]
+      },
+      {
+        "step": "Check Annual Reports",
+        "description": "Annual reports often contain comprehensive market and technology information. Search for PDF downloads.",
+        "search_terms": [
+          "ADNOC annual report",
+          "ADNOC investor relations"
+        ]
+      },
+      {
+        "step": "Cross-Reference with News",
+        "description": "Recent news articles may reveal market activities not yet reflected on the corporate website.",
+        "search_terms": [
+          "ADNOC technology",
+          "ADNOC new market",
+          "ADNOC expansion"
+        ]
+      },
+      {
+        "step": "Check Regional Websites",
+        "description": "Companies often have regional websites with localized content that may provide additional insights.",
+        "note": "Look for language/region selectors on the main website"
+      },
+      {
+        "step": "Review Social Media & Press Releases",
+        "description": "Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.",
+        "search_terms": [
+          "ADNOC LinkedIn",
+          "ADNOC press releases"
+        ]
+      }
+    ],
+    "overall_assessment": "MEDIUM - Reasonable coverage but room for improvement."
+  },
+  {
+    "company": "Eni",
+    "completeness_score": 0.64,
+    "pages_analyzed": 15,
+    "suggestions": [
+      {
+        "priority": "MEDIUM",
+        "issue": "Missing content types: market",
+        "recommendation": "Try searching the company website manually for pages related to: market. These sections may use different URLs or require navigation through menus."
+      },
+      {
+        "priority": "MEDIUM",
+        "issue": "Limited technology detection",
+        "recommendation": "Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website."
+      }
+    ],
+    "missing_areas": [
+      "market"
+    ],
+    "verification_steps": [
+      {
+        "step": "Manual Website Review",
+        "description": "Visit the company website and navigate through main menu items to identify any missed sections.",
+        "urls_to_check": [
+          "https://www.eni.com/about",
+          "https://www.eni.com/investors",
+          "https://www.eni.com/sustainability"
+        ]
+      },
+      {
+        "step": "Check Annual Reports",
+        "description": "Annual reports often contain comprehensive market and technology information. Search for PDF downloads.",
+        "search_terms": [
+          "Eni annual report",
+          "Eni investor relations"
+        ]
+      },
+      {
+        "step": "Cross-Reference with News",
+        "description": "Recent news articles may reveal market activities not yet reflected on the corporate website.",
+        "search_terms": [
+          "Eni technology",
+          "Eni new market",
+          "Eni expansion"
+        ]
+      },
+      {
+        "step": "Check Regional Websites",
+        "description": "Companies often have regional websites with localized content that may provide additional insights.",
+        "note": "Look for language/region selectors on the main website"
+      },
+      {
+        "step": "Review Social Media & Press Releases",
+        "description": "Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.",
+        "search_terms": [
+          "Eni LinkedIn",
+          "Eni press releases"
+        ]
+      }
+    ],
+    "overall_assessment": "MEDIUM - Reasonable coverage but room for improvement."
+  },
+  {
+    "company": "Neste",
+    "completeness_score": 0.61,
+    "pages_analyzed": 14,
+    "suggestions": [
+      {
+        "priority": "MEDIUM",
+        "issue": "Missing content types: research",
+        "recommendation": "Try searching the company website manually for pages related to: research. These sections may use different URLs or require navigation through menus."
+      },
+      {
+        "priority": "MEDIUM",
+        "issue": "Limited technology detection",
+        "recommendation": "Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website."
+      },
+      {
+        "priority": "LOW",
+        "issue": "Limited geographic information",
+        "recommendation": "Check for \"Our Locations\", \"Global Operations\", or \"Where We Operate\" sections that may list geographic presence."
+      }
+    ],
+    "missing_areas": [
+      "research"
+    ],
+    "verification_steps": [
+      {
+        "step": "Manual Website Review",
+        "description": "Visit the company website and navigate through main menu items to identify any missed sections.",
+        "urls_to_check": [
+          "https://www.neste.com/about",
+          "https://www.neste.com/investors",
+          "https://www.neste.com/sustainability"
+        ]
+      },
+      {
+        "step": "Check Annual Reports",
+        "description": "Annual reports often contain comprehensive market and technology information. Search for PDF downloads.",
+        "search_terms": [
+          "Neste annual report",
+          "Neste investor relations"
+        ]
+      },
+      {
+        "step": "Cross-Reference with News",
+        "description": "Recent news articles may reveal market activities not yet reflected on the corporate website.",
+        "search_terms": [
+          "Neste technology",
+          "Neste new market",
+          "Neste expansion"
+        ]
+      },
+      {
+        "step": "Check Regional Websites",
+        "description": "Companies often have regional websites with localized content that may provide additional insights.",
+        "note": "Look for language/region selectors on the main website"
+      },
+      {
+        "step": "Review Social Media & Press Releases",
+        "description": "Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.",
+        "search_terms": [
+          "Neste LinkedIn",
+          "Neste press releases"
+        ]
+      }
+    ],
+    "overall_assessment": "MEDIUM - Reasonable coverage but room for improvement."
+  },
+  {
+    "company": "ExxonMobil",
+    "completeness_score": 0.84,
+    "pages_analyzed": 15,
+    "suggestions": [
+      {
+        "priority": "MEDIUM",
+        "issue": "Missing content types: sustainability, research",
+        "recommendation": "Try searching the company website manually for pages related to: sustainability, research. These sections may use different URLs or require navigation through menus."
+      }
+    ],
+    "missing_areas": [
+      "sustainability",
+      "research"
+    ],
+    "verification_steps": [
+      {
+        "step": "Manual Website Review",
+        "description": "Visit the company website and navigate through main menu items to identify any missed sections.",
+        "urls_to_check": [
+          "https://corporate.exxonmobil.com/about",
+          "https://corporate.exxonmobil.com/investors",
+          "https://corporate.exxonmobil.com/sustainability"
+        ]
+      },
+      {
+        "step": "Check Annual Reports",
+        "description": "Annual reports often contain comprehensive market and technology information. Search for PDF downloads.",
+        "search_terms": [
+          "ExxonMobil annual report",
+          "ExxonMobil investor relations"
+        ]
+      },
+      {
+        "step": "Cross-Reference with News",
+        "description": "Recent news articles may reveal market activities not yet reflected on the corporate website.",
+        "search_terms": [
+          "ExxonMobil technology",
+          "ExxonMobil new market",
+          "ExxonMobil expansion"
+        ]
+      },
+      {
+        "step": "Check Regional Websites",
+        "description": "Companies often have regional websites with localized content that may provide additional insights.",
+        "note": "Look for language/region selectors on the main website"
+      },
+      {
+        "step": "Review Social Media & Press Releases",
+        "description": "Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.",
+        "search_terms": [
+          "ExxonMobil LinkedIn",
+          "ExxonMobil press releases"
+        ]
+      }
+    ],
+    "overall_assessment": "HIGH - Good coverage of company information."
+  },
+  {
+    "company": "Petronas",
+    "completeness_score": 0.73,
+    "pages_analyzed": 15,
+    "suggestions": [
+      {
+        "priority": "MEDIUM",
+        "issue": "Missing content types: sustainability",
+        "recommendation": "Try searching the company website manually for pages related to: sustainability. These sections may use different URLs or require navigation through menus."
+      },
+      {
+        "priority": "LOW",
+        "issue": "Limited geographic information",
+        "recommendation": "Check for \"Our Locations\", \"Global Operations\", or \"Where We Operate\" sections that may list geographic presence."
+      }
+    ],
+    "missing_areas": [
+      "sustainability"
+    ],
+    "verification_steps": [
+      {
+        "step": "Manual Website Review",
+        "description": "Visit the company website and navigate through main menu items to identify any missed sections.",
+        "urls_to_check": [
+          "https://www.petronas.com/about",
+          "https://www.petronas.com/investors",
+          "https://www.petronas.com/sustainability"
+        ]
+      },
+      {
+        "step": "Check Annual Reports",
+        "description": "Annual reports often contain comprehensive market and technology information. Search for PDF downloads.",
+        "search_terms": [
+          "Petronas annual report",
+          "Petronas investor relations"
+        ]
+      },
+      {
+        "step": "Cross-Reference with News",
+        "description": "Recent news articles may reveal market activities not yet reflected on the corporate website.",
+        "search_terms": [
+          "Petronas technology",
+          "Petronas new market",
+          "Petronas expansion"
+        ]
+      },
+      {
+        "step": "Check Regional Websites",
+        "description": "Companies often have regional websites with localized content that may provide additional insights.",
+        "note": "Look for language/region selectors on the main website"
+      },
+      {
+        "step": "Review Social Media & Press Releases",
+        "description": "Corporate LinkedIn, Twitter, and press release pages often announce new initiatives before website updates.",
+        "search_terms": [
+          "Petronas LinkedIn",
+          "Petronas press releases"
+        ]
+      }
+    ],
+    "overall_assessment": "HIGH - Good coverage of company information."
+  }
+]

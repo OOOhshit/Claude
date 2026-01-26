@@ -1,23 +1,37 @@
 [
   {
-    "company": "TotalEnergies",
+    "company": "ADNOC",
     "market_presence": "upstream, downstream, renewable, gas, chemicals",
-    "technologies": "ai, digital, iot, carbon capture",
+    "technologies": "ai, carbon capture",
     "innovations": "Limited innovation content found",
-    "summary": "TotalEnergies operates in 5 identified market segments with 4 technology areas mentioned."
+    "summary": "ADNOC operates in 5 identified market segments with 2 technology areas mentioned."
   },
   {
-    "company": "BP",
-    "market_presence": "upstream, downstream, renewable, gas",
-    "technologies": "ai, digital, automation, ccus, subsea",
-    "innovations": "Limited innovation content found",
-    "summary": "BP operates in 4 identified market segments with 5 technology areas mentioned."
+    "company": "Eni",
+    "market_presence": "upstream, renewable, gas",
+    "technologies": "artificial intelligence, ai, digital, robotics, carbon capture",
+    "innovations": "Various innovation initiatives mentioned",
+    "summary": "Eni operates in 3 identified market segments with 5 technology areas mentioned."
   },
   {
-    "company": "Chevron",
-    "market_presence": "upstream, downstream, renewable, gas, chemicals",
-    "technologies": "artificial intelligence, ai, digital, robotics, carbon capture, ccus, subsea, deepwater",
+    "company": "Neste",
+    "market_presence": "upstream, downstream, renewable, chemicals",
+    "technologies": "ai, digital",
     "innovations": "Limited innovation content found",
-    "summary": "Chevron operates in 5 identified market segments with 8 technology areas mentioned."
+    "summary": "Neste operates in 4 identified market segments with 2 technology areas mentioned."
+  },
+  {
+    "company": "ExxonMobil",
+    "market_presence": "upstream, downstream, renewable, gas, chemicals",
+    "technologies": "ai, cloud, carbon capture, deepwater",
+    "innovations": "Limited innovation content found",
+    "summary": "ExxonMobil operates in 5 identified market segments with 4 technology areas mentioned."
+  },
+  {
+    "company": "Petronas",
+    "market_presence": "upstream, downstream, renewable, chemicals",
+    "technologies": "ai, carbon capture",
+    "innovations": "Various innovation initiatives mentioned",
+    "summary": "Petronas operates in 4 identified market segments with 2 technology areas mentioned."
   }
 ]

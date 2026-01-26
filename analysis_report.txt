@@ -1,24 +1,38 @@
 Oil Companies Market & Technology Analysis Report
 ==================================================
 
-Company: TotalEnergies
+Company: ADNOC
 Market Presence: upstream, downstream, renewable, gas, chemicals
-Technologies: ai, digital, iot, carbon capture
+Technologies: ai, carbon capture
 Innovations: Limited innovation content found
-Summary: TotalEnergies operates in 5 identified market segments with 4 technology areas mentioned.
+Summary: ADNOC operates in 5 identified market segments with 2 technology areas mentioned.
 ----------------------------------------
 
-Company: BP
-Market Presence: upstream, downstream, renewable, gas
-Technologies: ai, digital, automation, ccus, subsea
-Innovations: Limited innovation content found
-Summary: BP operates in 4 identified market segments with 5 technology areas mentioned.
+Company: Eni
+Market Presence: upstream, renewable, gas
+Technologies: artificial intelligence, ai, digital, robotics, carbon capture
+Innovations: Various innovation initiatives mentioned
+Summary: Eni operates in 3 identified market segments with 5 technology areas mentioned.
 ----------------------------------------
 
-Company: Chevron
-Market Presence: upstream, downstream, renewable, gas, chemicals
-Technologies: artificial intelligence, ai, digital, robotics, carbon capture, ccus, subsea, deepwater
+Company: Neste
+Market Presence: upstream, downstream, renewable, chemicals
+Technologies: ai, digital
 Innovations: Limited innovation content found
-Summary: Chevron operates in 5 identified market segments with 8 technology areas mentioned.
+Summary: Neste operates in 4 identified market segments with 2 technology areas mentioned.
+----------------------------------------
+
+Company: ExxonMobil
+Market Presence: upstream, downstream, renewable, gas, chemicals
+Technologies: ai, cloud, carbon capture, deepwater
+Innovations: Limited innovation content found
+Summary: ExxonMobil operates in 5 identified market segments with 4 technology areas mentioned.
+----------------------------------------
+
+Company: Petronas
+Market Presence: upstream, downstream, renewable, chemicals
+Technologies: ai, carbon capture
+Innovations: Various innovation initiatives mentioned
+Summary: Petronas operates in 4 identified market segments with 2 technology areas mentioned.
 ----------------------------------------
 

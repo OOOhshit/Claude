@@ -1,4 +1,6 @@
 Company,Top Market Segments,Top Technologies,Sustainability Score,Innovation Score,Geographic Reach
-TotalEnergies,"Downstream, Renewable Energy, Natural Gas","Carbon Tech, Automation, Iot Sensors",100.0%,100.0%,9
-BP,"Downstream, Renewable Energy, Carbon Management","Digital Technologies, Subsea Technology, Automation",100.0%,53.3%,16
-Chevron,"Downstream, Renewable Energy, Natural Gas","Digital Technologies, Subsea Technology, Carbon Tech",75.0%,100.0%,6
+ADNOC,"Downstream, Renewable Energy, Natural Gas",Carbon Tech,100.0%,100.0%,1
+Eni,"Renewable Energy, Carbon Management",Digital Technologies,55.0%,93.3%,4
+Neste,"Downstream, Renewable Energy, Chemicals",,100.0%,100.0%,1
+ExxonMobil,"Renewable Energy, Natural Gas, Chemicals","Subsea Technology, Carbon Tech, Iot Sensors",100.0%,100.0%,11
+Petronas,"Co2 Management And Post-Combustion Cc, Downstream, Carbon Management","Iot Sensors, Carbon Tech",25.0%,33.3%,2
