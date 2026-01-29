@@ -16,6 +16,7 @@ from typing import List, Dict, Set, Optional
 import re
 from dataclasses import dataclass, asdict
 import random
+import urllib3
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -38,8 +39,15 @@ class CompanyAnalysis:
     summary: str
 
 class OilCompanyScanner:
-    def __init__(self):
+    def __init__(self, verify_ssl: bool = True):
         self.session = requests.Session()
+        self.verify_ssl = verify_ssl
+
+        # Disable SSL warnings if verification is disabled (for corporate environments)
+        if not verify_ssl:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            logger.warning("[SSL] SSL certificate verification is DISABLED - use only in trusted corporate environments")
+
         # Use more realistic browser headers to avoid detection
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -131,7 +139,7 @@ class OilCompanyScanner:
         logger.info(f"[ROBOTS] Checking robots.txt at {robots_url}")
 
         try:
-            response = self.session.get(robots_url, timeout=10)
+            response = self.session.get(robots_url, timeout=10, verify=self.verify_ssl)
             rp = RobotFileParser()
             rp.set_url(robots_url)
 
@@ -197,7 +205,7 @@ class OilCompanyScanner:
                     logger.info(f"[RETRY] Waiting {wait_time:.1f}s before retry {attempt + 1}/{max_retries}")
                     time.sleep(wait_time)
 
-                response = self.session.get(url, timeout=20)
+                response = self.session.get(url, timeout=20, verify=self.verify_ssl)
 
                 # Check for blocking responses
                 if response.status_code == 403:

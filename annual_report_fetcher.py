@@ -18,6 +18,7 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import io
+import urllib3
 
 # Try to import PDF processing libraries
 try:
@@ -52,8 +53,15 @@ class AnnualReportContent:
 class AnnualReportFetcher:
     """Fetches and processes annual reports from oil company websites"""
 
-    def __init__(self, download_dir: str = 'annual_reports'):
+    def __init__(self, download_dir: str = 'annual_reports', verify_ssl: bool = True):
         self.session = requests.Session()
+        self.verify_ssl = verify_ssl
+
+        # Disable SSL warnings if verification is disabled (for corporate environments)
+        if not verify_ssl:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            logger.warning("[SSL] SSL certificate verification is DISABLED for annual report fetcher")
+
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/pdf',
@@ -124,7 +132,7 @@ class AnnualReportFetcher:
                 url = urljoin(base_url, path)
                 logger.info(f"[ANNUAL REPORT] Checking: {url}")
 
-                response = self.session.get(url, timeout=15)
+                response = self.session.get(url, timeout=15, verify=self.verify_ssl)
                 if response.status_code == 200:
                     soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -181,7 +189,7 @@ class AnnualReportFetcher:
 
         try:
             # Get main page and look for any links containing year and report keywords
-            response = self.session.get(base_url, timeout=15)
+            response = self.session.get(base_url, timeout=15, verify=self.verify_ssl)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -215,7 +223,7 @@ class AnnualReportFetcher:
         try:
             logger.info(f"[ANNUAL REPORT] Downloading PDF from: {url}")
 
-            response = self.session.get(url, timeout=60, stream=True)
+            response = self.session.get(url, timeout=60, stream=True, verify=self.verify_ssl)
             if response.status_code == 200:
                 # Create safe filename
                 safe_company = re.sub(r'[^\w\-]', '_', company_name)
@@ -292,7 +300,7 @@ class AnnualReportFetcher:
 
         try:
             logger.info(f"[ANNUAL REPORT] Fetching PDF from URL: {url}")
-            response = self.session.get(url, timeout=60)
+            response = self.session.get(url, timeout=60, verify=self.verify_ssl)
 
             if response.status_code != 200:
                 logger.warning(f"[ANNUAL REPORT] Failed to fetch PDF: HTTP {response.status_code}")
@@ -342,7 +350,7 @@ class AnnualReportFetcher:
         """Fetch content from HTML annual report page"""
         try:
             logger.info(f"[ANNUAL REPORT] Fetching HTML content from: {url}")
-            response = self.session.get(url, timeout=20)
+            response = self.session.get(url, timeout=20, verify=self.verify_ssl)
 
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')

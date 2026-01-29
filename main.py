@@ -8,6 +8,7 @@ Complete pipeline for scraping oil company websites and analyzing their market p
 import json
 import logging
 import sys
+import argparse
 from pathlib import Path
 from scraper import OilCompanyScanner
 from ai_analyzer import AIAnalyzer
@@ -351,12 +352,19 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
 
 def main():
     """Main execution function"""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Oil Companies Market & Technology Scanner')
+    parser.add_argument('--no-ssl-verify', action='store_true',
+                        help='Disable SSL certificate verification (for corporate environments with proxy)')
+    args = parser.parse_args()
+
     logger.info("Starting Oil Companies Market & Technology Analysis")
-    
+
     try:
         # Step 1: Initialize scanner and run scraping
         logger.info("Step 1: Initializing web scraper...")
-        scanner = OilCompanyScanner()
+        verify_ssl = not args.no_ssl_verify
+        scanner = OilCompanyScanner(verify_ssl=verify_ssl)
         
         # Load companies
         companies = scanner.load_companies()
@@ -379,7 +387,7 @@ def main():
 
         # Step 2b: Fetch Annual Reports
         logger.info("Step 2b: Fetching annual reports...")
-        report_fetcher = AnnualReportFetcher()
+        report_fetcher = AnnualReportFetcher(verify_ssl=verify_ssl)
 
         # Set target year to last year (e.g., 2025 for reports published in 2026)
         target_year = datetime.now().year - 1
