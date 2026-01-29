@@ -11,6 +11,8 @@ import sys
 from pathlib import Path
 from scraper import OilCompanyScanner
 from ai_analyzer import AIAnalyzer
+from annual_report_fetcher import AnnualReportFetcher
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
@@ -100,6 +102,16 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
             .suggestion-low { border-left-color: #28a745; }
             .verification-step { background: #e8f4f8; padding: 10px; margin: 5px 0; border-radius: 4px; }
             .step-title { font-weight: bold; color: #2c5aa0; }
+            .annual-report-section { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 2px solid #4caf50; padding: 20px; border-radius: 8px; margin-top: 20px; }
+            .annual-report-section h3 { color: #2e7d32; margin-top: 0; }
+            .ar-badge { background: #4caf50; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+            .strategic-priority { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #2196f3; border-radius: 4px; }
+            .tech-investment { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #9c27b0; border-radius: 4px; }
+            .tech-investment.strong { border-left-color: #e91e63; }
+            .market-expansion { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #ff9800; border-radius: 4px; }
+            .future-outlook { background: #e3f2fd; padding: 10px; margin: 5px 0; border-radius: 4px; }
+            .risk-factor { background: #ffebee; padding: 5px 10px; margin: 3px 0; border-radius: 4px; display: inline-block; font-size: 0.9em; }
+            .partnership { background: #f3e5f5; padding: 8px; margin: 3px 0; border-radius: 4px; }
         </style>
     </head>
     <body>
@@ -188,6 +200,80 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
             </div>
             """
         
+        # Add Annual Report Analysis Section
+        if result.get('annual_report_analysis'):
+            ar = result['annual_report_analysis']
+            html_content += f"""
+            <div class="annual-report-section">
+                <h3><span class="ar-badge">ANNUAL REPORT {ar.get('year', 'N/A')}</span> Strategic Analysis</h3>
+                <p><em>Source: <a href="{ar.get('source_url', '#')}" target="_blank">{ar.get('source_url', 'N/A')[:80]}...</a></em></p>
+            """
+
+            # Strategic Priorities
+            if ar.get('strategic_priorities'):
+                html_content += "<h4>Strategic Priorities</h4>"
+                for priority in ar['strategic_priorities'][:5]:
+                    conf = priority.get('confidence', 0)
+                    html_content += f"""
+                    <div class="strategic-priority">
+                        <strong>{priority.get('name', 'N/A')}</strong>
+                        <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 5px;">{priority.get('type', '')}</span>
+                        <span class="confidence">({conf:.0%} confidence)</span>
+                    </div>
+                    """
+
+            # Technology Investments
+            if ar.get('technology_investments'):
+                html_content += "<h4>Technology Investments</h4>"
+                for tech in ar['technology_investments'][:6]:
+                    signal = tech.get('investment_signal', 'Mentioned')
+                    signal_class = 'strong' if signal == 'Strong' else ''
+                    html_content += f"""
+                    <div class="tech-investment {signal_class}">
+                        <strong>{tech.get('name', 'N/A')}</strong>
+                        <span style="background: {'#e91e63' if signal == 'Strong' else '#9e9e9e'}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 5px;">{signal}</span>
+                        <span class="confidence">({tech.get('confidence', 0):.0%})</span>
+                    </div>
+                    """
+
+            # Market Expansions
+            if ar.get('market_expansions'):
+                html_content += "<h4>Market Expansion Focus</h4>"
+                for expansion in ar['market_expansions'][:5]:
+                    html_content += f"""
+                    <div class="market-expansion">
+                        <strong>{expansion.get('market', 'N/A')}</strong> in <strong>{expansion.get('region', 'N/A')}</strong>
+                    </div>
+                    """
+
+            # Future Outlook
+            if ar.get('future_outlook'):
+                html_content += "<h4>Future Outlook & Targets</h4>"
+                for outlook in ar['future_outlook'][:5]:
+                    html_content += f'<div class="future-outlook">{outlook}</div>'
+
+            # Partnerships
+            if ar.get('partnerships'):
+                html_content += "<h4>Key Partnerships</h4>"
+                for partnership in ar['partnerships'][:5]:
+                    html_content += f"""
+                    <div class="partnership">
+                        <strong>{partnership.get('partner', 'N/A')}</strong>
+                        <span style="font-size: 0.9em; color: #666;"> - {partnership.get('focus_area', 'General')}</span>
+                    </div>
+                    """
+
+            # Risk Factors
+            if ar.get('risk_factors'):
+                html_content += "<h4>Risk Factors Identified</h4><div>"
+                for risk in ar['risk_factors']:
+                    html_content += f'<span class="risk-factor">{risk}</span> '
+                html_content += "</div>"
+
+            html_content += """
+            </div>
+            """
+
         html_content += f"""
             <div class="section">
                 <h3>Sustainability & Innovation Metrics</h3>
@@ -290,8 +376,33 @@ def main():
             return
         
         logger.info(f"Successfully scraped {len(scanner.scraped_content)} pages")
-        
-        # Step 2: Initialize AI analyzer and process content
+
+        # Step 2b: Fetch Annual Reports
+        logger.info("Step 2b: Fetching annual reports...")
+        report_fetcher = AnnualReportFetcher()
+
+        # Set target year to last year (e.g., 2025 for reports published in 2026)
+        target_year = datetime.now().year - 1
+        report_fetcher.set_target_year(target_year)
+
+        # Fetch annual reports for all companies
+        annual_reports = report_fetcher.fetch_all_company_reports(companies, download_pdfs=True)
+
+        if annual_reports:
+            logger.info(f"Successfully fetched {len(annual_reports)} annual reports")
+            report_fetcher.save_results()
+
+            # Log summary
+            report_summary = report_fetcher.get_report_summary()
+            logger.info(f"Annual Report Summary:")
+            logger.info(f"  - Total reports: {report_summary['total_reports']}")
+            logger.info(f"  - Companies with reports: {report_summary['companies_with_reports']}")
+            logger.info(f"  - PDF reports: {report_summary['pdf_reports']}")
+            logger.info(f"  - HTML reports: {report_summary['html_reports']}")
+        else:
+            logger.warning("No annual reports were fetched. This may be due to website restrictions or unavailable reports.")
+
+        # Step 3: Initialize AI analyzer and process content
         logger.info("Step 3: Initializing AI analyzer...")
         analyzer = AIAnalyzer()
         
@@ -309,6 +420,32 @@ def main():
         # Run AI analysis
         logger.info("Step 4: Running AI analysis...")
         company_profiles = analyzer.analyze_all_companies(scraped_data)
+
+        # Step 4a: Analyze annual reports and merge with company profiles
+        logger.info("Step 4a: Analyzing annual reports...")
+        if annual_reports:
+            # Convert annual reports to dict format for analysis
+            annual_report_data = [
+                {
+                    'company': r.company,
+                    'year': r.year,
+                    'content': r.content,
+                    'url': r.url
+                }
+                for r in annual_reports
+            ]
+
+            # Analyze all annual reports
+            annual_report_analyses = analyzer.analyze_all_annual_reports(annual_report_data)
+
+            # Merge annual report analysis with company profiles
+            for profile in company_profiles:
+                if profile.company in annual_report_analyses:
+                    profile.annual_report_analysis = annual_report_analyses[profile.company]
+                    logger.info(f"Merged annual report analysis for {profile.company}")
+
+                    # Update summary to include annual report insights
+                    profile.summary = analyzer.generate_summary(profile)
 
         # Generate completeness suggestions for each company
         logger.info("Step 4b: Generating completeness suggestions...")
@@ -342,22 +479,34 @@ def main():
         # Create summary CSV for easy data analysis
         import csv
         with open('company_summary.csv', 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['Company', 'Top Market Segments', 'Top Technologies', 
-                         'Sustainability Score', 'Innovation Score', 'Geographic Reach']
+            fieldnames = ['Company', 'Top Market Segments', 'Top Technologies',
+                         'Sustainability Score', 'Innovation Score', 'Geographic Reach',
+                         'Annual Report Year', 'Strategic Priorities', 'Tech Investments', 'Market Expansions']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            
+
             for result in analysis_results:
                 top_markets = ', '.join([seg['name'] for seg in result['market_segments'][:3]])
                 top_techs = ', '.join([tech['name'] for tech in result['technologies'][:3]])
-                
+
+                # Extract annual report data if available
+                ar = result.get('annual_report_analysis')
+                ar_year = ar.get('year', 'N/A') if ar else 'N/A'
+                ar_priorities = ', '.join([p['name'] for p in ar.get('strategic_priorities', [])[:3]]) if ar else 'N/A'
+                ar_tech = ', '.join([t['name'] for t in ar.get('technology_investments', []) if t.get('investment_signal') == 'Strong'][:3]) if ar else 'N/A'
+                ar_expansions = ', '.join([f"{e['market']}/{e['region']}" for e in ar.get('market_expansions', [])[:3]]) if ar else 'N/A'
+
                 writer.writerow({
                     'Company': result['company'],
                     'Top Market Segments': top_markets,
                     'Top Technologies': top_techs,
                     'Sustainability Score': f"{result['sustainability_focus']:.1%}",
                     'Innovation Score': f"{result['innovation_score']:.1%}",
-                    'Geographic Reach': len(result['geographic_presence'])
+                    'Geographic Reach': len(result['geographic_presence']),
+                    'Annual Report Year': ar_year,
+                    'Strategic Priorities': ar_priorities,
+                    'Tech Investments': ar_tech,
+                    'Market Expansions': ar_expansions
                 })
         
         logger.info("Analysis complete! Generated files:")
@@ -368,6 +517,9 @@ def main():
         logger.info("- analysis_report.html: Interactive HTML report")
         logger.info("- company_summary.csv: Summary data for spreadsheet analysis")
         logger.info("- scanner.log: Execution log with all URL visits and errors")
+        logger.info("- annual_reports_content.json: Extracted annual report content")
+        logger.info("- annual_reports_search.json: Annual report search results")
+        logger.info("- annual_reports/: Downloaded PDF annual reports")
         
     except Exception as e:
         logger.error(f"Analysis failed: {str(e)}")
