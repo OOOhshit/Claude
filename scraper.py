@@ -263,11 +263,14 @@ class OilCompanyScanner:
 
     def find_relevant_links(self, base_url: str, soup: BeautifulSoup) -> List[str]:
         """Find links related to markets from market.json and general business topics"""
-        # Combine market keywords with general business keywords
+        # Combine market keywords with general business keywords including activity terms
         all_keywords = self.market_keywords.union({
             'technology', 'innovation', 'digital', 'research', 'development',
             'business', 'operations', 'sustainability', 'future', 'solutions',
-            'projects', 'ventures', 'investments', 'strategy', 'portfolio'
+            'projects', 'ventures', 'investments', 'strategy', 'portfolio',
+            'partnership', 'partners', 'joint-venture', 'acquisition',
+            'alliance', 'collaboration', 'investor', 'news', 'press',
+            'media', 'announcements', 'agreement'
         })
         
         links = set()
