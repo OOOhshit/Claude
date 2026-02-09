@@ -271,13 +271,17 @@ class OilCompanyScanner:
 
     def find_relevant_links(self, base_url: str, soup: BeautifulSoup) -> List[str]:
         """Find links related to markets from market.json and general business topics"""
+        # Combine market keywords with general business keywords including activity terms
         all_keywords = self.market_keywords.union({
             'technology', 'innovation', 'digital', 'research', 'development',
             'business', 'operations', 'sustainability', 'future', 'solutions',
             'projects', 'ventures', 'investments', 'strategy', 'portfolio',
             'partnership', 'partners', 'joint-venture', 'acquisition',
             'alliance', 'collaboration', 'investor', 'news', 'press',
-            'media', 'announcements', 'agreement'
+            'media', 'announcements', 'agreement',
+            # Additional navigation/section keywords common on corporate sites
+            'about', 'company', 'who-we-are', 'what-we-do', 'our-business',
+            'sectors', 'industries', 'capabilities', 'services', 'brands',
         })
 
         links = set()
@@ -288,6 +292,7 @@ class OilCompanyScanner:
             text = link.get_text().lower().strip()
             title = link.get('title', '').lower()
 
+            # Decode any pre-encoded URLs and join properly
             href_decoded = unquote(link['href'])
             full_url = urljoin(base_url, href_decoded)
 
@@ -296,21 +301,28 @@ class OilCompanyScanner:
                 continue
 
             # Skip common non-content links
-            skip_patterns = [
-                'login', 'signin', 'sign-in', 'search', 'contact',
-                'privacy', 'cookie', 'legal', 'terms', 'careers',
-                'job', 'recruitment', 'mailto:', 'tel:', 'javascript:',
-                '#', '.pdf', '.jpg', '.png', '.gif', '.mp4', '.zip',
-            ]
-            if any(skip in href for skip in skip_patterns):
+            if any(skip in href for skip in ['login', 'search', 'contact', 'privacy', 'cookie', 'legal']):
+                continue
+
+            # Skip anchors, javascript links, and file downloads
+            if href.startswith('#') or href.startswith('javascript:'):
+                continue
+            if any(href.endswith(ext) for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip']):
                 continue
 
             # Calculate relevance score
             score = 0
-            content_to_check = f"{href} {text} {title}"
+
+            # Normalize URL path: replace hyphens, slashes, underscores with spaces
+            # so "explore-produce/oil-gas" becomes "explore produce oil gas"
+            url_path = urlparse(full_url).path.lower()
+            normalized_path = url_path.replace('-', ' ').replace('/', ' ').replace('_', ' ')
+
+            content_to_check = f"{normalized_path} {text} {title}"
 
             for keyword in all_keywords:
                 if keyword in content_to_check:
+                    # Market-specific keywords get higher scores
                     if keyword in self.market_keywords:
                         score += 3
                     else:
@@ -318,12 +330,13 @@ class OilCompanyScanner:
 
             if score > 0:
                 links.add(full_url)
-                link_scores[full_url] = score
+                link_scores[full_url] = max(link_scores.get(full_url, 0), score)
 
+        # Sort by relevance score and return top links
         sorted_links = sorted(links, key=lambda x: link_scores.get(x, 0), reverse=True)
 
-        logger.info(f"Found {len(sorted_links)} relevant links (showing top 15)")
-        return sorted_links[:15]
+        logger.info(f"Found {len(sorted_links)} relevant links (showing top 30)")
+        return sorted_links[:30]
 
     def scrape_page(self, url: str, company_name: str = "") -> str:
         """
