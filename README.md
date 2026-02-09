@@ -34,7 +34,13 @@ Simply run the main script:
 ```bash
 py main.py
 ```
-
+### Advanced Usage
+```bash
+py main.py --no-playwright           # Requests only (lighter, faster)
+py main.py --proxy-file proxies.txt  # Enable proxy rotation
+py main.py --no-resume               # Start fresh, ignore checkpoint
+py main.py --no-ssl-verify           # For corporate proxies
+```
 ### Output Files
 
 The scanner generates several output files:
