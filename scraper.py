@@ -418,9 +418,12 @@ class OilCompanyScanner:
         else:
             return 'general'
 
-    def scan_company(self, company: Dict) -> List[ScrapedContent]:
-        """
-        Scan a single company's website.
+    def scan_company(self, company: Dict, max_depth: int = 4, max_discovery_requests: int = 25) -> List[ScrapedContent]:
+        """Scan a single company's website with recursive multi-level crawling.
+
+        Keeps crawling deeper (up to max_depth levels) as long as new relevant
+        links are discovered on each level. Stops early if no new links are found
+        or if max_discovery_requests is reached.
 
         Returns list of ScrapedContent for concurrent scraping compatibility.
         """
@@ -479,17 +482,86 @@ class OilCompanyScanner:
             })
             logger.info(f"[URL SUCCESS] {main_url}")
 
-            # Find relevant links from the rendered HTML
-            relevant_links = self._find_relevant_links_from_html(main_url, main_html)
-            logger.info(f"Found {len(relevant_links)} relevant links for {company_name}")
+            # Recursive multi-level link discovery
+            all_discovered = set()       # All unique discovered URLs
+            all_discovered_list = []     # Preserve insertion order
+            crawled_for_links = set()    # URLs already crawled to extract links
+            crawled_for_links.add(main_url)
+            discovery_requests_used = 0  # Track total discovery HTTP requests
 
-            # Filter by robots.txt
-            allowed_links = [link for link in relevant_links if self.is_url_allowed(link)]
-            if len(allowed_links) < len(relevant_links):
-                logger.info(f"[ROBOTS] {len(relevant_links) - len(allowed_links)} links blocked by robots.txt")
+            # Level 1: Find relevant links from the main page
+            level1_links = self._find_relevant_links_from_html(main_url, main_html)
+            allowed_links = [link for link in level1_links if self.is_url_allowed(link)]
+            logger.info(f"[DEPTH 1] Found {len(allowed_links)} relevant links for {company_name}")
 
-            # Scrape each relevant page
             for link in allowed_links:
+                if link not in all_discovered and link != main_url:
+                    all_discovered.add(link)
+                    all_discovered_list.append(link)
+
+            # Level 2+ : keep crawling discovered pages for deeper links
+            current_level_links = list(all_discovered)  # Links to crawl next
+            depth = 1
+            for depth in range(2, max_depth + 1):
+                if not current_level_links or discovery_requests_used >= max_discovery_requests:
+                    break
+
+                # Pick candidates from the current level: prefer shallower paths (section hubs)
+                candidates = sorted(current_level_links,
+                                    key=lambda u: len(urlparse(u).path.rstrip('/').split('/')))
+                # Limit how many pages we crawl per level (fewer as we go deeper)
+                per_level_limit = max(3, 10 - (depth - 2) * 2)
+                candidates = [c for c in candidates if c not in crawled_for_links][:per_level_limit]
+
+                if not candidates:
+                    break
+
+                logger.info(f"[DEPTH {depth}] Crawling {len(candidates)} pages for deeper links")
+                newly_found = []
+
+                for nav_url in candidates:
+                    if discovery_requests_used >= max_discovery_requests:
+                        logger.info(f"[DEPTH {depth}] Reached discovery request limit ({max_discovery_requests})")
+                        break
+
+                    crawled_for_links.add(nav_url)
+                    time.sleep(crawl_delay)
+                    discovery_requests_used += 1
+
+                    try:
+                        nav_html = self.engine.smart_fetch(nav_url, company_name=company_name)
+                        if nav_html:
+                            deeper_links = self._find_relevant_links_from_html(main_url, nav_html)
+                            for link in deeper_links:
+                                if (link not in all_discovered
+                                        and link != main_url
+                                        and self.is_url_allowed(link)):
+                                    all_discovered.add(link)
+                                    all_discovered_list.append(link)
+                                    newly_found.append(link)
+                    except Exception as e:
+                        logger.warning(f"[DEPTH {depth}] Error crawling {nav_url}: {str(e)}")
+
+                if newly_found:
+                    logger.info(f"[DEPTH {depth}] Discovered {len(newly_found)} new links")
+                else:
+                    logger.info(f"[DEPTH {depth}] No new links found, stopping deeper crawl")
+                    break
+
+                # Next level will crawl the newly found links
+                current_level_links = newly_found
+
+            logger.info(f"Total unique relevant links for {company_name}: {len(all_discovered_list)} "
+                         f"(used {discovery_requests_used} discovery requests across {min(depth, max_depth)} levels)")
+
+            # Scrape each relevant page (limit total pages per company)
+            scraped_urls = set()
+            max_pages = 30
+            for link in all_discovered_list[:max_pages]:
+                if link in scraped_urls:
+                    continue
+                scraped_urls.add(link)
+
                 # Respect crawl delay + add jitter to look human
                 delay = crawl_delay + random.uniform(0.5, 1.5)
                 time.sleep(delay)
