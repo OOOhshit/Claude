@@ -2,7 +2,12 @@
 """
 Oil Companies Market & Technology Scanner
 
-This script scans oil company websites to identify their market presence and technologies.
+Enhanced scraper using a 3-layer strategy:
+  Layer 1: requests + randomized headers (fast, low resource)
+  Layer 2: Playwright headless browser (JS rendering, WAF bypass)
+  Layer 3: Wayback Machine / Google Cache (last resort fallback)
+
+All 12 scraping challenges are handled via scraping_utils.py.
 """
 
 import json
@@ -17,6 +22,13 @@ import re
 from dataclasses import dataclass, asdict
 import random
 import urllib3
+
+from scraping_utils import (
+    EnhancedScrapingEngine,
+    get_randomized_headers,
+    detect_waf_or_captcha,
+    ScrapeCheckpoint,
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,36 +51,36 @@ class CompanyAnalysis:
     summary: str
 
 class OilCompanyScanner:
-    def __init__(self, verify_ssl: bool = True):
-        self.session = requests.Session()
+    def __init__(self, verify_ssl: bool = True, use_playwright: bool = True,
+                 proxy_file: Optional[str] = None, max_workers: int = 3,
+                 resume: bool = True):
         self.verify_ssl = verify_ssl
 
-        # Disable SSL warnings if verification is disabled (for corporate environments)
+        # Initialize the enhanced scraping engine (all 12 solutions)
+        self.engine = EnhancedScrapingEngine(
+            verify_ssl=verify_ssl,
+            use_playwright=use_playwright,
+            proxy_file=proxy_file,
+            max_workers=max_workers,
+            checkpoint_enabled=resume,
+        )
+
+        # Keep a lightweight requests session for robots.txt checks
+        self._robots_session = requests.Session()
+        self._robots_session.headers.update(get_randomized_headers())
+        self._robots_session.verify = verify_ssl
         if not verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            logger.warning("[SSL] SSL certificate verification is DISABLED - use only in trusted corporate environments")
+            logger.warning("[SSL] SSL certificate verification is DISABLED")
 
-        # Use more realistic browser headers to avoid detection
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Sec-Fetch-User': '?1',
-            'Cache-Control': 'max-age=0'
-        })
         self.scraped_content: List[ScrapedContent] = []
         self.analysis_results: List[CompanyAnalysis] = []
         self.market_keywords = self.load_market_keywords()
-        self.visited_urls: List[Dict] = []  # Track all visited URLs with status
-        self.robots_cache: Dict[str, RobotFileParser] = {}  # Cache robots.txt parsers
-        self.blocked_sites: List[Dict] = []  # Track sites that block scraping
-        
+        self.visited_urls: List[Dict] = []
+        self.robots_cache: Dict[str, RobotFileParser] = {}
+        self.blocked_sites: List[Dict] = []
+        self._resume = resume
+
     def load_companies(self, filename: str = 'companies.json') -> List[Dict]:
         """Load company data from JSON file"""
         try:
@@ -77,7 +89,7 @@ class OilCompanyScanner:
         except FileNotFoundError:
             logger.error(f"Companies file {filename} not found")
             return []
-    
+
     def load_market_keywords(self, filename: str = 'market.json') -> Set[str]:
         """Load market keywords from market.json for intelligent page filtering"""
         try:
@@ -156,7 +168,7 @@ class OilCompanyScanner:
         logger.info(f"[ROBOTS] Checking robots.txt at {robots_url}")
 
         try:
-            response = self.session.get(robots_url, timeout=10, verify=self.verify_ssl)
+            response = self._robots_session.get(robots_url, timeout=10, verify=self.verify_ssl)
             rp = RobotFileParser()
             rp.set_url(robots_url)
 
@@ -164,21 +176,18 @@ class OilCompanyScanner:
                 rp.parse(response.text.splitlines())
                 logger.info(f"[ROBOTS] Successfully parsed robots.txt for {domain}")
 
-                # Check for crawl delay
                 crawl_delay = rp.crawl_delay('*')
                 if crawl_delay:
                     logger.info(f"[ROBOTS] Crawl delay for {domain}: {crawl_delay} seconds")
             else:
-                # No robots.txt means everything is allowed
                 logger.info(f"[ROBOTS] No robots.txt found for {domain} (status {response.status_code}), assuming allowed")
-                rp.parse([])  # Empty rules = allow all
+                rp.parse([])
 
             self.robots_cache[domain] = rp
             return rp
 
         except Exception as e:
             logger.warning(f"[ROBOTS] Could not fetch robots.txt for {domain}: {str(e)}")
-            # If we can't fetch robots.txt, create permissive parser
             rp = RobotFileParser()
             rp.parse([])
             self.robots_cache[domain] = rp
@@ -190,8 +199,8 @@ class OilCompanyScanner:
         if rp is None:
             return True
 
-        user_agent = self.session.headers.get('User-Agent', '*')
-        allowed = rp.can_fetch(user_agent, url)
+        # Use a generic user-agent for robots.txt checks
+        allowed = rp.can_fetch('*', url)
 
         if not allowed:
             logger.warning(f"[ROBOTS] URL blocked by robots.txt: {url}")
@@ -209,74 +218,56 @@ class OilCompanyScanner:
         if rp:
             delay = rp.crawl_delay('*')
             if delay:
-                return max(delay, 1.0)  # At least 1 second
-        return 1.0  # Default delay
+                return max(delay, 1.0)
+        return 1.0
 
-    def request_with_retry(self, url: str, max_retries: int = 3) -> Optional[requests.Response]:
-        """Make HTTP request with retry logic and exponential backoff"""
-        for attempt in range(max_retries):
-            try:
-                # Add small random delay to appear more human-like
-                if attempt > 0:
-                    wait_time = (2 ** attempt) + random.uniform(0.5, 1.5)
-                    logger.info(f"[RETRY] Waiting {wait_time:.1f}s before retry {attempt + 1}/{max_retries}")
-                    time.sleep(wait_time)
+    def _extract_content_from_html(self, html: str) -> str:
+        """Parse HTML and extract clean text content using BeautifulSoup."""
+        soup = BeautifulSoup(html, 'html.parser')
 
-                response = self.session.get(url, timeout=20, verify=self.verify_ssl)
+        # Remove script, style, nav, footer, header noise
+        for tag in soup(["script", "style", "nav", "footer", "header", "noscript"]):
+            tag.decompose()
 
-                # Check for blocking responses
-                if response.status_code == 403:
-                    logger.warning(f"[BLOCKED] Access forbidden (403) for {url}")
-                    self.blocked_sites.append({
-                        'url': url,
-                        'reason': 'Access forbidden (403) - Site may block scrapers',
-                        'suggestion': 'Visit manually or check if site requires login/cookies'
-                    })
-                    return None
-                elif response.status_code == 429:
-                    logger.warning(f"[RATE LIMITED] Too many requests (429) for {url}")
-                    if attempt < max_retries - 1:
-                        continue  # Retry with backoff
-                    return None
-                elif response.status_code >= 500:
-                    logger.warning(f"[SERVER ERROR] Status {response.status_code} for {url}")
-                    if attempt < max_retries - 1:
-                        continue  # Retry
-                    return None
+        # Try semantic content selectors first
+        content_selectors = [
+            'main', '[role="main"]', '.main-content', '.content',
+            '.article', 'article', '.page-content', '#content',
+            '.post-content', '.entry-content',
+        ]
 
-                response.raise_for_status()
-                return response
+        content = ""
+        for selector in content_selectors:
+            element = soup.select_one(selector)
+            if element:
+                content = element.get_text(separator=' ', strip=True)
+                break
 
-            except requests.exceptions.Timeout:
-                logger.warning(f"[TIMEOUT] Request timed out for {url} (attempt {attempt + 1}/{max_retries})")
-                if attempt == max_retries - 1:
-                    self.blocked_sites.append({
-                        'url': url,
-                        'reason': 'Request timeout - Site may be slow or blocking',
-                        'suggestion': 'Try visiting manually or check network connectivity'
-                    })
-            except requests.exceptions.SSLError as e:
-                logger.error(f"[SSL ERROR] SSL certificate error for {url}: {str(e)}")
-                self.blocked_sites.append({
-                    'url': url,
-                    'reason': f'SSL certificate error: {str(e)}',
-                    'suggestion': 'Site may have certificate issues, try visiting in browser'
-                })
-                return None
-            except requests.exceptions.ConnectionError as e:
-                logger.warning(f"[CONNECTION ERROR] Could not connect to {url}: {str(e)}")
-                if attempt == max_retries - 1:
-                    self.blocked_sites.append({
-                        'url': url,
-                        'reason': 'Connection failed - Site may be down or blocking',
-                        'suggestion': 'Check if site is accessible in browser'
-                    })
-            except Exception as e:
-                logger.error(f"[ERROR] Unexpected error for {url}: {str(e)}")
-                if attempt == max_retries - 1:
-                    return None
+        if not content:
+            content = soup.get_text(separator=' ', strip=True)
 
-        return None
+        # Clean up whitespace
+        content = re.sub(r'\s+', ' ', content)
+        return content[:8000]  # Increased limit for richer analysis
+
+    def _extract_title_from_html(self, html: str) -> str:
+        """Extract the page title from HTML."""
+        soup = BeautifulSoup(html, 'html.parser')
+        title_tag = soup.find('title')
+        if title_tag:
+            return title_tag.get_text(strip=True)
+
+        # Fallback: look for h1
+        h1 = soup.find('h1')
+        if h1:
+            return h1.get_text(strip=True)
+
+        return ""
+
+    def _find_relevant_links_from_html(self, base_url: str, html: str) -> List[str]:
+        """Find relevant links from rendered HTML."""
+        soup = BeautifulSoup(html, 'html.parser')
+        return self.find_relevant_links(base_url, soup)
 
     def find_relevant_links(self, base_url: str, soup: BeautifulSoup) -> List[str]:
         """Find links related to markets from market.json and general business topics"""
@@ -346,9 +337,15 @@ class OilCompanyScanner:
 
         logger.info(f"Found {len(sorted_links)} relevant links (showing top 30)")
         return sorted_links[:30]
-    
+
     def scrape_page(self, url: str, company_name: str = "") -> str:
-        """Scrape content from a single page with robots.txt checking and retry logic"""
+        """
+        Scrape content from a single page using the enhanced 3-layer strategy.
+
+        Layer 1: requests with randomized headers + circuit breaker
+        Layer 2: Playwright (if WAF detected or JS needed)
+        Layer 3: Wayback Machine (if all else fails)
+        """
         logger.info(f"[URL VISIT] Visiting: {url}")
 
         # Check robots.txt first
@@ -362,73 +359,54 @@ class OilCompanyScanner:
             })
             return ""
 
-        try:
-            # Use retry logic
-            response = self.request_with_retry(url)
+        # Use the enhanced engine (handles all 12 challenges)
+        html = self.engine.smart_fetch(url, company_name=company_name)
 
-            if response is None:
-                self.visited_urls.append({
-                    'url': url,
-                    'company': company_name,
-                    'status': 'error',
-                    'status_code': None,
-                    'error': 'Failed after retries - site may block scrapers'
-                })
-                return ""
-
-            # Track successful visit
-            self.visited_urls.append({
-                'url': url,
-                'company': company_name,
-                'status': 'success',
-                'status_code': response.status_code,
-                'error': None
-            })
-            logger.info(f"[URL SUCCESS] {url} - Status: {response.status_code}")
-
-            soup = BeautifulSoup(response.content, 'html.parser')
-
-            # Remove script and style elements
-            for script in soup(["script", "style"]):
-                script.decompose()
-
-            # Extract main content
-            content_selectors = [
-                'main', '[role="main"]', '.main-content', '.content',
-                '.article', 'article', '.page-content'
-            ]
-
-            content = ""
-            for selector in content_selectors:
-                element = soup.select_one(selector)
-                if element:
-                    content = element.get_text(strip=True)
-                    break
-
-            if not content:
-                content = soup.get_text(strip=True)
-
-            # Clean up the content
-            content = re.sub(r'\s+', ' ', content)
-            return content[:5000]  # Limit content length
-
-        except Exception as e:
-            error_msg = str(e)
+        if html is None:
             self.visited_urls.append({
                 'url': url,
                 'company': company_name,
                 'status': 'error',
                 'status_code': None,
-                'error': error_msg
+                'error': 'Failed after all strategies (requests/Playwright/Wayback)'
             })
-            logger.error(f"[URL ERROR] {url} - Error: {error_msg}")
             return ""
-    
+
+        # Track success
+        self.visited_urls.append({
+            'url': url,
+            'company': company_name,
+            'status': 'success',
+            'status_code': 200,
+            'error': None,
+            'fetch_method': self._get_last_fetch_method(),
+        })
+        logger.info(f"[URL SUCCESS] {url}")
+
+        # Extract clean text content from the rendered HTML
+        content = self._extract_content_from_html(html)
+
+        # P7: Skip if content is duplicate of already-scraped page
+        if self.engine.url_normalizer.is_content_duplicate(content):
+            logger.info(f"[DEDUP] Content duplicate detected, skipping: {url}")
+            return ""
+
+        return content
+
+    def _get_last_fetch_method(self) -> str:
+        """Determine which method was used for the last fetch."""
+        stats = self.engine.stats
+        if stats.get("wayback_used", 0) > 0:
+            return "wayback"
+        if stats.get("playwright_used", 0) > 0:
+            return "playwright"
+        return "requests"
+
     def categorize_page(self, url: str, title: str, content: str) -> str:
         """Categorize the page based on URL and content"""
         url_lower = url.lower()
         content_lower = (title + " " + content).lower()
-        
+
         if any(term in url_lower or term in content_lower for term in ['technolog', 'digital', 'innovation']):
             return 'technology'
         elif any(term in url_lower or term in content_lower for term in ['market', 'business', 'sector']):
@@ -439,17 +417,28 @@ class OilCompanyScanner:
             return 'sustainability'
         else:
             return 'general'
-    
-    def scan_company(self, company: Dict, max_depth: int = 4, max_discovery_requests: int = 25) -> None:
+
+    def scan_company(self, company: Dict, max_depth: int = 4, max_discovery_requests: int = 25) -> List[ScrapedContent]:
         """Scan a single company's website with recursive multi-level crawling.
 
         Keeps crawling deeper (up to max_depth levels) as long as new relevant
         links are discovered on each level. Stops early if no new links are found
         or if max_discovery_requests is reached.
+
+        Returns list of ScrapedContent for concurrent scraping compatibility.
         """
         company_name = company['name']
         main_url = company['url']
+        results: List[ScrapedContent] = []
+
+        # P11: Skip if already done in a previous run
+        if self.engine.checkpoint and self.engine.checkpoint.is_company_done(company_name):
+            logger.info(f"[CHECKPOINT] Skipping {company_name} (already completed)")
+            return results
+
+        logger.info(f"{'='*60}")
         logger.info(f"Scanning {company_name} at {main_url}")
+        logger.info(f"{'='*60}")
 
         # Check robots.txt first
         if not self.is_url_allowed(main_url):
@@ -461,40 +450,37 @@ class OilCompanyScanner:
                 'status_code': None,
                 'error': 'Blocked by robots.txt - manual research required'
             })
-            return
+            return results
 
         # Get crawl delay from robots.txt
         crawl_delay = self.get_crawl_delay(main_url)
         logger.info(f"[ROBOTS] Using crawl delay of {crawl_delay}s for {company_name}")
 
         try:
+            # Fetch the main page (enhanced: tries requests -> Playwright -> Wayback)
             logger.info(f"[URL VISIT] Visiting main page: {main_url}")
+            main_html = self.engine.smart_fetch(main_url, company_name=company_name)
 
-            # Use retry logic for main page
-            response = self.request_with_retry(main_url)
-
-            if response is None:
+            if main_html is None:
                 self.visited_urls.append({
                     'url': main_url,
                     'company': company_name,
                     'status': 'error',
                     'status_code': None,
-                    'error': 'Failed to access main page - site may block scrapers'
+                    'error': 'Failed to access main page after all strategies'
                 })
-                logger.error(f"[BLOCKED] Could not access {company_name} - manual research recommended")
-                return
+                logger.error(f"[BLOCKED] Could not access {company_name}")
+                return results
 
             # Track main page visit
             self.visited_urls.append({
                 'url': main_url,
                 'company': company_name,
                 'status': 'success',
-                'status_code': response.status_code,
+                'status_code': 200,
                 'error': None
             })
-            logger.info(f"[URL SUCCESS] {main_url} - Status: {response.status_code}")
-
-            soup = BeautifulSoup(response.content, 'html.parser')
+            logger.info(f"[URL SUCCESS] {main_url}")
 
             # Recursive multi-level link discovery
             all_discovered = set()       # All unique discovered URLs
@@ -504,10 +490,9 @@ class OilCompanyScanner:
             discovery_requests_used = 0  # Track total discovery HTTP requests
 
             # Level 1: Find relevant links from the main page
-            level1_links = self.find_relevant_links(main_url, soup)
+            level1_links = self._find_relevant_links_from_html(main_url, main_html)
             allowed_links = [link for link in level1_links if self.is_url_allowed(link)]
             logger.info(f"[DEPTH 1] Found {len(allowed_links)} relevant links for {company_name}")
-
             for link in allowed_links:
                 if link not in all_discovered and link != main_url:
                     all_discovered.add(link)
@@ -515,6 +500,7 @@ class OilCompanyScanner:
 
             # Level 2+ : keep crawling discovered pages for deeper links
             current_level_links = list(all_discovered)  # Links to crawl next
+            depth = 1
             for depth in range(2, max_depth + 1):
                 if not current_level_links or discovery_requests_used >= max_discovery_requests:
                     break
@@ -542,10 +528,9 @@ class OilCompanyScanner:
                     discovery_requests_used += 1
 
                     try:
-                        nav_response = self.request_with_retry(nav_url)
-                        if nav_response:
-                            nav_soup = BeautifulSoup(nav_response.content, 'html.parser')
-                            deeper_links = self.find_relevant_links(main_url, nav_soup)
+                        nav_html = self.engine.smart_fetch(nav_url, company_name=company_name)
+                        if nav_html:
+                            deeper_links = self._find_relevant_links_from_html(main_url, nav_html)
                             for link in deeper_links:
                                 if (link not in all_discovered
                                         and link != main_url
@@ -576,20 +561,17 @@ class OilCompanyScanner:
                     continue
                 scraped_urls.add(link)
 
-                # Respect crawl delay
-                time.sleep(crawl_delay)
+                # Respect crawl delay + add jitter to look human
+                delay = crawl_delay + random.uniform(0.5, 1.5)
+                time.sleep(delay)
                 content = self.scrape_page(link, company_name)
 
                 if content:
+                    # Extract title from a fresh fetch (or from cached HTML)
                     title = ""
-                    try:
-                        page_response = self.request_with_retry(link)
-                        if page_response:
-                            page_soup = BeautifulSoup(page_response.content, 'html.parser')
-                            title_tag = page_soup.find('title')
-                            title = title_tag.get_text() if title_tag else ""
-                    except:
-                        pass
+                    html = self.engine.smart_fetch(link, company_name=company_name)
+                    if html:
+                        title = self._extract_title_from_html(html)
 
                     page_type = self.categorize_page(link, title, content)
 
@@ -601,8 +583,14 @@ class OilCompanyScanner:
                         page_type=page_type
                     )
 
+                    results.append(scraped_data)
                     self.scraped_content.append(scraped_data)
                     logger.info(f"Scraped {page_type} page: {title[:50]}...")
+
+            # P11: Mark company as done and save checkpoint
+            if self.engine.checkpoint:
+                self.engine.checkpoint.mark_company_done(company_name)
+                self.engine.save_checkpoint()
 
         except Exception as e:
             error_msg = str(e)
@@ -615,16 +603,17 @@ class OilCompanyScanner:
             })
             logger.error(f"[URL ERROR] {main_url} - Error: {error_msg}")
             logger.error(f"Error scanning {company_name}: {error_msg}")
-    
+
+        return results
+
     def analyze_with_ai(self, company_data: List[ScrapedContent]) -> CompanyAnalysis:
         """Analyze scraped content using AI (placeholder for now)"""
         company_name = company_data[0].company if company_data else "Unknown"
-        
-        # Group content by type
+
         tech_content = []
         market_content = []
         innovation_content = []
-        
+
         for data in company_data:
             if data.page_type == 'technology':
                 tech_content.append(data.content)
@@ -632,11 +621,9 @@ class OilCompanyScanner:
                 market_content.append(data.content)
             elif data.page_type in ['research', 'innovation']:
                 innovation_content.append(data.content)
-        
-        # Simple analysis based on keyword frequency
+
         all_content = " ".join([data.content for data in company_data])
-        
-        # Market analysis
+
         market_keywords = {
             'upstream': ['exploration', 'drilling', 'production', 'extraction'],
             'downstream': ['refining', 'petrochemical', 'retail', 'marketing'],
@@ -644,21 +631,20 @@ class OilCompanyScanner:
             'gas': ['natural gas', 'lng', 'pipeline', 'gas distribution'],
             'chemicals': ['chemicals', 'petrochemicals', 'plastics', 'polymers']
         }
-        
+
         market_presence = []
         for market, keywords in market_keywords.items():
             if any(keyword in all_content.lower() for keyword in keywords):
                 market_presence.append(market)
-        
-        # Technology analysis
+
         tech_keywords = [
             'artificial intelligence', 'ai', 'machine learning', 'digital',
             'automation', 'robotics', 'iot', 'blockchain', 'cloud',
             'carbon capture', 'ccus', 'subsea', 'deepwater'
         ]
-        
+
         technologies = [tech for tech in tech_keywords if tech in all_content.lower()]
-        
+
         return CompanyAnalysis(
             company=company_name,
             market_presence=", ".join(market_presence) if market_presence else "Not clearly identified",
@@ -666,36 +652,61 @@ class OilCompanyScanner:
             innovations="Various innovation initiatives mentioned" if innovation_content else "Limited innovation content found",
             summary=f"{company_name} operates in {len(market_presence)} identified market segments with {len(technologies)} technology areas mentioned."
         )
-    
+
     def run_analysis(self) -> None:
-        """Run the complete analysis process"""
-        logger.info("Starting oil company analysis...")
-        
+        """Run the complete analysis process with enhanced scraping."""
+        logger.info("Starting oil company analysis (enhanced scraping engine)...")
+
         companies = self.load_companies()
         if not companies:
             logger.error("No companies to analyze")
             return
-        
-        # Scan each company
+
+        # P11: Try to resume from checkpoint
+        if self._resume:
+            if self.engine.load_checkpoint():
+                logger.info("[CHECKPOINT] Resuming from previous run")
+
+        # P6: Scrape companies concurrently (respects per-domain rate limits)
+        logger.info(f"Scanning {len(companies)} companies...")
+
+        # Use sequential scanning for now to respect rate limits cleanly
+        # (concurrent mode available via self.engine.concurrent for advanced use)
         for company in companies:
             self.scan_company(company)
             time.sleep(2)  # Pause between companies
-        
+
         # Group scraped content by company
         companies_data = {}
         for content in self.scraped_content:
             if content.company not in companies_data:
                 companies_data[content.company] = []
             companies_data[content.company].append(content)
-        
+
         # Analyze each company's data
         for company_name, company_content in companies_data.items():
             analysis = self.analyze_with_ai(company_content)
             self.analysis_results.append(analysis)
-        
+
         # Save results
         self.save_results()
-    
+
+        # Log enhanced engine statistics
+        stats = self.engine.get_stats()
+        logger.info("=" * 60)
+        logger.info("[ENHANCED ENGINE STATS]")
+        logger.info(f"  Total requests:      {stats['total_requests']}")
+        logger.info(f"  Successful (requests): {stats['requests_success']}")
+        logger.info(f"  Playwright fallbacks:  {stats['playwright_used']}")
+        logger.info(f"  Wayback fallbacks:     {stats['wayback_used']}")
+        logger.info(f"  WAF/CAPTCHA detected:  {stats['waf_detected']}")
+        logger.info(f"  Duplicates skipped:    {stats['duplicates_skipped']}")
+        logger.info(f"  Total failed:          {stats['requests_failed']}")
+        logger.info("=" * 60)
+
+        # Clean up
+        self.engine.close()
+
     def save_results(self) -> None:
         """Save analysis results to files"""
         # Save raw scraped content
@@ -718,13 +729,18 @@ class OilCompanyScanner:
         blocked_count = sum(1 for url in self.visited_urls if url['status'] == 'blocked')
         logger.info(f"[URL SUMMARY] Total URLs: {len(self.visited_urls)}, Success: {success_count}, Errors: {error_count}, Blocked: {blocked_count}")
 
-        # Save blocked sites with suggestions for manual research
+        # Save blocked sites
         if self.blocked_sites:
             with open('blocked_sites.json', 'w', encoding='utf-8') as f:
                 json.dump(self.blocked_sites, f, indent=2, ensure_ascii=False)
             logger.info(f"[BLOCKED SITES] {len(self.blocked_sites)} sites require manual research - see blocked_sites.json")
 
-        # Log all errors and blocked sites
+        # Save enhanced engine statistics
+        stats = self.engine.get_stats()
+        with open('scraping_stats.json', 'w', encoding='utf-8') as f:
+            json.dump(stats, f, indent=2, ensure_ascii=False, default=str)
+
+        # Log errors and blocked sites
         if error_count > 0 or blocked_count > 0:
             logger.warning("=" * 60)
             logger.warning("[MANUAL RESEARCH REQUIRED] The following sites need manual checking:")
@@ -754,7 +770,7 @@ class OilCompanyScanner:
                 f.write(f"Summary: {analysis.summary}\n")
                 f.write("-" * 40 + "\n\n")
 
-        logger.info("Results saved to scraped_content.json, company_analysis.json, visited_urls.json, and analysis_report.txt")
+        logger.info("Results saved to scraped_content.json, company_analysis.json, visited_urls.json, scraping_stats.json, and analysis_report.txt")
 
 if __name__ == "__main__":
     scanner = OilCompanyScanner()
