@@ -98,30 +98,53 @@ class OilCompanyScanner:
 
             keywords = set()
 
-            # Extract all market names and items from the business structure
-            for business_line in market_data.get('BusinessStructure', []):
-                bl_name = business_line.get('name', '').lower()
-                keywords.add(bl_name)
+            # Handle flat dictionary format: {"Category": ["item1", "item2", ...]}
+            if isinstance(market_data, dict) and 'BusinessStructure' not in market_data:
+                for category_name, items in market_data.items():
+                    keywords.add(category_name.lower())
+                    if isinstance(items, list):
+                        for item in items:
+                            if isinstance(item, str):
+                                keywords.add(item.lower())
+            else:
+                # Handle nested BusinessStructure format
+                for business_line in market_data.get('BusinessStructure', []):
+                    bl_name = business_line.get('name', '').lower()
+                    keywords.add(bl_name)
+                    for sub_bl in business_line.get('sub_business_lines', []):
+                        sub_name = sub_bl.get('name', '').lower()
+                        keywords.add(sub_name)
+                        for category in sub_bl.get('categories', []):
+                            cat_name = category.get('name', '').lower()
+                            keywords.add(cat_name)
+                            for item in category.get('items', []):
+                                keywords.add(item.lower())
 
-                for sub_bl in business_line.get('sub_business_lines', []):
-                    sub_name = sub_bl.get('name', '').lower()
-                    keywords.add(sub_name)
-
-                    for category in sub_bl.get('categories', []):
-                        cat_name = category.get('name', '').lower()
-                        keywords.add(cat_name)
-
-                        for item in category.get('items', []):
-                            keywords.add(item.lower())
-
+            # Clean up keywords and create search-friendly versions
             cleaned_keywords = set()
             for keyword in keywords:
-                if keyword and len(keyword) > 2:
+                if keyword and len(keyword) > 2:  # Skip very short terms
                     cleaned_keywords.add(keyword)
+                    # Add individual words for better matching
                     words = keyword.replace('-', ' ').replace('/', ' ').split()
                     for word in words:
-                        if len(word) > 3:
+                        if len(word) > 3:  # Only significant words
                             cleaned_keywords.add(word)
+
+            # Add core oil & gas industry terms that are essential for link discovery
+            core_industry_keywords = {
+                'oil', 'gas', 'crude', 'petroleum', 'energy', 'fuel', 'power',
+                'exploration', 'production', 'drilling', 'extraction', 'reservoir',
+                'upstream', 'downstream', 'midstream', 'offshore', 'onshore',
+                'refinery', 'refining', 'petrochemical', 'chemical', 'polymer',
+                'lng', 'liquefied', 'natural gas', 'pipeline', 'terminal',
+                'renewable', 'solar', 'wind', 'hydrogen', 'carbon', 'emissions',
+                'sustainability', 'climate', 'decarbonization', 'net zero',
+                'ccus', 'carbon capture', 'storage',
+                'expertise', 'activities', 'operations', 'segments', 'divisions',
+                'explore', 'produce', 'transform', 'supply', 'distribute',
+            }
+            cleaned_keywords.update(core_industry_keywords)
 
             logger.info(f"Loaded {len(cleaned_keywords)} market keywords for intelligent page filtering")
             return cleaned_keywords
