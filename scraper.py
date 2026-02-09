@@ -281,7 +281,7 @@ class OilCompanyScanner:
         })
 
         links = set()
-        link_scores = {}
+        link_scores = {}  # Track relevance scores for better ranking
 
         for link in soup.find_all('a', href=True):
             href = link.get('href', '').lower()
