@@ -1303,9 +1303,30 @@ class EnhancedScrapingEngine:
                     f"{', '.join(waf_result.signals[:3])}"
                 )
                 self.stats["waf_detected"] += 1
+                # Fall through to Playwright
+
+        # --- Strategy 2: Playwright (handles JS + WAF) ---
+        if self._playwright_fetcher and self._playwright_fetcher.is_available():
+            logger.info(f"[FALLBACK] Trying Playwright for {url}")
+            html = self._playwright_fetcher.fetch(url)
+            if html and len(html) > 500:
+                self.stats["playwright_used"] += 1
+                self.circuit_breaker.record_success(url)
+                if self.checkpoint:
+                    self.checkpoint.mark_url_done(url)
+                return html
+
+        # --- Strategy 3: Wayback Machine fallback ---
+        logger.info(f"[FALLBACK] Trying Wayback Machine for {url}")
+        html = fetch_with_fallback(url, session)
+        if html:
+            self.stats["wayback_used"] += 1
+            if self.checkpoint:
+                self.checkpoint.mark_url_done(url)
+            return html
 
         self.stats["requests_failed"] += 1
-        logger.error(f"[FAILED] Could not fetch {url}")
+        logger.error(f"[FAILED] All strategies exhausted for {url}")
         return None
 
     def save_checkpoint(self):

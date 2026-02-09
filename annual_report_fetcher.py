@@ -250,6 +250,7 @@ class AnnualReportFetcher:
         page_count = 0
         method = "none"
 
+        # Try pdfplumber first (better extraction)
         if HAS_PDFPLUMBER:
             try:
                 logger.info(f"[ANNUAL REPORT] Extracting text with pdfplumber: {pdf_path}")
@@ -263,9 +264,12 @@ class AnnualReportFetcher:
                 if text.strip():
                     method = "pdfplumber"
                     logger.info(f"[ANNUAL REPORT] Extracted {len(text)} characters from {page_count} pages")
+                    return text, page_count, method
             except Exception as e:
                 logger.warning(f"[ANNUAL REPORT] pdfplumber extraction failed: {str(e)}")
-        elif HAS_PYPDF2:
+
+        # Fall back to PyPDF2
+        if HAS_PYPDF2:
             try:
                 logger.info(f"[ANNUAL REPORT] Extracting text with PyPDF2: {pdf_path}")
                 with open(pdf_path, 'rb') as f:
@@ -279,9 +283,11 @@ class AnnualReportFetcher:
                 if text.strip():
                     method = "PyPDF2"
                     logger.info(f"[ANNUAL REPORT] Extracted {len(text)} characters from {page_count} pages")
+                    return text, page_count, method
             except Exception as e:
                 logger.warning(f"[ANNUAL REPORT] PyPDF2 extraction failed: {str(e)}")
-        else:
+
+        if not HAS_PYPDF2 and not HAS_PDFPLUMBER:
             logger.error("[ANNUAL REPORT] No PDF extraction library available. Install pdfplumber or PyPDF2.")
 
         return text, page_count, method
@@ -302,6 +308,7 @@ class AnnualReportFetcher:
 
             pdf_content = io.BytesIO(response.content)
 
+            # Try pdfplumber first
             if HAS_PDFPLUMBER:
                 try:
                     with pdfplumber.open(pdf_content) as pdf:
@@ -313,9 +320,13 @@ class AnnualReportFetcher:
 
                     if text.strip():
                         method = "pdfplumber"
+                        return text, page_count, method
                 except Exception as e:
                     logger.warning(f"[ANNUAL REPORT] pdfplumber URL extraction failed: {str(e)}")
-            elif HAS_PYPDF2:
+                    pdf_content.seek(0)  # Reset for next attempt
+
+            # Fall back to PyPDF2
+            if HAS_PYPDF2:
                 try:
                     reader = PyPDF2.PdfReader(pdf_content)
                     page_count = len(reader.pages)
@@ -326,6 +337,7 @@ class AnnualReportFetcher:
 
                     if text.strip():
                         method = "PyPDF2"
+                        return text, page_count, method
                 except Exception as e:
                     logger.warning(f"[ANNUAL REPORT] PyPDF2 URL extraction failed: {str(e)}")
 
