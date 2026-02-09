@@ -270,72 +270,169 @@ class OilCompanyScanner:
         return self.find_relevant_links(base_url, soup)
 
     def find_relevant_links(self, base_url: str, soup: BeautifulSoup) -> List[str]:
-        """Find links related to markets from market.json and general business topics"""
-        # Combine market keywords with general business keywords including activity terms
-        all_keywords = self.market_keywords.union({
-            'technology', 'innovation', 'digital', 'research', 'development',
-            'business', 'operations', 'sustainability', 'future', 'solutions',
-            'projects', 'ventures', 'investments', 'strategy', 'portfolio',
-            'partnership', 'partners', 'joint-venture', 'acquisition',
-            'alliance', 'collaboration', 'investor', 'news', 'press',
-            'media', 'announcements', 'agreement',
-            # Additional navigation/section keywords common on corporate sites
-            'about', 'company', 'who-we-are', 'what-we-do', 'our-business',
-            'sectors', 'industries', 'capabilities', 'services', 'brands',
-        })
+        """Find links relevant to market analysis by classifying link text and URL.
+
+        Instead of matching against a huge keyword set (which matches almost
+        everything on an oil-company website), this method:
+          1. Rejects links whose text/URL clearly indicates irrelevant pages
+             (careers, HR, legal, cookies, diversity, etc.)
+          2. Scores links positively when the link text or URL path contains
+             topic indicators for: technology, market/strategy, investment,
+             partnership, news/press releases, innovation, operations,
+             sustainability, and specific market.json terms.
+        """
+
+        # --- Exclusion patterns (link text OR url path) ---
+        # These are topics that are never useful for market/technology analysis.
+        exclude_patterns = [
+            # Careers / HR
+            'career', 'careers', 'job', 'jobs', 'vacancy', 'vacancies',
+            'work with us', 'work for us', 'join us', 'join our team',
+            'recruitment', 'hiring', 'talent', 'graduate programme',
+            'graduate program', 'internship', 'apprentice',
+            # Human rights / diversity / inclusion
+            'human rights', 'diversity', 'inclusion', 'equal opportunity',
+            'workplace culture', 'employee resource',
+            # Legal / compliance / privacy
+            'privacy', 'cookie', 'cookies', 'legal', 'terms of use',
+            'terms and conditions', 'disclaimer', 'compliance',
+            'data protection', 'gdpr', 'accessibility statement',
+            # Authentication / utility
+            'login', 'log in', 'sign in', 'register', 'my account',
+            'search', 'sitemap', 'site map', 'contact us', 'contact',
+            'subscribe', 'newsletter', 'rss', 'podcast',
+            # Social / sharing
+            'share on', 'follow us', 'social media',
+            'facebook', 'twitter', 'linkedin', 'instagram', 'youtube',
+            # Procurement / suppliers
+            'supplier', 'procurement', 'tender', 'bid',
+        ]
+
+        # --- Positive topic indicators (link text OR url path) ---
+        # Grouped by topic with weights.  Higher weight = more relevant.
+        topic_indicators = {
+            # Core market / strategy pages
+            'strategy': (['strategy', 'strategic', 'our strategy',
+                          'our business', 'what we do', 'who we are',
+                          'business overview', 'our approach',
+                          'segments', 'divisions', 'business areas',
+                          'portfolio', 'sectors', 'industries',
+                          'our operations', 'operations', 'business units'], 5),
+            # Technology / R&D / digital
+            'technology': (['technology', 'technologies', 'innovation',
+                            'innovate', 'digital', 'digitalization',
+                            'research', 'r&d', 'development',
+                            'solutions', 'capabilities', 'advanced',
+                            'automation', 'artificial intelligence',
+                            'ai', 'machine learning'], 5),
+            # Investment / financial
+            'investment': (['investor', 'investors', 'investment',
+                            'invest', 'annual report', 'financial',
+                            'quarterly results', 'earnings',
+                            'capital', 'shareholder'], 4),
+            # Partnerships / M&A / alliances
+            'partnership': (['partnership', 'partners', 'partner',
+                             'joint venture', 'joint-venture',
+                             'acquisition', 'alliance', 'collaboration',
+                             'agreement', 'mou', 'memorandum',
+                             'venture', 'ventures'], 5),
+            # News / press / announcements
+            'news': (['news', 'press', 'media', 'announcement',
+                       'press release', 'press-release', 'newsroom',
+                       'media centre', 'media center', 'latest',
+                       'updates', 'stories'], 3),
+            # Sustainability / energy transition
+            'sustainability': (['sustainability', 'sustainable',
+                                 'climate', 'carbon', 'net zero',
+                                 'net-zero', 'emissions', 'clean energy',
+                                 'energy transition', 'decarbonization',
+                                 'decarbonisation', 'renewable',
+                                 'renewables', 'esg',
+                                 'environment', 'environmental'], 4),
+            # Specific energy / oil-gas operations
+            'operations': (['upstream', 'downstream', 'midstream',
+                            'exploration', 'production', 'refining',
+                            'refinery', 'petrochemical', 'chemicals',
+                            'lng', 'natural gas', 'gas', 'oil',
+                            'offshore', 'onshore', 'deepwater',
+                            'subsea', 'drilling', 'well',
+                            'crude', 'petroleum', 'hydrocarbon'], 4),
+            # New energy / future
+            'new_energy': (['hydrogen', 'solar', 'wind', 'biofuel',
+                             'biofuels', 'battery', 'storage',
+                             'electric', 'ev charging', 'fuel cell',
+                             'geothermal', 'nuclear', 'ammonia',
+                             'ccus', 'carbon capture', 'ccs'], 5),
+            # Projects / growth
+            'projects': (['project', 'projects', 'growth', 'expansion',
+                           'development', 'major projects',
+                           'key projects', 'new projects'], 3),
+        }
 
         links = set()
-        link_scores = {}  # Track relevance scores for better ranking
+        link_scores = {}
 
         for link in soup.find_all('a', href=True):
             href = link.get('href', '').lower()
             text = link.get_text().lower().strip()
-            title = link.get('title', '').lower()
+            title_attr = link.get('title', '').lower()
 
-            # Decode any pre-encoded URLs and join properly
+            # Decode URL and resolve relative paths
             href_decoded = unquote(link['href'])
             full_url = urljoin(base_url, href_decoded)
 
-            # Only include links from the same domain
+            # Only include same-domain links
             if urlparse(full_url).netloc != urlparse(base_url).netloc:
                 continue
 
-            # Skip common non-content links
-            if any(skip in href for skip in ['login', 'search', 'contact', 'privacy', 'cookie', 'legal']):
-                continue
-
-            # Skip anchors, javascript links, and file downloads
+            # Skip anchors, javascript, and file downloads
             if href.startswith('#') or href.startswith('javascript:'):
                 continue
             if any(href.endswith(ext) for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip']):
                 continue
 
-            # Calculate relevance score
-            score = 0
-
-            # Normalize URL path: replace hyphens, slashes, underscores with spaces
-            # so "explore-produce/oil-gas" becomes "explore produce oil gas"
+            # Normalize URL path for matching
             url_path = urlparse(full_url).path.lower()
             normalized_path = url_path.replace('-', ' ').replace('/', ' ').replace('_', ' ')
 
-            content_to_check = f"{normalized_path} {text} {title}"
+            # Combined text to classify the link
+            link_text = f"{text} {title_attr} {normalized_path}"
 
-            for keyword in all_keywords:
-                if keyword in content_to_check:
-                    # Market-specific keywords get higher scores
-                    if keyword in self.market_keywords:
-                        score += 3
-                    else:
-                        score += 1
+            # --- Step 1: Reject if link clearly matches an excluded topic ---
+            excluded = False
+            for pattern in exclude_patterns:
+                if pattern in link_text:
+                    excluded = True
+                    break
+            if excluded:
+                continue
+
+            # --- Step 2: Score positively by topic relevance ---
+            score = 0
+            for topic, (indicators, weight) in topic_indicators.items():
+                for indicator in indicators:
+                    if indicator in link_text:
+                        score += weight
+                        break  # one match per topic is enough
+
+            # --- Step 3: Bonus for market.json-specific terms in link text ---
+            # Only give a small bonus (these are very broad on oil company sites)
+            for keyword in self.market_keywords:
+                if len(keyword) > 5 and keyword in link_text:
+                    score += 1
+                    break  # cap market.json bonus at 1
 
             if score > 0:
                 links.add(full_url)
                 link_scores[full_url] = max(link_scores.get(full_url, 0), score)
 
-        # Sort by relevance score and return top links
+        # Sort by relevance score descending
         sorted_links = sorted(links, key=lambda x: link_scores.get(x, 0), reverse=True)
 
         logger.info(f"Found {len(sorted_links)} relevant links (showing top 30)")
+        if sorted_links[:5]:
+            for lnk in sorted_links[:5]:
+                logger.info(f"  Top link ({link_scores.get(lnk, 0)} pts): {lnk}")
         return sorted_links[:30]
 
     def scrape_page(self, url: str, company_name: str = "") -> str:

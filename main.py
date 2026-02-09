@@ -27,25 +27,53 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def format_evidence_with_urls(evidence_list):
-    """Format evidence list with URLs for HTML display"""
+    """Format evidence list with URLs for HTML display.
+
+    Supports both the new contextual format (keyword, context, sentiment, urls)
+    and the legacy format (keyword, mention_count, urls).
+    """
     if not evidence_list:
         return "No evidence found"
 
     formatted_items = []
     for item in evidence_list:
         if isinstance(item, dict):
-            # New format with keyword, mention_count, and urls
             keyword = item.get('keyword', '')
-            count = item.get('mention_count', 0)
             urls = item.get('urls', [])
+            context = item.get('context', '')
+            sentiment = item.get('sentiment', '')
+            count = item.get('mention_count', 0)
 
+            # Build the display line
+            parts = [f"<strong>{keyword}</strong>"]
+
+            # Show sentiment badge if available
+            if sentiment == 'positive':
+                parts.append('<span style="color:#28a745;font-size:0.85em;">[active engagement]</span>')
+            elif sentiment == 'negative':
+                parts.append('<span style="color:#dc3545;font-size:0.85em;">[negative]</span>')
+
+            # Show count if available (legacy format)
+            if count and not context:
+                parts.append(f"({count}x)")
+
+            # Show context snippet if available (new format)
+            if context:
+                # Truncate context for display
+                display_ctx = context[:150] + "..." if len(context) > 150 else context
+                parts.append(f'<span style="color:#555;font-size:0.85em;">— "{display_ctx}"</span>')
+
+            # Show source URLs
             if urls:
-                url_links = ', '.join([f'<a href="{url}" target="_blank">{url[:50]}...</a>' if len(url) > 50 else f'<a href="{url}" target="_blank">{url}</a>' for url in urls[:5]])
-                formatted_items.append(f"<strong>{keyword}</strong> ({count}x) - Sources: {url_links}")
-            else:
-                formatted_items.append(f"<strong>{keyword}</strong> ({count}x)")
+                url_links = ', '.join([
+                    f'<a href="{url}" target="_blank">{url[:50]}...</a>' if len(url) > 50
+                    else f'<a href="{url}" target="_blank">{url}</a>'
+                    for url in urls[:5]
+                ])
+                parts.append(f"<br><span style='font-size:0.8em;color:#888;'>Sources: {url_links}</span>")
+
+            formatted_items.append(" ".join(parts))
         else:
-            # Legacy string format
             formatted_items.append(str(item))
 
     return "<br>".join(formatted_items)
