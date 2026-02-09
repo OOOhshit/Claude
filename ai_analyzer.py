@@ -7,6 +7,7 @@ import json
 import re
 from typing import List, Dict, Set, Optional
 from dataclasses import dataclass
+from urllib.parse import urlparse
 import logging
 
 logger = logging.getLogger(__name__)
@@ -137,7 +138,7 @@ class AIAnalyzer:
 
         # Load and integrate technologies from technology.json
         self.technology_keywords.update(self.load_technologies_from_json())
-        
+
         self.geographic_indicators = [
             'north america', 'usa', 'canada', 'mexico',
             'europe', 'uk', 'norway', 'netherlands', 'france',
@@ -146,6 +147,50 @@ class AIAnalyzer:
             'asia pacific', 'china', 'india', 'australia', 'singapore',
             'south america', 'brazil', 'argentina', 'venezuela'
         ]
+
+        # --- Sentiment / context patterns for contextual analysis ---
+        # Negation patterns: when these appear near a keyword, the mention is negative
+        self.negation_patterns = [
+            r'no\s+plans?\s+(?:for|to)',
+            r'not\s+(?:currently\s+)?(?:pursuing|investing|developing|planning|exploring)',
+            r'(?:leaving|exiting|divesting|withdrawing|abandoning)\s+(?:the\s+)?',
+            r'(?:sold|selling|divested|closed|shutting\s+down|shut\s+down)\s+(?:its\s+|our\s+)?',
+            r'(?:ruled\s+out|rejected|cancelled|canceled|scrapped|halted)',
+            r'(?:no\s+longer|ceased|stopped|ended|terminated)\s+',
+            r'(?:unlikely|improbable|not\s+viable|not\s+feasible)',
+            r'(?:reduced|reducing|cutting)\s+(?:its\s+|our\s+)?(?:exposure|presence|investment)\s+in',
+        ]
+
+        # Positive engagement patterns: when these appear near a keyword, the mention is positive
+        self.positive_patterns = [
+            r'(?:entering|expanding|investing|launching|developing|building|constructing)',
+            r'(?:partnership|partnered|partnering|collaboration|collaborating)\s+(?:with|in|on|for)',
+            r'(?:acquired|acquiring|acquisition|purchased|buying)',
+            r'(?:new|major|significant|strategic)\s+(?:investment|project|initiative|venture)',
+            r'(?:committed|commitment|pledged|targeting|aiming)\s+(?:to|for)',
+            r'(?:growing|growth|increase|increasing|scaling|accelerating)',
+            r'(?:leader|leading|pioneer|pioneering|forefront|first-mover)',
+            r'(?:commissioned|inaugurated|opened|started|commenced|began)',
+            r'(?:breakthrough|advanced|cutting-edge|state-of-the-art|world-class)',
+            r'(?:joint\s+venture|jv|alliance|agreement|mou|memorandum)',
+        ]
+
+        # Semantic aliases: map alternative terms to canonical keywords
+        self.semantic_aliases = {
+            'hydrogen': ['blue fuel', 'clean molecules', 'h2', 'green hydrogen', 'blue hydrogen',
+                         'hydrogen economy', 'hydrogen hub', 'hydrogen valley'],
+            'carbon capture': ['carbon removal', 'co2 capture', 'emission capture',
+                               'direct air capture', 'dac', 'carbon sequestration'],
+            'renewable': ['clean power', 'green power', 'green energy', 'zero-carbon energy'],
+            'solar': ['photovoltaic', 'pv', 'solar farm', 'solar plant'],
+            'wind': ['wind farm', 'wind power', 'offshore wind', 'onshore wind'],
+            'biofuel': ['sustainable aviation fuel', 'saf', 'renewable diesel',
+                        'hvo', 'bio-jet', 'green diesel'],
+            'digital twin': ['virtual model', 'virtual replica', 'simulation model'],
+            'automation': ['robotic process', 'autonomous operations', 'unmanned operations'],
+            'lng': ['liquefied natural gas', 'liquid natural gas'],
+            'electric vehicle': ['ev charging', 'e-mobility', 'electrification of transport'],
+        }
     
     def load_known_markets(self, filename: str = 'market.json') -> Set[str]:
         """Load known markets from market.json for new market detection"""
@@ -309,122 +354,337 @@ class AIAnalyzer:
             logger.error(f"Error loading technologies from JSON: {str(e)}")
             return {}
 
+    def _split_sentences(self, text: str) -> List[str]:
+        """Split text into sentences for contextual analysis."""
+        # Split on sentence-ending punctuation, keeping reasonable chunks
+        sentences = re.split(r'(?<=[.!?])\s+', text)
+        # Also split very long segments on semicolons/colons
+        result = []
+        for s in sentences:
+            if len(s) > 500:
+                result.extend(re.split(r'[;:]\s+', s))
+            else:
+                result.append(s)
+        return [s.strip() for s in result if len(s.strip()) > 10]
+
+    def _analyze_sentence_sentiment(self, sentence: str, keyword: str) -> str:
+        """Determine whether a keyword mention in a sentence is positive, negative, or neutral.
+
+        Returns: 'positive', 'negative', or 'neutral'
+        """
+        sentence_lower = sentence.lower()
+
+        # Check for negation patterns near the keyword
+        for neg_pattern in self.negation_patterns:
+            # Look for negation within 60 chars before the keyword
+            kw_idx = sentence_lower.find(keyword.lower())
+            if kw_idx == -1:
+                continue
+            window_before = sentence_lower[max(0, kw_idx - 80):kw_idx]
+            window_after = sentence_lower[kw_idx:kw_idx + len(keyword) + 80]
+            context_window = window_before + ' ' + window_after
+            if re.search(neg_pattern, context_window):
+                return 'negative'
+
+        # Check for positive engagement patterns
+        for pos_pattern in self.positive_patterns:
+            kw_idx = sentence_lower.find(keyword.lower())
+            if kw_idx == -1:
+                continue
+            window_before = sentence_lower[max(0, kw_idx - 80):kw_idx]
+            window_after = sentence_lower[kw_idx:kw_idx + len(keyword) + 80]
+            context_window = window_before + ' ' + window_after
+            if re.search(pos_pattern, context_window):
+                return 'positive'
+
+        return 'neutral'
+
+    def _is_boilerplate_context(self, sentence: str) -> bool:
+        """Detect if a sentence is likely boilerplate (footer, nav, cookie banner, etc.)."""
+        boilerplate_signals = [
+            'cookie', 'privacy policy', 'terms of use', 'terms and conditions',
+            'all rights reserved', 'copyright', 'subscribe to', 'sign up for',
+            'follow us', 'contact us', 'click here', 'learn more',
+            'accept all', 'manage preferences', 'cookie settings',
+            'site map', 'back to top', 'skip to content',
+        ]
+        sentence_lower = sentence.lower()
+        return any(signal in sentence_lower for signal in boilerplate_signals)
+
+    def _get_page_type_weight(self, url: str, keyword: str) -> float:
+        """Give higher weight to keywords found on dedicated/relevant pages.
+
+        A mention of 'hydrogen' on a /hydrogen page is worth more than
+        a mention in a generic /about page.
+        """
+        if not url:
+            return 1.0
+
+        url_lower = url.lower()
+        keyword_lower = keyword.lower()
+
+        # Strong signal: keyword appears in the URL path itself
+        url_path = urlparse(url_lower).path.replace('-', ' ').replace('/', ' ').replace('_', ' ')
+        if keyword_lower in url_path:
+            return 2.0
+
+        # Medium signal: URL is a topic-related section
+        topic_url_patterns = {
+            'technology': 1.5, 'innovation': 1.5, 'research': 1.5,
+            'strategy': 1.4, 'business': 1.3, 'operations': 1.3,
+            'sustainability': 1.4, 'energy': 1.2, 'investor': 1.3,
+            'news': 1.1, 'press': 1.1, 'project': 1.3,
+        }
+        for pattern, weight in topic_url_patterns.items():
+            if pattern in url_path:
+                return weight
+
+        return 1.0
+
+    def _find_keyword_with_aliases(self, keyword: str, text: str) -> List[str]:
+        """Find a keyword or any of its semantic aliases in text.
+
+        Returns list of actual matched terms.
+        """
+        text_lower = text.lower()
+        found = []
+
+        if re.search(r'\b' + re.escape(keyword.lower()) + r'\b', text_lower):
+            found.append(keyword)
+
+        # Check semantic aliases
+        for canonical, aliases in self.semantic_aliases.items():
+            if keyword.lower() == canonical or keyword.lower() in aliases:
+                terms_to_check = [canonical] + aliases
+                for alias in terms_to_check:
+                    if alias != keyword.lower() and re.search(r'\b' + re.escape(alias) + r'\b', text_lower):
+                        found.append(alias)
+
+        return found
+
     def extract_market_segments(self, content: str, url_content_map: Dict[str, str] = None) -> List[MarketSegment]:
-        """Extract market segments from content with confidence scores and URL tracking"""
+        """Extract market segments using contextual sentence-level analysis.
+
+        Instead of counting keyword frequency, this method:
+          1. Splits content into sentences
+          2. For each keyword match, checks the sentence context for negation
+             or positive signals
+          3. Weights mentions by page type (dedicated page vs generic)
+          4. Filters out boilerplate mentions (cookie banners, footers)
+          5. Uses semantic aliases for broader matching
+        """
         segments = []
-        content_lower = content.lower()
+        sentences = self._split_sentences(content)
 
         for segment_name, segment_data in self.market_keywords.items():
+            positive_score = 0.0
+            negative_count = 0
             evidence = []
-            keyword_count = 0
+            seen_evidence_keys = set()
 
             for keyword in segment_data['keywords']:
-                matches = len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_lower))
-                if matches > 0:
-                    keyword_count += matches
-                    # Find URLs where this keyword appears
-                    if url_content_map:
-                        urls_with_keyword = []
-                        for url, page_content in url_content_map.items():
-                            if re.search(r'\b' + re.escape(keyword) + r'\b', page_content.lower()):
-                                urls_with_keyword.append(url)
-                        if urls_with_keyword:
-                            evidence.append({
-                                'keyword': keyword,
-                                'mention_count': matches,
-                                'urls': urls_with_keyword
-                            })
-                    else:
-                        evidence.append({
-                            'keyword': keyword,
-                            'mention_count': matches,
-                            'urls': []
-                        })
+                for sentence in sentences:
+                    # Skip boilerplate
+                    if self._is_boilerplate_context(sentence):
+                        continue
 
-            if keyword_count > 0:
-                # Calculate confidence based on keyword frequency and weight
-                confidence = min(0.95, (keyword_count * segment_data['weight']) / 10)
+                    # Check keyword + aliases
+                    matched_terms = self._find_keyword_with_aliases(keyword, sentence)
+                    if not matched_terms:
+                        continue
+
+                    # Analyze sentiment of this mention
+                    sentiment = self._analyze_sentence_sentiment(sentence, matched_terms[0])
+                    if sentiment == 'negative':
+                        negative_count += 1
+                        continue
+
+                    # Score: positive mentions get more weight
+                    mention_score = 1.5 if sentiment == 'positive' else 0.8
+
+                    # Apply page-type weighting via url_content_map
+                    if url_content_map:
+                        for url, page_content in url_content_map.items():
+                            if any(re.search(r'\b' + re.escape(t) + r'\b', page_content.lower()) for t in matched_terms):
+                                page_weight = self._get_page_type_weight(url, keyword)
+                                mention_score *= page_weight
+
+                                ev_key = f"{keyword}:{url}"
+                                if ev_key not in seen_evidence_keys and len(evidence) < 5:
+                                    seen_evidence_keys.add(ev_key)
+                                    evidence.append({
+                                        'keyword': matched_terms[0],
+                                        'context': sentence[:200],
+                                        'sentiment': sentiment,
+                                        'urls': [url]
+                                    })
+                                break
+                    else:
+                        ev_key = f"{keyword}:{sentence[:50]}"
+                        if ev_key not in seen_evidence_keys and len(evidence) < 5:
+                            seen_evidence_keys.add(ev_key)
+                            evidence.append({
+                                'keyword': matched_terms[0],
+                                'context': sentence[:200],
+                                'sentiment': sentiment,
+                                'urls': []
+                            })
+
+                    positive_score += mention_score
+
+            # Only include segments with net positive evidence
+            if positive_score > 0 and positive_score > negative_count:
+                # Confidence based on weighted score, not raw count
+                weight = segment_data.get('weight', 1.0)
+                confidence = min(0.95, (positive_score * weight) / 12)
+
+                # Penalize confidence if there are significant negative mentions
+                if negative_count > 0:
+                    neg_ratio = negative_count / (positive_score + negative_count)
+                    confidence *= (1.0 - neg_ratio * 0.5)
 
                 segments.append(MarketSegment(
                     name=segment_name.replace('_', ' ').title(),
-                    confidence=confidence,
-                    evidence=evidence[:5]  # Limit evidence items
+                    confidence=round(confidence, 3),
+                    evidence=evidence[:5]
                 ))
 
         return sorted(segments, key=lambda x: x.confidence, reverse=True)
     
     def extract_technologies(self, content: str, url_content_map: Dict[str, str] = None) -> List[Technology]:
-        """Extract technologies from content with categorization and URL tracking"""
+        """Extract technologies using contextual sentence-level analysis.
+
+        Same approach as extract_market_segments: analyses sentence context,
+        handles negation, weights by page type, and uses semantic aliases.
+        """
         technologies = []
-        content_lower = content.lower()
+        sentences = self._split_sentences(content)
 
         for tech_name, tech_data in self.technology_keywords.items():
+            positive_score = 0.0
+            negative_count = 0
             evidence = []
-            keyword_count = 0
+            seen_evidence_keys = set()
 
             for keyword in tech_data['keywords']:
-                matches = len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_lower))
-                if matches > 0:
-                    keyword_count += matches
-                    # Find URLs where this keyword appears
-                    if url_content_map:
-                        urls_with_keyword = []
-                        for url, page_content in url_content_map.items():
-                            if re.search(r'\b' + re.escape(keyword) + r'\b', page_content.lower()):
-                                urls_with_keyword.append(url)
-                        if urls_with_keyword:
-                            evidence.append({
-                                'keyword': keyword,
-                                'mention_count': matches,
-                                'urls': urls_with_keyword
-                            })
-                    else:
-                        evidence.append({
-                            'keyword': keyword,
-                            'mention_count': matches,
-                            'urls': []
-                        })
+                for sentence in sentences:
+                    if self._is_boilerplate_context(sentence):
+                        continue
 
-            if keyword_count > 0:
-                confidence = min(0.95, keyword_count / 5)
+                    matched_terms = self._find_keyword_with_aliases(keyword, sentence)
+                    if not matched_terms:
+                        continue
+
+                    sentiment = self._analyze_sentence_sentiment(sentence, matched_terms[0])
+                    if sentiment == 'negative':
+                        negative_count += 1
+                        continue
+
+                    mention_score = 1.5 if sentiment == 'positive' else 0.8
+
+                    if url_content_map:
+                        for url, page_content in url_content_map.items():
+                            if any(re.search(r'\b' + re.escape(t) + r'\b', page_content.lower()) for t in matched_terms):
+                                page_weight = self._get_page_type_weight(url, keyword)
+                                mention_score *= page_weight
+
+                                ev_key = f"{keyword}:{url}"
+                                if ev_key not in seen_evidence_keys and len(evidence) < 3:
+                                    seen_evidence_keys.add(ev_key)
+                                    evidence.append({
+                                        'keyword': matched_terms[0],
+                                        'context': sentence[:200],
+                                        'sentiment': sentiment,
+                                        'urls': [url]
+                                    })
+                                break
+                    else:
+                        ev_key = f"{keyword}:{sentence[:50]}"
+                        if ev_key not in seen_evidence_keys and len(evidence) < 3:
+                            seen_evidence_keys.add(ev_key)
+                            evidence.append({
+                                'keyword': matched_terms[0],
+                                'context': sentence[:200],
+                                'sentiment': sentiment,
+                                'urls': []
+                            })
+
+                    positive_score += mention_score
+
+            if positive_score > 0 and positive_score > negative_count:
+                confidence = min(0.95, positive_score / 6)
+                if negative_count > 0:
+                    neg_ratio = negative_count / (positive_score + negative_count)
+                    confidence *= (1.0 - neg_ratio * 0.5)
 
                 technologies.append(Technology(
                     name=tech_name.replace('_', ' ').title(),
                     category=tech_data['category'],
-                    confidence=confidence,
+                    confidence=round(confidence, 3),
                     evidence=evidence[:3]
                 ))
 
         return sorted(technologies, key=lambda x: x.confidence, reverse=True)
     
     def calculate_sustainability_focus(self, content: str) -> float:
-        """Calculate sustainability focus score"""
+        """Calculate sustainability focus score using contextual analysis.
+
+        Only counts mentions in substantive sentences (not boilerplate),
+        and weights positive commitments higher than neutral mentions.
+        """
         sustainability_keywords = [
             'sustainability', 'sustainable', 'renewable', 'clean energy',
             'carbon neutral', 'net zero', 'emissions reduction',
-            'environmental', 'green', 'climate change'
+            'environmental', 'green energy', 'climate change',
+            'energy transition', 'decarbonization', 'decarbonisation',
         ]
-        
-        content_lower = content.lower()
-        total_mentions = sum(len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_lower)) 
-                           for keyword in sustainability_keywords)
-        
-        # Normalize to 0-1 scale
-        return min(1.0, total_mentions / 20)
-    
+
+        sentences = self._split_sentences(content)
+        weighted_score = 0.0
+
+        for sentence in sentences:
+            if self._is_boilerplate_context(sentence):
+                continue
+            sentence_lower = sentence.lower()
+            for keyword in sustainability_keywords:
+                if re.search(r'\b' + re.escape(keyword) + r'\b', sentence_lower):
+                    sentiment = self._analyze_sentence_sentiment(sentence, keyword)
+                    if sentiment == 'negative':
+                        continue
+                    weighted_score += 1.5 if sentiment == 'positive' else 0.7
+                    break  # one keyword per sentence is enough
+
+        return round(min(1.0, weighted_score / 15), 3)
+
     def calculate_innovation_score(self, content: str) -> float:
-        """Calculate innovation score based on R&D and innovation mentions"""
+        """Calculate innovation score using contextual analysis.
+
+        Weights active innovation signals (investing, launching, pioneering)
+        higher than passive mentions.
+        """
         innovation_keywords = [
             'innovation', 'research', 'development', 'r&d',
             'breakthrough', 'cutting-edge', 'advanced',
-            'pioneering', 'patent', 'technology development'
+            'pioneering', 'patent', 'technology development',
+            'prototype', 'pilot project', 'first-of-its-kind',
         ]
-        
-        content_lower = content.lower()
-        total_mentions = sum(len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_lower)) 
-                           for keyword in innovation_keywords)
-        
-        return min(1.0, total_mentions / 15)
+
+        sentences = self._split_sentences(content)
+        weighted_score = 0.0
+
+        for sentence in sentences:
+            if self._is_boilerplate_context(sentence):
+                continue
+            sentence_lower = sentence.lower()
+            for keyword in innovation_keywords:
+                if re.search(r'\b' + re.escape(keyword) + r'\b', sentence_lower):
+                    sentiment = self._analyze_sentence_sentiment(sentence, keyword)
+                    if sentiment == 'negative':
+                        continue
+                    weighted_score += 1.5 if sentiment == 'positive' else 0.7
+                    break
+
+        return round(min(1.0, weighted_score / 12), 3)
     
     def extract_geographic_presence(self, content: str) -> List[str]:
         """Extract geographic presence indicators"""
@@ -607,69 +867,147 @@ class AIAnalyzer:
         return summary
     
     def detect_new_market_opportunities(self, content: str, url_content_map: Dict[str, str] = None) -> List[NewMarketOpportunity]:
-        """Detect potentially new markets not in our known market list"""
-        content_lower = content.lower()
+        """Detect potentially new energy/oil-domain markets not in our known market list.
 
-        # Look for market indicators that might represent new opportunities
+        Improved approach:
+          1. Only matches multi-word phrases that include a domain-specific qualifier
+          2. Requires the phrase to appear in a substantive sentence (not boilerplate)
+          3. Requires positive/neutral context (not negated)
+          4. Filters out generic phrases ('its business', 'the energy', 'of energy')
+          5. Validates that the candidate is a real market concept related to oil & energy
+        """
+        sentences = self._split_sentences(content)
+
+        # Patterns that capture specific market/technology concepts
+        # Each pattern requires a domain-qualifying adjective or noun
         new_market_patterns = [
-            r'\b(\w+\s+(?:market|sector|industry|business|energy|fuel|technology))\b',
-            r'\b(emerging\s+\w+)\b',
-            r'\b(next-generation\s+\w+)\b',
-            r'\b(new\s+\w+\s+(?:solutions|technologies|markets))\b',
-            r'\b(\w+\s+transition)\b',
-            r'\b(future\s+of\s+\w+)\b'
+            # "<specific_adjective> <domain_noun>" patterns
+            r'\b((?:green|blue|clean|renewable|sustainable|advanced|smart|digital|offshore|onshore|floating|modular)\s+(?:hydrogen|ammonia|methanol|fuel|energy|power|gas|chemical|material|technology|solution|platform))\b',
+            # "emerging <specific_domain_term>"
+            r'\b(emerging\s+(?:hydrogen|ammonia|carbon|biofuel|lng|lithium|battery|geothermal|nuclear|wind|solar|fuel\s+cell|electrolysis)\s*(?:market|sector|industry|opportunity|technology)?)\b',
+            # "next-generation <specific_tech>"
+            r'\b(next[\s-]generation\s+(?:biofuel|catalyst|refining|reactor|battery|fuel\s+cell|electrolyzer|turbine|solar|polymer))\b',
+            # Specific compound market terms
+            r'\b((?:carbon\s+credit|emissions?\s+trading|green\s+bond|sustainable\s+finance|circular\s+economy|waste[\s-]to[\s-]energy|power[\s-]to[\s-]x|e[\s-]fuel|e[\s-]methanol|direct\s+air\s+capture|ocean\s+energy|tidal\s+energy|geothermal\s+energy|small\s+modular\s+reactor|floating\s+wind|green\s+ammonia|blue\s+ammonia))\b',
         ]
 
-        potential_new_markets = set()
+        # Words/phrases that should NEVER be considered a new market
+        # (too generic or not meaningful in energy context)
+        garbage_filters = {
+            'its business', 'the energy', 'of energy', 'our business',
+            'the market', 'its market', 'the sector', 'the industry',
+            'our energy', 'this market', 'this business', 'this sector',
+            'global energy', 'world energy', 'new energy', 'total energy',
+            'the technology', 'of technology', 'its technology',
+            'all energy', 'more energy', 'other energy', 'any energy',
+            'clean technology', 'energy technology',  # too broad
+            'future energy', 'future market', 'future technology',
+            'digital technology', 'smart technology',  # too generic
+            'emerging market', 'emerging technology',  # the category itself
+        }
 
-        for pattern in new_market_patterns:
-            matches = re.findall(pattern, content_lower)
-            for match in matches:
-                clean_match = match.strip()
-                # Check if this is not in our known markets
-                if not any(known in clean_match or clean_match in known for known in self.known_markets):
-                    if len(clean_match) > 5 and len(clean_match) < 50:  # Reasonable length
-                        potential_new_markets.add(clean_match)
+        # Domain-relevance check: must contain at least one domain term
+        domain_terms = {
+            'hydrogen', 'ammonia', 'methanol', 'carbon', 'biofuel', 'lng',
+            'lithium', 'battery', 'geothermal', 'nuclear', 'wind', 'solar',
+            'fuel cell', 'electrolysis', 'electrolyzer', 'refining', 'catalyst',
+            'polymer', 'reactor', 'turbine', 'biomass', 'biogas', 'ethanol',
+            'methane', 'syngas', 'tidal', 'ocean', 'floating', 'modular',
+            'e-fuel', 'e-methanol', 'circular', 'waste-to-energy', 'power-to-x',
+            'co2', 'emissions', 'credit', 'trading', 'capture', 'storage',
+            'green bond', 'sustainable finance',
+        }
 
-        # Convert to NewMarketOpportunity objects with evidence
+        potential_new_markets = {}  # market_name -> (sentences, urls)
+
+        for sentence in sentences:
+            if self._is_boilerplate_context(sentence):
+                continue
+
+            sentence_lower = sentence.lower()
+            for pattern in new_market_patterns:
+                matches = re.findall(pattern, sentence_lower)
+                for match in matches:
+                    clean_match = match.strip()
+
+                    # Filter: reject garbage / too-generic phrases
+                    if clean_match in garbage_filters:
+                        continue
+                    if len(clean_match) < 8 or len(clean_match) > 60:
+                        continue
+
+                    # Filter: must contain a domain-specific term
+                    if not any(dt in clean_match for dt in domain_terms):
+                        continue
+
+                    # Filter: not in our known markets already
+                    if any(known in clean_match or clean_match in known for known in self.known_markets):
+                        continue
+
+                    # Check sentiment: skip negated mentions
+                    sentiment = self._analyze_sentence_sentiment(sentence, clean_match)
+                    if sentiment == 'negative':
+                        continue
+
+                    if clean_match not in potential_new_markets:
+                        potential_new_markets[clean_match] = {
+                            'sentences': [], 'urls': set(), 'positive_count': 0, 'neutral_count': 0
+                        }
+
+                    potential_new_markets[clean_match]['sentences'].append(sentence[:200])
+                    if sentiment == 'positive':
+                        potential_new_markets[clean_match]['positive_count'] += 1
+                    else:
+                        potential_new_markets[clean_match]['neutral_count'] += 1
+
+                    # Find source URLs
+                    if url_content_map:
+                        for url, page_content in url_content_map.items():
+                            if clean_match in page_content.lower():
+                                potential_new_markets[clean_match]['urls'].add(url)
+
+        # Convert to NewMarketOpportunity objects
         new_opportunities = []
-        for market in potential_new_markets:
-            # Find evidence in content
-            market_mentions = content_lower.count(market)
-            if market_mentions > 0:
-                confidence = min(0.8, market_mentions / 5)  # Max 80% confidence
+        for market, data in potential_new_markets.items():
+            total_mentions = data['positive_count'] + data['neutral_count']
+            if total_mentions < 1:
+                continue
 
-                # Try to categorize the new market
-                potential_category = "Emerging Market"
-                if any(term in market for term in ['energy', 'fuel', 'power']):
-                    potential_category = "New Energy Solutions"
-                elif any(term in market for term in ['technology', 'digital', 'ai']):
-                    potential_category = "Technology Innovation"
-                elif any(term in market for term in ['chemical', 'material']):
-                    potential_category = "New Materials/Chemicals"
+            # Confidence: positive mentions count more; require at least 2 mentions for > 50% confidence
+            confidence = min(0.8, (data['positive_count'] * 1.5 + data['neutral_count'] * 0.5) / 5)
 
-                # Find URLs where this market is mentioned
-                urls_with_market = []
-                if url_content_map:
-                    for url, page_content in url_content_map.items():
-                        if market in page_content.lower():
-                            urls_with_market.append(url)
+            # Categorize the new market
+            potential_category = "Emerging Market"
+            if any(term in market for term in ['energy', 'fuel', 'power', 'wind', 'solar', 'tidal', 'geothermal']):
+                potential_category = "New Energy Solutions"
+            elif any(term in market for term in ['hydrogen', 'ammonia', 'methanol', 'e-fuel', 'biofuel']):
+                potential_category = "Alternative Fuels & Feedstocks"
+            elif any(term in market for term in ['carbon', 'capture', 'co2', 'emission', 'credit']):
+                potential_category = "Carbon & Emissions Management"
+            elif any(term in market for term in ['battery', 'lithium', 'reactor', 'modular']):
+                potential_category = "Technology Innovation"
+            elif any(term in market for term in ['chemical', 'material', 'polymer', 'catalyst']):
+                potential_category = "New Materials/Chemicals"
+            elif any(term in market for term in ['circular', 'waste', 'recycl']):
+                potential_category = "Circular Economy"
+            elif any(term in market for term in ['bond', 'finance', 'trading']):
+                potential_category = "Green Finance"
 
-                evidence = [{
-                    'keyword': market,
-                    'mention_count': market_mentions,
-                    'urls': urls_with_market
-                }]
+            evidence = [{
+                'keyword': market,
+                'context': data['sentences'][0] if data['sentences'] else '',
+                'sentiment': 'positive' if data['positive_count'] > 0 else 'neutral',
+                'urls': list(data['urls'])[:5]
+            }]
 
-                new_opportunities.append(NewMarketOpportunity(
-                    name=market.title(),
-                    confidence=confidence,
-                    evidence=evidence,
-                    potential_category=potential_category
-                ))
+            new_opportunities.append(NewMarketOpportunity(
+                name=market.title(),
+                confidence=round(confidence, 3),
+                evidence=evidence,
+                potential_category=potential_category
+            ))
 
-        # Sort by confidence
-        return sorted(new_opportunities, key=lambda x: x.confidence, reverse=True)[:5]  # Top 5
+        return sorted(new_opportunities, key=lambda x: x.confidence, reverse=True)[:5]
 
     def extract_business_activities(self, content: str, url_content_map: Dict[str, str] = None) -> List[BusinessActivity]:
         """Extract business activities: partnerships, investments, JVs, acquisitions from website content"""
