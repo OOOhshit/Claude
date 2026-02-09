@@ -275,19 +275,14 @@ def request_with_adaptive_retry(
     session: requests.Session,
     url: str,
     circuit_breaker: CircuitBreaker,
-    max_retries: int = 4,
+    max_retries: int = 1,
     verify_ssl: bool = True,
     proxy: Optional[str] = None,
 ) -> Optional[requests.Response]:
     """
-    Make an HTTP request with adaptive retry, circuit breaker, and backoff.
+    Make a single HTTP request with circuit breaker protection.
 
-    Differentiates between error types:
-      - 403:  Likely bot-detected. Try with different headers, then give up.
-      - 429:  Rate limited. Back off aggressively.
-      - 5xx:  Server error. Retry with exponential backoff.
-      - Timeout/Connection: Retry with backoff.
-      - SSL:  Don't retry (fundamental config issue).
+    On any error, gives up immediately and moves on.
     """
     if not circuit_breaker.can_request(url):
         logger.warning(f"[CIRCUIT] Request blocked for {url} (circuit open)")
@@ -295,76 +290,56 @@ def request_with_adaptive_retry(
 
     proxies = {"http": proxy, "https": proxy} if proxy else None
 
-    for attempt in range(max_retries):
-        try:
-            if attempt > 0:
-                wait_time = circuit_breaker.get_adaptive_delay(url)
-                logger.info(f"[RETRY] Attempt {attempt + 1}/{max_retries} for {url} (waiting {wait_time:.1f}s)")
-                time.sleep(wait_time)
+    try:
+        session.headers.update(get_randomized_headers())
 
-            # Rotate headers on each retry
-            session.headers.update(get_randomized_headers())
+        response = session.get(
+            url,
+            timeout=25,
+            verify=verify_ssl,
+            allow_redirects=True,
+            proxies=proxies,
+        )
 
-            response = session.get(
-                url,
-                timeout=25,
-                verify=verify_ssl,
-                allow_redirects=True,
-                proxies=proxies,
-            )
+        if response.status_code == 200:
+            circuit_breaker.record_success(url)
+            return response
+        elif response.status_code == 403:
+            logger.warning(f"[BLOCKED] 403 Forbidden: {url}")
+            circuit_breaker.record_failure(url, 403, "Forbidden")
+            return None
+        elif response.status_code == 429:
+            logger.warning(f"[RATE LIMITED] 429 for {url}")
+            circuit_breaker.record_failure(url, 429, "Rate limited")
+            return None
+        elif response.status_code >= 500:
+            logger.warning(f"[SERVER ERROR] {response.status_code} for {url}")
+            circuit_breaker.record_failure(url, response.status_code, "Server error")
+            return None
+        else:
+            # Other status codes (301, 302 handled by allow_redirects)
+            circuit_breaker.record_success(url)
+            return response
 
-            if response.status_code == 200:
-                circuit_breaker.record_success(url)
-                return response
-            elif response.status_code == 403:
-                logger.warning(f"[BLOCKED] 403 Forbidden: {url}")
-                # Try once more with completely fresh headers
-                if attempt == 0:
-                    session.headers.update(get_randomized_headers())
-                    continue
-                circuit_breaker.record_failure(url, 403, "Forbidden")
-                return None
-            elif response.status_code == 429:
-                logger.warning(f"[RATE LIMITED] 429 for {url}")
-                retry_after = response.headers.get("Retry-After")
-                if retry_after:
-                    try:
-                        time.sleep(min(float(retry_after), 60.0))
-                    except ValueError:
-                        time.sleep(10)
-                circuit_breaker.record_failure(url, 429, "Rate limited")
-                continue
-            elif response.status_code >= 500:
-                logger.warning(f"[SERVER ERROR] {response.status_code} for {url}")
-                circuit_breaker.record_failure(url, response.status_code, "Server error")
-                continue
-            else:
-                # Other status codes (301, 302 handled by allow_redirects)
-                circuit_breaker.record_success(url)
-                return response
+    except requests.exceptions.SSLError as e:
+        logger.error(f"[SSL ERROR] {url}: {e}")
+        circuit_breaker.record_failure(url, None, f"SSL: {e}")
+        return None
 
-        except requests.exceptions.SSLError as e:
-            logger.error(f"[SSL ERROR] {url}: {e}")
-            circuit_breaker.record_failure(url, None, f"SSL: {e}")
-            return None  # Don't retry SSL errors
+    except requests.exceptions.Timeout:
+        logger.warning(f"[TIMEOUT] {url}")
+        circuit_breaker.record_failure(url, None, "Timeout")
+        return None
 
-        except requests.exceptions.Timeout:
-            logger.warning(f"[TIMEOUT] {url} (attempt {attempt + 1})")
-            circuit_breaker.record_failure(url, None, "Timeout")
-            continue
+    except requests.exceptions.ConnectionError as e:
+        logger.warning(f"[CONNECTION] {url}: {e}")
+        circuit_breaker.record_failure(url, None, f"Connection: {e}")
+        return None
 
-        except requests.exceptions.ConnectionError as e:
-            logger.warning(f"[CONNECTION] {url}: {e}")
-            circuit_breaker.record_failure(url, None, f"Connection: {e}")
-            continue
-
-        except Exception as e:
-            logger.error(f"[ERROR] Unexpected for {url}: {e}")
-            circuit_breaker.record_failure(url, None, str(e))
-            if attempt == max_retries - 1:
-                return None
-
-    return None
+    except Exception as e:
+        logger.error(f"[ERROR] Unexpected for {url}: {e}")
+        circuit_breaker.record_failure(url, None, str(e))
+        return None
 
 
 # =============================================================================
@@ -1266,12 +1241,9 @@ class EnhancedScrapingEngine:
 
     def smart_fetch(self, url: str, company_name: str = "") -> Optional[str]:
         """
-        Intelligently fetch a URL using the best available method.
+        Fetch a URL using a single requests-based attempt.
 
-        Strategy:
-          1. requests (fast) -> check for WAF
-          2. If WAF detected -> Playwright (renders JS, passes challenges)
-          3. If all fail -> Wayback Machine (archived content)
+        On any error, gives up immediately and moves on.
         """
         self.stats["total_requests"] += 1
 
@@ -1294,11 +1266,11 @@ class EnhancedScrapingEngine:
         # P8: Get proxy if available
         proxy = self.proxy_rotator.get_random() if self.proxy_rotator.available else None
 
-        # --- Strategy 1: Fast requests-based fetch ---
+        # Single attempt with requests
         session = self.session_manager.get_session(url)
         response = request_with_adaptive_retry(
             session, url, self.circuit_breaker,
-            max_retries=3, verify_ssl=self.verify_ssl, proxy=proxy,
+            max_retries=1, verify_ssl=self.verify_ssl, proxy=proxy,
         )
 
         if response is not None:
@@ -1331,30 +1303,9 @@ class EnhancedScrapingEngine:
                     f"{', '.join(waf_result.signals[:3])}"
                 )
                 self.stats["waf_detected"] += 1
-                # Fall through to Playwright
-
-        # --- Strategy 2: Playwright (handles JS + WAF) ---
-        if self._playwright_fetcher and self._playwright_fetcher.is_available():
-            logger.info(f"[FALLBACK] Trying Playwright for {url}")
-            html = self._playwright_fetcher.fetch(url)
-            if html and len(html) > 500:
-                self.stats["playwright_used"] += 1
-                self.circuit_breaker.record_success(url)
-                if self.checkpoint:
-                    self.checkpoint.mark_url_done(url)
-                return html
-
-        # --- Strategy 3: Wayback Machine fallback ---
-        logger.info(f"[FALLBACK] Trying Wayback Machine for {url}")
-        html = fetch_with_fallback(url, session)
-        if html:
-            self.stats["wayback_used"] += 1
-            if self.checkpoint:
-                self.checkpoint.mark_url_done(url)
-            return html
 
         self.stats["requests_failed"] += 1
-        logger.error(f"[FAILED] All strategies exhausted for {url}")
+        logger.error(f"[FAILED] Could not fetch {url}")
         return None
 
     def save_checkpoint(self):
