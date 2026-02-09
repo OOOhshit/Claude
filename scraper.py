@@ -83,29 +83,31 @@ class OilCompanyScanner:
         try:
             with open(filename, 'r') as f:
                 market_data = json.load(f)
-            
+
             keywords = set()
-            
-            # Extract all market names and items from the business structure
-            for business_line in market_data.get('BusinessStructure', []):
-                # Add business line name
-                bl_name = business_line.get('name', '').lower()
-                keywords.add(bl_name)
-                
-                # Process sub business lines
-                for sub_bl in business_line.get('sub_business_lines', []):
-                    sub_name = sub_bl.get('name', '').lower()
-                    keywords.add(sub_name)
-                    
-                    # Process categories
-                    for category in sub_bl.get('categories', []):
-                        cat_name = category.get('name', '').lower()
-                        keywords.add(cat_name)
-                        
-                        # Process items
-                        for item in category.get('items', []):
-                            keywords.add(item.lower())
-            
+
+            # Handle flat dictionary format: {"Category": ["item1", "item2", ...]}
+            if isinstance(market_data, dict) and 'BusinessStructure' not in market_data:
+                for category_name, items in market_data.items():
+                    keywords.add(category_name.lower())
+                    if isinstance(items, list):
+                        for item in items:
+                            if isinstance(item, str):
+                                keywords.add(item.lower())
+            else:
+                # Handle nested BusinessStructure format
+                for business_line in market_data.get('BusinessStructure', []):
+                    bl_name = business_line.get('name', '').lower()
+                    keywords.add(bl_name)
+                    for sub_bl in business_line.get('sub_business_lines', []):
+                        sub_name = sub_bl.get('name', '').lower()
+                        keywords.add(sub_name)
+                        for category in sub_bl.get('categories', []):
+                            cat_name = category.get('name', '').lower()
+                            keywords.add(cat_name)
+                            for item in category.get('items', []):
+                                keywords.add(item.lower())
+
             # Clean up keywords and create search-friendly versions
             cleaned_keywords = set()
             for keyword in keywords:
@@ -116,10 +118,25 @@ class OilCompanyScanner:
                     for word in words:
                         if len(word) > 3:  # Only significant words
                             cleaned_keywords.add(word)
-            
+
+            # Add core oil & gas industry terms that are essential for link discovery
+            core_industry_keywords = {
+                'oil', 'gas', 'crude', 'petroleum', 'energy', 'fuel', 'power',
+                'exploration', 'production', 'drilling', 'extraction', 'reservoir',
+                'upstream', 'downstream', 'midstream', 'offshore', 'onshore',
+                'refinery', 'refining', 'petrochemical', 'chemical', 'polymer',
+                'lng', 'liquefied', 'natural gas', 'pipeline', 'terminal',
+                'renewable', 'solar', 'wind', 'hydrogen', 'carbon', 'emissions',
+                'sustainability', 'climate', 'decarbonization', 'net zero',
+                'ccus', 'carbon capture', 'storage',
+                'expertise', 'activities', 'operations', 'segments', 'divisions',
+                'explore', 'produce', 'transform', 'supply', 'distribute',
+            }
+            cleaned_keywords.update(core_industry_keywords)
+
             logger.info(f"Loaded {len(cleaned_keywords)} market keywords for intelligent page filtering")
             return cleaned_keywords
-            
+
         except FileNotFoundError:
             logger.warning("market.json not found, using default keywords")
             return set(['technology', 'innovation', 'market', 'business', 'energy'])
@@ -270,33 +287,48 @@ class OilCompanyScanner:
             'projects', 'ventures', 'investments', 'strategy', 'portfolio',
             'partnership', 'partners', 'joint-venture', 'acquisition',
             'alliance', 'collaboration', 'investor', 'news', 'press',
-            'media', 'announcements', 'agreement'
+            'media', 'announcements', 'agreement',
+            # Additional navigation/section keywords common on corporate sites
+            'about', 'company', 'who-we-are', 'what-we-do', 'our-business',
+            'sectors', 'industries', 'capabilities', 'services', 'brands',
         })
-        
+
         links = set()
         link_scores = {}  # Track relevance scores for better ranking
-        
+
         for link in soup.find_all('a', href=True):
             href = link.get('href', '').lower()
             text = link.get_text().lower().strip()
             title = link.get('title', '').lower()
-            
+
             # Decode any pre-encoded URLs and join properly
             href_decoded = unquote(link['href'])
             full_url = urljoin(base_url, href_decoded)
-            
+
             # Only include links from the same domain
             if urlparse(full_url).netloc != urlparse(base_url).netloc:
                 continue
-            
+
             # Skip common non-content links
             if any(skip in href for skip in ['login', 'search', 'contact', 'privacy', 'cookie', 'legal']):
                 continue
-            
+
+            # Skip anchors, javascript links, and file downloads
+            if href.startswith('#') or href.startswith('javascript:'):
+                continue
+            if any(href.endswith(ext) for ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip']):
+                continue
+
             # Calculate relevance score
             score = 0
-            content_to_check = f"{href} {text} {title}"
-            
+
+            # Normalize URL path: replace hyphens, slashes, underscores with spaces
+            # so "explore-produce/oil-gas" becomes "explore produce oil gas"
+            url_path = urlparse(full_url).path.lower()
+            normalized_path = url_path.replace('-', ' ').replace('/', ' ').replace('_', ' ')
+
+            content_to_check = f"{normalized_path} {text} {title}"
+
             for keyword in all_keywords:
                 if keyword in content_to_check:
                     # Market-specific keywords get higher scores
@@ -304,16 +336,16 @@ class OilCompanyScanner:
                         score += 3
                     else:
                         score += 1
-            
+
             if score > 0:
                 links.add(full_url)
-                link_scores[full_url] = score
-        
+                link_scores[full_url] = max(link_scores.get(full_url, 0), score)
+
         # Sort by relevance score and return top links
         sorted_links = sorted(links, key=lambda x: link_scores.get(x, 0), reverse=True)
-        
-        logger.info(f"Found {len(sorted_links)} relevant links (showing top 15)")
-        return sorted_links[:15]  # Increased from 10 to 15 for better coverage
+
+        logger.info(f"Found {len(sorted_links)} relevant links (showing top 30)")
+        return sorted_links[:30]
     
     def scrape_page(self, url: str, company_name: str = "") -> str:
         """Scrape content from a single page with robots.txt checking and retry logic"""
@@ -408,8 +440,12 @@ class OilCompanyScanner:
         else:
             return 'general'
     
-    def scan_company(self, company: Dict) -> None:
-        """Scan a single company's website with robots.txt respect and retry logic"""
+    def scan_company(self, company: Dict, max_depth: int = 2) -> None:
+        """Scan a single company's website with multi-level crawling.
+
+        Crawls up to max_depth levels deep to discover relevant subpages
+        that aren't directly linked from the homepage.
+        """
         company_name = company['name']
         main_url = company['url']
         logger.info(f"Scanning {company_name} at {main_url}")
@@ -459,17 +495,69 @@ class OilCompanyScanner:
 
             soup = BeautifulSoup(response.content, 'html.parser')
 
-            # Find relevant links
-            relevant_links = self.find_relevant_links(main_url, soup)
-            logger.info(f"Found {len(relevant_links)} relevant links for {company_name}")
+            # Multi-level link discovery: crawl deeper to find subpage links
+            scraped_urls = set()  # Track URLs already scraped to avoid duplicates
+            all_discovered_links = []  # All unique relevant links across all levels
+
+            # Level 1: Find relevant links from the main page
+            level1_links = self.find_relevant_links(main_url, soup)
+            logger.info(f"[DEPTH 1] Found {len(level1_links)} relevant links for {company_name}")
 
             # Filter out links blocked by robots.txt
-            allowed_links = [link for link in relevant_links if self.is_url_allowed(link)]
-            if len(allowed_links) < len(relevant_links):
-                logger.info(f"[ROBOTS] {len(relevant_links) - len(allowed_links)} links blocked by robots.txt")
+            allowed_links = [link for link in level1_links if self.is_url_allowed(link)]
+            if len(allowed_links) < len(level1_links):
+                logger.info(f"[ROBOTS] {len(level1_links) - len(allowed_links)} links blocked by robots.txt")
 
-            # Scrape each relevant page
-            for link in allowed_links:
+            all_discovered_links.extend(allowed_links)
+
+            # Level 2+: Follow discovered links to find deeper subpages
+            if max_depth >= 2:
+                # Pick top navigation-like pages to crawl for more links
+                # (pages with short paths are more likely to be section landing pages)
+                nav_candidates = []
+                for link in allowed_links:
+                    path = urlparse(link).path.rstrip('/')
+                    depth = len([p for p in path.split('/') if p])
+                    if depth <= 3:  # Shallow pages are likely section hubs
+                        nav_candidates.append(link)
+
+                nav_candidates = nav_candidates[:10]  # Limit to 10 subpages for discovery
+                logger.info(f"[DEPTH 2] Crawling {len(nav_candidates)} section pages for deeper links")
+
+                for nav_url in nav_candidates:
+                    time.sleep(crawl_delay)
+                    try:
+                        nav_response = self.request_with_retry(nav_url)
+                        if nav_response:
+                            nav_soup = BeautifulSoup(nav_response.content, 'html.parser')
+                            deeper_links = self.find_relevant_links(main_url, nav_soup)
+                            new_links = [l for l in deeper_links
+                                         if l not in all_discovered_links
+                                         and l != main_url
+                                         and self.is_url_allowed(l)]
+                            if new_links:
+                                logger.info(f"[DEPTH 2] Found {len(new_links)} new links from {nav_url}")
+                                all_discovered_links.extend(new_links)
+                    except Exception as e:
+                        logger.warning(f"[DEPTH 2] Error crawling {nav_url}: {str(e)}")
+
+            # Deduplicate while preserving order
+            seen = set()
+            unique_links = []
+            for link in all_discovered_links:
+                if link not in seen:
+                    seen.add(link)
+                    unique_links.append(link)
+
+            logger.info(f"Total unique relevant links for {company_name}: {len(unique_links)}")
+
+            # Scrape each relevant page (limit total pages per company)
+            max_pages = 30
+            for link in unique_links[:max_pages]:
+                if link in scraped_urls:
+                    continue
+                scraped_urls.add(link)
+
                 # Respect crawl delay
                 time.sleep(crawl_delay)
                 content = self.scrape_page(link, company_name)
