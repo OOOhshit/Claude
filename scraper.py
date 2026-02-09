@@ -493,7 +493,6 @@ class OilCompanyScanner:
             level1_links = self._find_relevant_links_from_html(main_url, main_html)
             allowed_links = [link for link in level1_links if self.is_url_allowed(link)]
             logger.info(f"[DEPTH 1] Found {len(allowed_links)} relevant links for {company_name}")
-
             for link in allowed_links:
                 if link not in all_discovered and link != main_url:
                     all_discovered.add(link)
@@ -565,7 +564,6 @@ class OilCompanyScanner:
                 # Respect crawl delay + add jitter to look human
                 delay = crawl_delay + random.uniform(0.5, 1.5)
                 time.sleep(delay)
-
                 content = self.scrape_page(link, company_name)
 
                 if content:
