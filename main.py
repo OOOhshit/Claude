@@ -200,7 +200,45 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
             html_content += """
             </div>
             """
-        
+
+        # Add Business Activities Section
+        if result.get('business_activities'):
+            html_content += """
+            <div class="section">
+                <h3>Business Activities (Partnerships, Investments, JVs)</h3>
+            """
+            # Group by activity type
+            activity_groups = {}
+            for activity in result['business_activities']:
+                atype = activity['activity_type'].replace('_', ' ').title()
+                if atype not in activity_groups:
+                    activity_groups[atype] = []
+                activity_groups[atype].append(activity)
+
+            for atype, acts in activity_groups.items():
+                html_content += f"<h4>{atype} ({len(acts)})</h4>"
+                for act in acts:
+                    partners_str = ', '.join(act.get('partners', []))
+                    focus = act.get('focus_area', 'General')
+                    focus_color = '#27ae60' if focus != 'General' else '#95a5a6'
+                    evidence_urls = []
+                    for ev in act.get('evidence', []):
+                        evidence_urls.extend(ev.get('urls', []))
+                    urls_html = ''
+                    if evidence_urls:
+                        urls_html = ' | '.join([f'<a href="{u}" target="_blank">source</a>' for u in evidence_urls[:3]])
+                    html_content += f"""
+                    <div style="margin: 8px 0; padding: 8px 12px; background: #f8f9fa; border-left: 3px solid {focus_color}; border-radius: 4px;">
+                        <strong>{partners_str}</strong>
+                        <span style="background: {focus_color}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">{focus}</span>
+                        <div style="font-size: 0.85em; color: #555; margin-top: 4px;">{act.get('description', '')}</div>
+                        <div style="font-size: 0.8em; color: #888; margin-top: 2px;">{urls_html}</div>
+                    </div>
+                    """
+            html_content += """
+            </div>
+            """
+
         # Add Annual Report Analysis Section
         if result.get('annual_report_analysis'):
             ar = result['annual_report_analysis']

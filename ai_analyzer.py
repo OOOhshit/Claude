@@ -32,6 +32,16 @@ class NewMarketOpportunity:
     potential_category: str  # Where this might fit in existing structure
 
 @dataclass
+class BusinessActivity:
+    """Represents a business activity like partnership, investment, JV, etc."""
+    activity_type: str  # 'partnership', 'investment', 'joint_venture', 'acquisition', 'agreement'
+    description: str
+    partners: List[str]  # Companies/entities involved
+    focus_area: str  # What the activity is about
+    confidence: float
+    evidence: List[Dict]  # Contains keyword, context, urls
+
+@dataclass
 class AnnualReportAnalysis:
     """Analysis results from annual report content"""
     company: str
@@ -56,8 +66,13 @@ class CompanyProfile:
     innovation_score: float
     geographic_presence: List[str]
     new_market_opportunities: List[NewMarketOpportunity]
+    business_activities: List[BusinessActivity] = None  # Partnerships, investments, JVs
     annual_report_analysis: Optional[AnnualReportAnalysis] = None
     summary: str = ""
+
+    def __post_init__(self):
+        if self.business_activities is None:
+            self.business_activities = []
 
 class AIAnalyzer:
     def __init__(self):
@@ -88,7 +103,8 @@ class AIAnalyzer:
                 'weight': 1.3
             }
         }
-        
+
+        # Base technology keywords (will be enhanced from technology.json)
         self.technology_keywords = {
             'digital_technologies': {
                 'keywords': ['artificial intelligence', 'ai', 'machine learning', 'digital twin', 'analytics'],
@@ -115,9 +131,12 @@ class AIAnalyzer:
                 'category': 'Renewable'
             }
         }
-        
+
         # Load additional keywords from market.json
         self.market_keywords.update(self.extract_market_segments_from_json())
+
+        # Load and integrate technologies from technology.json
+        self.technology_keywords.update(self.load_technologies_from_json())
         
         self.geographic_indicators = [
             'north america', 'usa', 'canada', 'mexico',
@@ -133,23 +152,41 @@ class AIAnalyzer:
         try:
             with open(filename, 'r') as f:
                 market_data = json.load(f)
-            
+
             known_markets = set()
-            
-            for business_line in market_data.get('BusinessStructure', []):
-                for sub_bl in business_line.get('sub_business_lines', []):
-                    for category in sub_bl.get('categories', []):
-                        for item in category.get('items', []):
-                            # Clean and normalize market names
-                            clean_item = item.lower().strip()
-                            known_markets.add(clean_item)
-                            # Add variations
-                            clean_item = clean_item.replace('/', ' ').replace('-', ' ')
-                            known_markets.add(clean_item)
-            
+
+            # Support flat dictionary format: {"Category": ["item1", "item2", ...]}
+            if isinstance(market_data, dict) and 'BusinessStructure' not in market_data:
+                for category, items in market_data.items():
+                    # Add the category name itself
+                    clean_category = category.lower().strip()
+                    known_markets.add(clean_category)
+                    # Add variations of category name
+                    known_markets.add(clean_category.replace('/', ' ').replace('-', ' ').replace('&', 'and'))
+
+                    # Add all items in the category
+                    if isinstance(items, list):
+                        for item in items:
+                            if isinstance(item, str):
+                                clean_item = item.lower().strip()
+                                known_markets.add(clean_item)
+                                # Add variations
+                                clean_item_var = clean_item.replace('/', ' ').replace('-', ' ').replace('&', 'and')
+                                known_markets.add(clean_item_var)
+            else:
+                # Legacy BusinessStructure format
+                for business_line in market_data.get('BusinessStructure', []):
+                    for sub_bl in business_line.get('sub_business_lines', []):
+                        for category in sub_bl.get('categories', []):
+                            for item in category.get('items', []):
+                                clean_item = item.lower().strip()
+                                known_markets.add(clean_item)
+                                clean_item = clean_item.replace('/', ' ').replace('-', ' ')
+                                known_markets.add(clean_item)
+
             logger.info(f"Loaded {len(known_markets)} known markets for new market detection")
             return known_markets
-            
+
         except FileNotFoundError:
             logger.warning("market.json not found for new market detection")
             return set()
@@ -162,35 +199,116 @@ class AIAnalyzer:
         try:
             with open('market.json', 'r') as f:
                 market_data = json.load(f)
-            
+
             segments = {}
-            
-            for business_line in market_data.get('BusinessStructure', []):
-                bl_name = business_line.get('name', '')
-                
-                for sub_bl in business_line.get('sub_business_lines', []):
-                    sub_name = sub_bl.get('name', '')
-                    
-                    for category in sub_bl.get('categories', []):
-                        cat_name = category.get('name', '')
-                        
-                        # Create market segment from category
-                        if cat_name and category.get('items'):
-                            segment_key = cat_name.lower().replace(' ', '_').replace('&', 'and')
-                            segments[segment_key] = {
-                                'keywords': [item.lower() for item in category.get('items', [])],
-                                'weight': 1.5,  # Higher weight for market.json terms
-                                'business_line': bl_name,
-                                'category': cat_name
-                            }
-            
+
+            # Support flat dictionary format: {"Category": ["item1", "item2", ...]}
+            if isinstance(market_data, dict) and 'BusinessStructure' not in market_data:
+                for category, items in market_data.items():
+                    if isinstance(items, list) and items:
+                        segment_key = category.lower().replace(' ', '_').replace('&', 'and').replace('/', '_')
+                        # Create keywords from items, filtering out empty strings
+                        keywords = [item.lower() for item in items if isinstance(item, str) and item.strip()]
+                        # Also add the category name as a keyword
+                        keywords.append(category.lower())
+
+                        segments[segment_key] = {
+                            'keywords': keywords,
+                            'weight': 1.5,  # Higher weight for market.json terms
+                            'business_line': 'Market',
+                            'category': category
+                        }
+            else:
+                # Legacy BusinessStructure format
+                for business_line in market_data.get('BusinessStructure', []):
+                    bl_name = business_line.get('name', '')
+
+                    for sub_bl in business_line.get('sub_business_lines', []):
+                        sub_name = sub_bl.get('name', '')
+
+                        for category in sub_bl.get('categories', []):
+                            cat_name = category.get('name', '')
+
+                            if cat_name and category.get('items'):
+                                segment_key = cat_name.lower().replace(' ', '_').replace('&', 'and')
+                                segments[segment_key] = {
+                                    'keywords': [item.lower() for item in category.get('items', [])],
+                                    'weight': 1.5,
+                                    'business_line': bl_name,
+                                    'category': cat_name
+                                }
+
             logger.info(f"Enhanced market detection with {len(segments)} segments from market.json")
             return segments
-            
+
         except Exception as e:
             logger.error(f"Error extracting market segments from JSON: {str(e)}")
             return {}
-    
+
+    def load_technologies_from_json(self, filename: str = 'technology.json') -> Dict[str, Dict]:
+        """Load technologies from technology.json to enhance technology detection"""
+        try:
+            with open(filename, 'r') as f:
+                tech_data = json.load(f)
+
+            tech_keywords = {}
+
+            # Get technology list from the JSON
+            technologies = tech_data.get('technology', [])
+
+            if isinstance(technologies, list):
+                # Group technologies by category based on naming patterns
+                category_patterns = {
+                    'Hydrogen': ['hydrogen', 'ammonia cracking', 'electroly', 'fuel cell', 'green ammonia'],
+                    'Carbon Capture': ['ccus', 'carbon', 'co2', 'direct air capture', 'cpu'],
+                    'Refining': ['refin', 'crude', 'fcc', 'hydrocrack', 'catalytic', 'distillation'],
+                    'Petrochemicals': ['ethylene', 'propylene', 'polymer', 'polyethylene', 'polypropylene',
+                                       'styrene', 'benzene', 'aromatic', 'pvc', 'pet', 'pta'],
+                    'Biofuels': ['bio', 'hefa', 'saf', 'sustainable aviation', 'renewable diesel',
+                                 'ethanol', 'biodiesel', 'atj', 'alcohol-to-jet'],
+                    'Digital': ['digital', 'iems', 'spyro', 'sam'],
+                    'Fertilizers': ['ammonia', 'urea', 'nitric acid', 'fertilizer', 'granulation',
+                                    'phosphoric', 'sulfuric'],
+                    'Gas Processing': ['lng', 'gas', 'cryomax', 'nitrogen removal', 'ngl'],
+                    'Recycling': ['recycl', 'pyrolysis', 'r-pet', 'r-polymer', 'r-pvc', 'plas-tcat', 'volcat'],
+                    'Process Equipment': ['burner', 'reformer', 'reactor', 'furnace', 'coil', 'tray',
+                                          'heat exchang', 'psa', 'membrane']
+                }
+
+                # Categorize each technology
+                for tech in technologies:
+                    if not isinstance(tech, str) or not tech.strip():
+                        continue
+
+                    tech_lower = tech.lower()
+                    assigned_category = 'General Technology'
+
+                    # Find matching category
+                    for category, patterns in category_patterns.items():
+                        if any(pattern in tech_lower for pattern in patterns):
+                            assigned_category = category
+                            break
+
+                    # Create a unique key for this technology
+                    tech_key = tech_lower.replace(' ', '_').replace('/', '_').replace('-', '_')[:50]
+
+                    # Add as individual technology entry for precise matching
+                    tech_keywords[f'tech_{tech_key}'] = {
+                        'keywords': [tech_lower, tech_lower.replace('/', ' '), tech_lower.replace('-', ' ')],
+                        'category': assigned_category
+                    }
+
+                logger.info(f"Loaded {len(tech_keywords)} technologies from technology.json")
+
+            return tech_keywords
+
+        except FileNotFoundError:
+            logger.warning("technology.json not found, using default technology keywords")
+            return {}
+        except Exception as e:
+            logger.error(f"Error loading technologies from JSON: {str(e)}")
+            return {}
+
     def extract_market_segments(self, content: str, url_content_map: Dict[str, str] = None) -> List[MarketSegment]:
         """Extract market segments from content with confidence scores and URL tracking"""
         segments = []
@@ -432,7 +550,7 @@ class AIAnalyzer:
         return suggestions
 
     def generate_summary(self, profile: CompanyProfile) -> str:
-        """Generate a comprehensive summary including new market opportunities and annual report insights"""
+        """Generate a comprehensive summary including new market opportunities, business activities, and annual report insights"""
         top_markets = [seg.name for seg in profile.market_segments[:3]]
         top_techs = [tech.name for tech in profile.technologies[:3]]
 
@@ -446,6 +564,22 @@ class AIAnalyzer:
 
         if profile.innovation_score > 0.5:
             summary += "High innovation activity with significant R&D investments. "
+
+        # Add business activities summary
+        if profile.business_activities:
+            activity_types = {}
+            for activity in profile.business_activities:
+                activity_types[activity.activity_type] = activity_types.get(activity.activity_type, 0) + 1
+
+            activity_summary = ", ".join([f"{count} {atype}{'s' if count > 1 else ''}"
+                                          for atype, count in activity_types.items()])
+            summary += f"[BUSINESS ACTIVITIES] Detected: {activity_summary}. "
+
+            # Highlight key partnerships/JVs
+            key_activities = [a for a in profile.business_activities if a.activity_type in ['joint_venture', 'acquisition', 'partnership']][:2]
+            if key_activities:
+                partners = [a.partners[0] if a.partners else 'Unknown' for a in key_activities]
+                summary += f"Key partners include: {', '.join(partners)}. "
 
         if profile.new_market_opportunities:
             new_markets = [opp.name for opp in profile.new_market_opportunities[:2]]
@@ -536,7 +670,135 @@ class AIAnalyzer:
 
         # Sort by confidence
         return sorted(new_opportunities, key=lambda x: x.confidence, reverse=True)[:5]  # Top 5
-    
+
+    def extract_business_activities(self, content: str, url_content_map: Dict[str, str] = None) -> List[BusinessActivity]:
+        """Extract business activities: partnerships, investments, JVs, acquisitions from website content"""
+        activities = []
+        content_lower = content.lower()
+
+        # Activity patterns with their types
+        activity_patterns = {
+            'partnership': [
+                r'partnership\s+(?:with|between)\s+([^,.]{5,80})',
+                r'partnered\s+with\s+([^,.]{5,80})',
+                r'strategic\s+partner(?:ship)?\s+(?:with)?\s*([^,.]{5,80})',
+                r'partnering\s+with\s+([^,.]{5,80})',
+                r'collaboration\s+(?:with|between)\s+([^,.]{5,80})',
+                r'collaborating\s+with\s+([^,.]{5,80})',
+            ],
+            'joint_venture': [
+                r'joint\s+venture\s+(?:with|between)\s+([^,.]{5,80})',
+                r'jv\s+(?:with|between)\s+([^,.]{5,80})',
+                r'joint\s+venture\s+(?:called|named)?\s*([^,.]{5,80})',
+                r'formed\s+(?:a\s+)?joint\s+venture\s+([^,.]{5,80})',
+            ],
+            'investment': [
+                r'invest(?:ed|ing|ment)?\s+(?:in|into)\s+([^,.]{5,80})',
+                r'acquired?\s+(?:a\s+)?(?:stake|interest|share)\s+in\s+([^,.]{5,80})',
+                r'funding\s+(?:for|of|to)\s+([^,.]{5,80})',
+                r'backed\s+(?:by)?\s*([^,.]{5,80})',
+                r'equity\s+(?:investment|stake)\s+in\s+([^,.]{5,80})',
+            ],
+            'acquisition': [
+                r'acqui(?:red|sition)\s+(?:of)?\s*([^,.]{5,80})',
+                r'purchased\s+([^,.]{5,80})',
+                r'bought\s+([^,.]{5,80})',
+                r'takeover\s+of\s+([^,.]{5,80})',
+                r'merger\s+with\s+([^,.]{5,80})',
+            ],
+            'agreement': [
+                r'(?:signed|entered)\s+(?:a\s+)?(?:an\s+)?agreement\s+(?:with)?\s*([^,.]{5,80})',
+                r'mou\s+(?:with|between)\s+([^,.]{5,80})',
+                r'memorandum\s+of\s+understanding\s+(?:with)?\s*([^,.]{5,80})',
+                r'licensing\s+agreement\s+(?:with)?\s*([^,.]{5,80})',
+                r'supply\s+agreement\s+(?:with)?\s*([^,.]{5,80})',
+                r'offtake\s+agreement\s+(?:with)?\s*([^,.]{5,80})',
+            ],
+            'alliance': [
+                r'(?:strategic\s+)?alliance\s+(?:with|between)\s+([^,.]{5,80})',
+                r'allied\s+with\s+([^,.]{5,80})',
+                r'consortium\s+(?:with|including)\s+([^,.]{5,80})',
+            ]
+        }
+
+        # Focus area keywords to categorize activities
+        focus_keywords = {
+            'Hydrogen': ['hydrogen', 'h2', 'electrolyzer', 'fuel cell', 'green hydrogen', 'blue hydrogen'],
+            'Carbon Capture': ['carbon capture', 'ccus', 'ccs', 'co2', 'carbon storage', 'decarbonization'],
+            'Renewable Energy': ['solar', 'wind', 'renewable', 'clean energy', 'battery', 'energy storage'],
+            'LNG/Gas': ['lng', 'natural gas', 'gas processing', 'liquefaction'],
+            'Refining': ['refinery', 'refining', 'fuel', 'petrochemical'],
+            'Digital/Technology': ['digital', 'technology', 'ai', 'automation', 'software'],
+            'Sustainability': ['sustainability', 'esg', 'net zero', 'emission', 'climate'],
+            'Upstream': ['exploration', 'drilling', 'production', 'offshore', 'upstream'],
+            'Chemicals': ['chemical', 'polymer', 'plastic', 'petrochemical'],
+            'Biofuels': ['biofuel', 'biodiesel', 'saf', 'sustainable aviation', 'renewable diesel'],
+        }
+
+        found_activities = {}  # Use dict to avoid duplicates
+
+        for activity_type, patterns in activity_patterns.items():
+            for pattern in patterns:
+                matches = re.finditer(pattern, content_lower, re.IGNORECASE)
+                for match in matches:
+                    partner_text = match.group(1).strip() if match.groups() else ""
+
+                    # Skip if too short or contains common false positives
+                    if len(partner_text) < 5:
+                        continue
+                    skip_words = ['the', 'a', 'an', 'our', 'their', 'its', 'this', 'that', 'which', 'where']
+                    if partner_text.split()[0].lower() in skip_words:
+                        partner_text = ' '.join(partner_text.split()[1:])
+
+                    if len(partner_text) < 3:
+                        continue
+
+                    # Get context around match for focus area detection
+                    start_idx = max(0, match.start() - 150)
+                    end_idx = min(len(content_lower), match.end() + 150)
+                    context = content_lower[start_idx:end_idx]
+
+                    # Determine focus area
+                    focus_area = 'General'
+                    for area, keywords in focus_keywords.items():
+                        if any(kw in context for kw in keywords):
+                            focus_area = area
+                            break
+
+                    # Create unique key to avoid duplicates
+                    activity_key = f"{activity_type}:{partner_text[:30].lower()}"
+
+                    if activity_key not in found_activities:
+                        # Find URLs where this activity is mentioned
+                        urls_with_activity = []
+                        if url_content_map:
+                            for url, page_content in url_content_map.items():
+                                if partner_text.lower() in page_content.lower():
+                                    urls_with_activity.append(url)
+
+                        found_activities[activity_key] = BusinessActivity(
+                            activity_type=activity_type,
+                            description=match.group(0).strip()[:200],
+                            partners=[partner_text.title()],
+                            focus_area=focus_area,
+                            confidence=0.7,
+                            evidence=[{
+                                'keyword': match.group(0)[:100],
+                                'context': context[:200],
+                                'urls': urls_with_activity[:5]
+                            }]
+                        )
+
+        # Convert to list and sort by activity type
+        activities = list(found_activities.values())
+
+        # Sort by activity type priority
+        type_priority = {'acquisition': 0, 'joint_venture': 1, 'investment': 2, 'partnership': 3, 'alliance': 4, 'agreement': 5}
+        activities.sort(key=lambda x: type_priority.get(x.activity_type, 10))
+
+        logger.info(f"Extracted {len(activities)} business activities")
+        return activities[:20]  # Limit to top 20
+
     def analyze_company_content(self, company_name: str, scraped_data: List[Dict]) -> CompanyProfile:
         """Perform comprehensive AI analysis on company content"""
         logger.info(f"Analyzing content for {company_name}")
@@ -559,6 +821,7 @@ class AIAnalyzer:
         innovation_score = self.calculate_innovation_score(all_content)
         geographic_presence = self.extract_geographic_presence(all_content)
         new_market_opportunities = self.detect_new_market_opportunities(all_content, url_content_map)
+        business_activities = self.extract_business_activities(all_content, url_content_map)
 
         # Create profile
         profile = CompanyProfile(
@@ -569,6 +832,7 @@ class AIAnalyzer:
             innovation_score=innovation_score,
             geographic_presence=geographic_presence,
             new_market_opportunities=new_market_opportunities,
+            business_activities=business_activities,
             summary=""
         )
 
@@ -1063,6 +1327,17 @@ class AIAnalyzer:
                         'potential_category': opp.potential_category
                     }
                     for opp in profile.new_market_opportunities
+                ],
+                'business_activities': [
+                    {
+                        'activity_type': activity.activity_type,
+                        'description': activity.description,
+                        'partners': activity.partners,
+                        'focus_area': activity.focus_area,
+                        'confidence': activity.confidence,
+                        'evidence': activity.evidence
+                    }
+                    for activity in (profile.business_activities or [])
                 ],
                 'sustainability_focus': profile.sustainability_focus,
                 'innovation_score': profile.innovation_score,
