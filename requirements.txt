@@ -1,14 +1,14 @@
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-lxml>=5.0.0
-urllib3>=2.0.0
 # Oil Companies Market & Technology Scanner - Dependencies
 
-# Web scraping
+# Web scraping (Layer 1: fast HTTP requests)
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 lxml>=4.9.0
 urllib3>=2.0.0
+
+# Browser automation (Layer 2: JS rendering, WAF bypass)
+# Install browsers after pip install: playwright install chromium
+playwright>=1.40.0
 
 # PDF processing for annual reports
 pdfplumber>=0.10.0

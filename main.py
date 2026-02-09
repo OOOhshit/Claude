@@ -394,6 +394,12 @@ def main():
     parser = argparse.ArgumentParser(description='Oil Companies Market & Technology Scanner')
     parser.add_argument('--no-ssl-verify', action='store_true',
                         help='Disable SSL certificate verification (for corporate environments with proxy)')
+    parser.add_argument('--no-playwright', action='store_true',
+                        help='Disable Playwright browser rendering (use requests only)')
+    parser.add_argument('--proxy-file', type=str, default=None,
+                        help='Path to proxy list file (one proxy per line: http://host:port)')
+    parser.add_argument('--no-resume', action='store_true',
+                        help='Start fresh instead of resuming from checkpoint')
     args = parser.parse_args()
 
     logger.info("Starting Oil Companies Market & Technology Analysis")
@@ -402,7 +408,12 @@ def main():
         # Step 1: Initialize scanner and run scraping
         logger.info("Step 1: Initializing web scraper...")
         verify_ssl = not args.no_ssl_verify
-        scanner = OilCompanyScanner(verify_ssl=verify_ssl)
+        scanner = OilCompanyScanner(
+            verify_ssl=verify_ssl,
+            use_playwright=not args.no_playwright,
+            proxy_file=args.proxy_file,
+            resume=not args.no_resume,
+        )
         
         # Load companies
         companies = scanner.load_companies()
