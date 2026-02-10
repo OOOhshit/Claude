@@ -3,13 +3,31 @@
     "name": "Qatar Energy",
     "url": "https://www.qatarenergy.qa",
     "country": "Qatar",
-    "description": "Qatar's national oil and gas company"
+    "description": "Qatar's national oil and gas company",
+    "seed_urls": [
+      "https://www.qatarenergy.qa/en/whoweare/Pages/default.aspx",
+      "https://www.qatarenergy.qa/en/Whatwedo/Pages/default.aspx",
+      "https://www.qatarenergy.qa/en/Whatwedo/Pages/JVsPartners.aspx",
+      "https://www.qatarenergy.qa/en/whoweare/Pages/WhatIsLNG.aspx",
+      "https://www.qatarenergy.qa/en/Sustainability/Pages/default.aspx",
+      "https://www.qatarenergylng.qa/english/",
+      "https://www.qatarenergylng.qa/english/Sustainability"
+    ]
   },
   {
     "name": "TotalEnergies",
     "url": "https://totalenergies.com",
     "country": "France",
-    "description": "French multinational integrated energy company"
+    "description": "French multinational integrated energy company",
+    "seed_urls": [
+      "https://totalenergies.com/company/approach/strategy",
+      "https://totalenergies.com/company/identity/totalenergies-at-a-glance",
+      "https://totalenergies.com/company/approach",
+      "https://totalenergies.com/energy-transition",
+      "https://totalenergies.com/sustainability/our-approach",
+      "https://totalenergies.com/sustainability/climate-and-sustainable-energy",
+      "https://totalenergies.com/investors/reports"
+    ]
   },
   {
     "name": "ADNOC",
@@ -39,19 +57,46 @@
     "name": "Saudi Aramco",
     "url": "https://www.aramco.com",
     "country": "Saudi Arabia",
-    "description": "Saudi Arabian national petroleum and natural gas company"
+    "description": "Saudi Arabian national petroleum and natural gas company",
+    "seed_urls": [
+      "https://www.aramco.com/en/what-we-do",
+      "https://www.aramco.com/en/about-us",
+      "https://www.aramco.com/en/sustainability",
+      "https://www.aramco.com/en/sustainability/climate-and-energy/supporting-the-energy-transition",
+      "https://www.aramco.com/en/what-we-do/energy-innovation/advancing-energy-solutions",
+      "https://www.aramco.com/en/what-we-do/energy-innovation/advancing-energy-solutions/blue-hydrogen-and-blue-ammonia",
+      "https://www.aramco.com/en/what-we-do/energy-innovation/advancing-energy-solutions/crude-oil-to-chemicals",
+      "https://www.aramco.com/en/investors"
+    ]
   },
   {
     "name": "Shell",
     "url": "https://www.shell.com",
     "country": "Netherlands/UK",
-    "description": "British-Dutch multinational oil and gas company"
+    "description": "British-Dutch multinational oil and gas company",
+    "seed_urls": [
+      "https://www.shell.com/what-we-do.html",
+      "https://www.shell.com/what-we-do/our-strategy.html",
+      "https://www.shell.com/sustainability/climate/shell-energy-transition-strategy.html",
+      "https://www.shell.com/investors.html",
+      "https://www.shell.com/what-we-do/oil-and-gas.html",
+      "https://www.shell.com/what-we-do/new-energies.html",
+      "https://www.shell.com/what-we-do/chemicals.html"
+    ]
   },
   {
     "name": "Reliance",
     "url": "https://www.ril.com",
     "country": "India",
-    "description": "Indian multinational conglomerate with major oil and petrochemicals operations"
+    "description": "Indian multinational conglomerate with major oil and petrochemicals operations",
+    "seed_urls": [
+      "https://www.ril.com/businesses/energy",
+      "https://www.ril.com/businesses/energy/oil-gas-exploration-production",
+      "https://www.ril.com/businesses/new-energy-materials",
+      "https://www.ril.com/sustainability",
+      "https://www.ril.com/sustainability/decarbonisation",
+      "https://www.ril.com/investors/investor-relations"
+    ]
   },
   {
     "name": "Petronas",
@@ -63,6 +108,15 @@
     "name": "BP",
     "url": "https://www.bp.com",
     "country": "UK",
-    "description": "British multinational oil and gas company"
+    "description": "British multinational oil and gas company",
+    "seed_urls": [
+      "https://www.bp.com/en/global/corporate/what-we-do/our-strategy.html",
+      "https://www.bp.com/en/global/corporate/what-we-do/oil-and-gas.html",
+      "https://www.bp.com/en/global/corporate/what-we-do/production-and-operations.html",
+      "https://www.bp.com/en/global/corporate/what-we-do/hydrogen.html",
+      "https://www.bp.com/en/global/corporate/who-we-are/our-organization/gas-and-low-carbon-energy.html",
+      "https://www.bp.com/en/global/corporate/sustainability.html",
+      "https://www.bp.com/en/global/corporate/investors.html"
+    ]
   }
 ]

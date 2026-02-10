@@ -516,6 +516,51 @@ class OilCompanyScanner:
         else:
             return 'general'
 
+    def _scrape_seed_urls(self, company_name: str, seed_urls: List[str], results: List[ScrapedContent]) -> List[ScrapedContent]:
+        """Scrape pre-configured seed URLs when normal link discovery fails.
+
+        Used as fallback when:
+        - The homepage is completely blocked (WAF, CAPTCHA, timeout)
+        - The homepage yields no relevant links (JS-heavy, single-page apps)
+        """
+        logger.info(f"[SEED] Scraping {len(seed_urls)} seed URLs for {company_name}")
+        crawl_delay = 1.5
+
+        for url in seed_urls:
+            time.sleep(crawl_delay + random.uniform(0.5, 1.5))
+            content = self.scrape_page(url, company_name)
+
+            if content:
+                title = ""
+                html = self.engine.smart_fetch(url, company_name=company_name)
+                if html:
+                    title = self._extract_title_from_html(html)
+
+                page_type = self.categorize_page(url, title, content)
+
+                scraped_data = ScrapedContent(
+                    company=company_name,
+                    url=url,
+                    title=title,
+                    content=content,
+                    page_type=page_type
+                )
+
+                results.append(scraped_data)
+                self.scraped_content.append(scraped_data)
+                logger.info(f"[SEED OK] Scraped {page_type} page: {title[:50]}...")
+            else:
+                logger.warning(f"[SEED FAIL] Could not scrape seed URL: {url}")
+
+        logger.info(f"[SEED] Completed: {len(results)} pages scraped from seed URLs for {company_name}")
+
+        # Mark company as done
+        if self.engine.checkpoint:
+            self.engine.checkpoint.mark_company_done(company_name)
+            self.engine.save_checkpoint()
+
+        return results
+
     def scan_company(self, company: Dict, max_depth: int = 4, max_discovery_requests: int = 25) -> List[ScrapedContent]:
         """Scan a single company's website with recursive multi-level crawling.
 
@@ -523,10 +568,14 @@ class OilCompanyScanner:
         links are discovered on each level. Stops early if no new links are found
         or if max_discovery_requests is reached.
 
+        When the homepage fails or yields too few links, falls back to seed_urls
+        defined in companies.json to ensure coverage of key market pages.
+
         Returns list of ScrapedContent for concurrent scraping compatibility.
         """
         company_name = company['name']
         main_url = company['url']
+        seed_urls = company.get('seed_urls', [])
         results: List[ScrapedContent] = []
 
         # P11: Skip if already done in a previous run
@@ -536,6 +585,8 @@ class OilCompanyScanner:
 
         logger.info(f"{'='*60}")
         logger.info(f"Scanning {company_name} at {main_url}")
+        if seed_urls:
+            logger.info(f"[SEED] {len(seed_urls)} seed URLs configured as fallback")
         logger.info(f"{'='*60}")
 
         # Check robots.txt first
@@ -548,6 +599,10 @@ class OilCompanyScanner:
                 'status_code': None,
                 'error': 'Blocked by robots.txt - manual research required'
             })
+            # Even if homepage is blocked, try seed URLs directly
+            if seed_urls:
+                logger.info(f"[SEED] Homepage blocked, using {len(seed_urls)} seed URLs for {company_name}")
+                return self._scrape_seed_urls(company_name, seed_urls, results)
             return results
 
         # Get crawl delay from robots.txt
@@ -567,7 +622,12 @@ class OilCompanyScanner:
                     'status_code': None,
                     'error': 'Failed to access main page after all strategies'
                 })
-                logger.error(f"[BLOCKED] Could not access {company_name}")
+                logger.error(f"[BLOCKED] Could not access {company_name} main page")
+
+                # Fallback: use seed URLs when homepage fails entirely
+                if seed_urls:
+                    logger.info(f"[SEED FALLBACK] Main page failed, trying {len(seed_urls)} seed URLs for {company_name}")
+                    return self._scrape_seed_urls(company_name, seed_urls, results)
                 return results
 
             # Track main page visit
@@ -595,6 +655,17 @@ class OilCompanyScanner:
                 if link not in all_discovered and link != main_url:
                     all_discovered.add(link)
                     all_discovered_list.append(link)
+
+            # Inject seed URLs when link discovery yields too few results
+            if seed_urls and len(all_discovered_list) < 3:
+                injected = 0
+                for seed_url in seed_urls:
+                    if seed_url not in all_discovered and seed_url != main_url:
+                        all_discovered.add(seed_url)
+                        all_discovered_list.insert(0, seed_url)  # Prioritize seed URLs
+                        injected += 1
+                if injected:
+                    logger.info(f"[SEED INJECT] Injected {injected} seed URLs (homepage yielded only {len(all_discovered_list) - injected} links)")
 
             # Level 2+ : keep crawling discovered pages for deeper links
             current_level_links = list(all_discovered)  # Links to crawl next
