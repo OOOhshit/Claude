@@ -819,12 +819,6 @@ class AIAnalyzer:
         if top_techs:
             summary += f"Key technology focus areas include {', '.join(top_techs)}. "
 
-        if profile.sustainability_focus > 0.5:
-            summary += "The company shows strong commitment to sustainability and clean energy transition. "
-
-        if profile.innovation_score > 0.5:
-            summary += "High innovation activity with significant R&D investments. "
-
         # Add business activities summary
         if profile.business_activities:
             activity_types = {}
@@ -1137,8 +1131,13 @@ class AIAnalyzer:
         logger.info(f"Extracted {len(activities)} business activities")
         return activities[:20]  # Limit to top 20
 
-    def analyze_company_content(self, company_name: str, scraped_data: List[Dict]) -> CompanyProfile:
-        """Perform comprehensive AI analysis on company content"""
+    def analyze_company_content(self, company_name: str, scraped_data: List[Dict],
+                                annual_report_content: List[Dict] = None) -> CompanyProfile:
+        """Perform comprehensive AI analysis on company content.
+
+        Annual report content is merged into the market/technology analysis pipeline
+        as an additional source alongside website scraping.
+        """
         logger.info(f"Analyzing content for {company_name}")
 
         # Build URL to content map for tracking keyword sources
@@ -1149,14 +1148,24 @@ class AIAnalyzer:
             if url and content:
                 url_content_map[url] = content
 
-        # Combine all content
+        # Merge annual report content into the analysis pipeline
+        if annual_report_content:
+            for report in annual_report_content:
+                url = report.get('url', '')
+                content = report.get('content', '')
+                if url and content:
+                    url_content_map[url] = content
+            logger.info(f"Merged {len(annual_report_content)} annual/quarterly report(s) into analysis for {company_name}")
+
+        # Combine all content (website + annual reports)
         all_content = " ".join([item.get('content', '') for item in scraped_data])
+        if annual_report_content:
+            annual_text = " ".join([r.get('content', '') for r in annual_report_content])
+            all_content = all_content + " " + annual_text
 
         # Extract different aspects with URL tracking
         market_segments = self.extract_market_segments(all_content, url_content_map)
         technologies = self.extract_technologies(all_content, url_content_map)
-        sustainability_focus = self.calculate_sustainability_focus(all_content)
-        innovation_score = self.calculate_innovation_score(all_content)
         geographic_presence = self.extract_geographic_presence(all_content)
         new_market_opportunities = self.detect_new_market_opportunities(all_content, url_content_map)
         business_activities = self.extract_business_activities(all_content, url_content_map)
@@ -1166,8 +1175,8 @@ class AIAnalyzer:
             company=company_name,
             market_segments=market_segments,
             technologies=technologies,
-            sustainability_focus=sustainability_focus,
-            innovation_score=innovation_score,
+            sustainability_focus=0.0,
+            innovation_score=0.0,
             geographic_presence=geographic_presence,
             new_market_opportunities=new_market_opportunities,
             business_activities=business_activities,
@@ -1179,8 +1188,15 @@ class AIAnalyzer:
 
         return profile
     
-    def analyze_all_companies(self, scraped_content: List[Dict]) -> List[CompanyProfile]:
-        """Analyze all companies from scraped content"""
+    def analyze_all_companies(self, scraped_content: List[Dict],
+                              annual_report_data: List[Dict] = None) -> List[CompanyProfile]:
+        """Analyze all companies from scraped content.
+
+        Args:
+            scraped_content: List of scraped page data dicts
+            annual_report_data: Optional list of annual/quarterly report data dicts
+                                with keys: company, year, content, url
+        """
         # Group content by company
         company_content = {}
         for item in scraped_content:
@@ -1188,13 +1204,23 @@ class AIAnalyzer:
             if company not in company_content:
                 company_content[company] = []
             company_content[company].append(item)
-        
+
+        # Group annual report content by company
+        company_report_content = {}
+        if annual_report_data:
+            for report in annual_report_data:
+                company = report.get('company', 'Unknown')
+                if company not in company_report_content:
+                    company_report_content[company] = []
+                company_report_content[company].append(report)
+
         # Analyze each company
         profiles = []
         for company_name, content_list in company_content.items():
-            profile = self.analyze_company_content(company_name, content_list)
+            report_list = company_report_content.get(company_name)
+            profile = self.analyze_company_content(company_name, content_list, report_list)
             profiles.append(profile)
-        
+
         return profiles
     
     def analyze_annual_report(self, company_name: str, year: int, content: str, source_url: str) -> AnnualReportAnalysis:
@@ -1677,8 +1703,6 @@ class AIAnalyzer:
                     }
                     for activity in (profile.business_activities or [])
                 ],
-                'sustainability_focus': profile.sustainability_focus,
-                'innovation_score': profile.innovation_score,
                 'geographic_presence': profile.geographic_presence,
                 'annual_report_analysis': self._serialize_annual_report_analysis(profile.annual_report_analysis) if profile.annual_report_analysis else None,
                 'summary': profile.summary

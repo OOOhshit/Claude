@@ -199,9 +199,6 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
                 </div>
             """
         
-        sustainability_class = "high-score" if result['sustainability_focus'] > 0.6 else "medium-score" if result['sustainability_focus'] > 0.3 else "low-score"
-        innovation_class = "high-score" if result['innovation_score'] > 0.6 else "medium-score" if result['innovation_score'] > 0.3 else "low-score"
-        
         # Add new market opportunities section
         html_content += """
             </div>
@@ -343,12 +340,6 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
 
         html_content += f"""
             <div class="section">
-                <h3>Sustainability & Innovation Metrics</h3>
-                <p>Sustainability Focus: <span class="score {sustainability_class}">{result['sustainability_focus']:.1%}</span></p>
-                <p>Innovation Score: <span class="score {innovation_class}">{result['innovation_score']:.1%}</span></p>
-            </div>
-
-            <div class="section">
                 <h3>Geographic Presence</h3>
                 <p>{', '.join(result['geographic_presence']) if result['geographic_presence'] else 'Limited geographic information found'}</p>
             </div>
@@ -484,6 +475,8 @@ def main():
             logger.info(f"  - Companies with reports: {report_summary['companies_with_reports']}")
             logger.info(f"  - PDF reports: {report_summary['pdf_reports']}")
             logger.info(f"  - HTML reports: {report_summary['html_reports']}")
+            if report_summary.get('quarterly_fallbacks'):
+                logger.info(f"  - Quarterly fallbacks used for: {', '.join(report_summary['quarterly_fallbacks'])}")
         else:
             logger.warning("No annual reports were fetched. This may be due to website restrictions or unavailable reports.")
 
@@ -502,14 +495,9 @@ def main():
                 'page_type': content.page_type
             })
         
-        # Run AI analysis
-        logger.info("Step 4: Running AI analysis...")
-        company_profiles = analyzer.analyze_all_companies(scraped_data)
-
-        # Step 4a: Analyze annual reports and merge with company profiles
-        logger.info("Step 4a: Analyzing annual reports...")
+        # Convert annual reports to dict format for analysis
+        annual_report_data = None
         if annual_reports:
-            # Convert annual reports to dict format for analysis
             annual_report_data = [
                 {
                     'company': r.company,
@@ -520,14 +508,21 @@ def main():
                 for r in annual_reports
             ]
 
-            # Analyze all annual reports
+        # Run AI analysis (annual report content is merged into market/tech analysis)
+        logger.info("Step 4: Running AI analysis (website + annual/quarterly reports)...")
+        company_profiles = analyzer.analyze_all_companies(scraped_data, annual_report_data)
+
+        # Step 4a: Analyze annual reports for strategic insights and merge with company profiles
+        logger.info("Step 4a: Analyzing annual reports for strategic insights...")
+        if annual_report_data:
+            # Analyze all annual reports for strategic priorities, outlook, etc.
             annual_report_analyses = analyzer.analyze_all_annual_reports(annual_report_data)
 
-            # Merge annual report analysis with company profiles
+            # Merge annual report strategic analysis with company profiles
             for profile in company_profiles:
                 if profile.company in annual_report_analyses:
                     profile.annual_report_analysis = annual_report_analyses[profile.company]
-                    logger.info(f"Merged annual report analysis for {profile.company}")
+                    logger.info(f"Merged annual report strategic analysis for {profile.company}")
 
                     # Update summary to include annual report insights
                     profile.summary = analyzer.generate_summary(profile)
@@ -565,7 +560,7 @@ def main():
         import csv
         with open('company_summary.csv', 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['Company', 'Top Market Segments', 'Top Technologies',
-                         'Sustainability Score', 'Innovation Score', 'Geographic Reach',
+                         'Geographic Reach',
                          'Annual Report Year', 'Strategic Priorities', 'Tech Investments', 'Market Expansions']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
@@ -585,8 +580,6 @@ def main():
                     'Company': result['company'],
                     'Top Market Segments': top_markets,
                     'Top Technologies': top_techs,
-                    'Sustainability Score': f"{result['sustainability_focus']:.1%}",
-                    'Innovation Score': f"{result['innovation_score']:.1%}",
                     'Geographic Reach': len(result['geographic_presence']),
                     'Annual Report Year': ar_year,
                     'Strategic Priorities': ar_priorities,
