@@ -73,6 +73,7 @@ class AnnualReportFetcher:
         self.target_year = datetime.now().year - 1  # Default to last year (2025)
         self.annual_reports: List[AnnualReportContent] = []
         self.search_results: List[Dict] = []
+        self.quarterly_fallback_used: Dict[str, bool] = {}  # Track which companies fell back to quarterly
 
         # Create download directory if it doesn't exist
         if not os.path.exists(download_dir):
@@ -216,6 +217,106 @@ class AnnualReportFetcher:
         except Exception as e:
             logger.warning(f"[ANNUAL REPORT] Deep search error for {company_name}: {str(e)}")
 
+        return found_reports
+
+    def search_quarterly_report_urls(self, company: Dict) -> List[Dict]:
+        """Search for quarterly report URLs as fallback when annual report is not found"""
+        company_name = company['name']
+        base_url = company['url']
+        logger.info(f"[QUARTERLY REPORT] Searching for latest quarterly report for {company_name} (fallback)")
+
+        found_reports = []
+
+        # Common paths for quarterly/earnings reports
+        search_paths = [
+            '/investors',
+            '/investor-relations',
+            '/investor',
+            '/en/investors',
+            '/en/investor-relations',
+            '/quarterly-results',
+            '/earnings',
+            '/financial-results',
+            '/reports',
+            '/en/reports',
+            '/financials',
+            '/financial-reports',
+            '/corporate/investors',
+            '/about/investors',
+        ]
+
+        # Keywords to identify quarterly reports
+        quarterly_keywords = [
+            'quarterly report', 'quarterly results', 'quarter report',
+            'q1', 'q2', 'q3', 'q4',
+            'first quarter', 'second quarter', 'third quarter', 'fourth quarter',
+            'interim report', 'half-year', 'half year', 'semi-annual',
+            'earnings report', 'earnings release', 'financial results',
+        ]
+
+        # Search both current year and target year for quarterly reports
+        search_years = [self.target_year, self.target_year + 1]
+
+        for path in search_paths:
+            try:
+                url = urljoin(base_url, path)
+                logger.info(f"[QUARTERLY REPORT] Checking: {url}")
+
+                response = self.session.get(url, timeout=15, verify=self.verify_ssl)
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.content, 'html.parser')
+
+                    links = soup.find_all('a', href=True)
+                    for link in links:
+                        href = link.get('href', '').lower()
+                        text = link.get_text().lower().strip()
+                        title = link.get('title', '').lower()
+
+                        combined_text = f"{href} {text} {title}"
+
+                        # Check for any of the search years
+                        has_year = any(str(year) in combined_text for year in search_years)
+                        is_quarterly = any(kw in combined_text for kw in quarterly_keywords)
+                        is_pdf = href.endswith('.pdf')
+
+                        if has_year and is_quarterly:
+                            full_url = urljoin(url, link['href'])
+
+                            if not any(r['url'] == full_url for r in found_reports):
+                                # Determine which quarter this is
+                                quarter_label = 'Quarterly'
+                                for q_label in ['q4', 'fourth quarter', 'q3', 'third quarter',
+                                                'q2', 'second quarter', 'q1', 'first quarter',
+                                                'half-year', 'half year', 'semi-annual', 'interim']:
+                                    if q_label in combined_text:
+                                        quarter_label = q_label.upper().replace('QUARTER', 'Q').strip()
+                                        break
+
+                                found_reports.append({
+                                    'company': company_name,
+                                    'url': full_url,
+                                    'title': link.get_text().strip()[:200],
+                                    'year': self.target_year,
+                                    'is_pdf': is_pdf or '.pdf' in full_url.lower(),
+                                    'source_page': url,
+                                    'report_type': 'quarterly',
+                                    'quarter': quarter_label
+                                })
+                                logger.info(f"[QUARTERLY REPORT] Found: {link.get_text().strip()[:50]}...")
+
+                time.sleep(1)
+
+            except Exception as e:
+                logger.warning(f"[QUARTERLY REPORT] Error checking {path}: {str(e)}")
+                continue
+
+        # Sort to prefer more recent quarters (Q4 > Q3 > Q2 > Q1)
+        quarter_priority = {'Q4': 0, 'FOURTH Q': 0, 'Q3': 1, 'THIRD Q': 1,
+                           'HALF-YEAR': 2, 'HALF YEAR': 2, 'SEMI-ANNUAL': 2, 'INTERIM': 2,
+                           'Q2': 3, 'SECOND Q': 3, 'Q1': 4, 'FIRST Q': 4}
+        found_reports.sort(key=lambda r: quarter_priority.get(r.get('quarter', '').upper()[:8], 5))
+
+        self.search_results.extend(found_reports)
         return found_reports
 
     def download_pdf(self, url: str, company_name: str) -> Optional[str]:
@@ -392,16 +493,24 @@ class AnnualReportFetcher:
         return "", ""
 
     def process_company_reports(self, company: Dict, download_pdfs: bool = True) -> List[AnnualReportContent]:
-        """Process all found annual reports for a company"""
+        """Process all found annual reports for a company.
+        Falls back to quarterly reports if no annual report is found."""
         company_name = company['name']
         reports = []
 
-        # Search for report URLs
+        # Search for annual report URLs first
         found_urls = self.search_annual_report_urls(company)
 
+        # Fallback to quarterly reports if no annual report found
         if not found_urls:
-            logger.warning(f"[ANNUAL REPORT] No {self.target_year} annual reports found for {company_name}")
-            return reports
+            logger.warning(f"[ANNUAL REPORT] No {self.target_year} annual reports found for {company_name}, trying quarterly reports...")
+            found_urls = self.search_quarterly_report_urls(company)
+            if found_urls:
+                self.quarterly_fallback_used[company_name] = True
+                logger.info(f"[QUARTERLY REPORT] Found {len(found_urls)} quarterly reports for {company_name} as fallback")
+            else:
+                logger.warning(f"[REPORT] No annual or quarterly reports found for {company_name}")
+                return reports
 
         for report_info in found_urls:
             url = report_info['url']
@@ -496,6 +605,7 @@ class AnnualReportFetcher:
             'pdf_reports': len([r for r in self.annual_reports if r.source_type == 'pdf']),
             'html_reports': len([r for r in self.annual_reports if r.source_type == 'html']),
             'total_pages_processed': sum(r.page_count for r in self.annual_reports),
+            'quarterly_fallbacks': list(self.quarterly_fallback_used.keys()),
             'reports_by_company': {
                 company: [r.title for r in self.annual_reports if r.company == company]
                 for company in set(r.company for r in self.annual_reports)
