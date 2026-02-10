@@ -85,7 +85,7 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Oil Companies Analysis Report</title>
+        <title>Oil Companies Market Analysis Report</title>
         <style>
             body { font-family: Arial, sans-serif; margin: 40px; }
             .company { margin-bottom: 40px; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
@@ -135,8 +135,6 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
             .annual-report-section h3 { color: #2e7d32; margin-top: 0; }
             .ar-badge { background: #4caf50; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
             .strategic-priority { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #2196f3; border-radius: 4px; }
-            .tech-investment { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #9c27b0; border-radius: 4px; }
-            .tech-investment.strong { border-left-color: #e91e63; }
             .market-expansion { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #ff9800; border-radius: 4px; }
             .future-outlook { background: #e3f2fd; padding: 10px; margin: 5px 0; border-radius: 4px; }
             .risk-factor { background: #ffebee; padding: 5px 10px; margin: 3px 0; border-radius: 4px; display: inline-block; font-size: 0.9em; }
@@ -144,7 +142,7 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
         </style>
     </head>
     <body>
-        <h1>Oil Companies Market & Technology Analysis Report</h1>
+        <h1>Oil Companies Market Analysis Report</h1>
         <p>Generated on: <span id="date"></span></p>
         <script>document.getElementById('date').textContent = new Date().toLocaleString();</script>
     """
@@ -173,27 +171,6 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
             html_content += f"""
                 <div class="market-segment">
                     <strong>{segment['name']}</strong>
-                    <span class="confidence {conf_class}">({conf_score:.1%} confidence)</span>
-                    <div class="evidence">{evidence_html}</div>
-                </div>
-            """
-        
-        html_content += """
-            </div>
-            
-            <div class="section">
-                <h3>Technologies</h3>
-        """
-        
-        for tech in result.get('technologies', []):
-            conf_score = tech['confidence']
-            conf_class = "high-confidence" if conf_score > 0.7 else "medium-confidence" if conf_score > 0.4 else "low-confidence"
-            # Format evidence with URLs
-            evidence_html = format_evidence_with_urls(tech['evidence'])
-            html_content += f"""
-                <div class="technology">
-                    <strong>{tech['name']}</strong>
-                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">{tech['category']}</span>
                     <span class="confidence {conf_class}">({conf_score:.1%} confidence)</span>
                     <div class="evidence">{evidence_html}</div>
                 </div>
@@ -283,20 +260,6 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
                         <strong>{priority.get('name', 'N/A')}</strong>
                         <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 5px;">{priority.get('type', '')}</span>
                         <span class="confidence">({conf:.0%} confidence)</span>
-                    </div>
-                    """
-
-            # Technology Investments
-            if ar.get('technology_investments'):
-                html_content += "<h4>Technology Investments</h4>"
-                for tech in ar['technology_investments'][:6]:
-                    signal = tech.get('investment_signal', 'Mentioned')
-                    signal_class = 'strong' if signal == 'Strong' else ''
-                    html_content += f"""
-                    <div class="tech-investment {signal_class}">
-                        <strong>{tech.get('name', 'N/A')}</strong>
-                        <span style="background: {'#e91e63' if signal == 'Strong' else '#9e9e9e'}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; margin-left: 5px;">{signal}</span>
-                        <span class="confidence">({tech.get('confidence', 0):.0%})</span>
                     </div>
                     """
 
@@ -410,7 +373,7 @@ def create_detailed_report(analysis_results, completeness_suggestions=None):
 def main():
     """Main execution function"""
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Oil Companies Market & Technology Scanner')
+    parser = argparse.ArgumentParser(description='Oil Companies Market Scanner (market-focused)')
     parser.add_argument('--no-ssl-verify', action='store_true',
                         help='Disable SSL certificate verification (for corporate environments with proxy)')
     parser.add_argument('--no-playwright', action='store_true',
@@ -421,7 +384,7 @@ def main():
                         help='Start fresh instead of resuming from checkpoint')
     args = parser.parse_args()
 
-    logger.info("Starting Oil Companies Market & Technology Analysis")
+    logger.info("Starting Oil Companies Market Analysis (market-focused, no technology search)")
 
     try:
         # Step 1: Initialize scanner and run scraping
@@ -508,8 +471,8 @@ def main():
                 for r in annual_reports
             ]
 
-        # Run AI analysis (annual report content is merged into market/tech analysis)
-        logger.info("Step 4: Running AI analysis (website + annual/quarterly reports)...")
+        # Run AI analysis (annual report content is merged into market analysis)
+        logger.info("Step 4: Running AI market analysis (website + annual/quarterly reports)...")
         company_profiles = analyzer.analyze_all_companies(scraped_data, annual_report_data)
 
         # Step 4a: Analyze annual reports for strategic insights and merge with company profiles
@@ -559,31 +522,29 @@ def main():
         # Create summary CSV for easy data analysis
         import csv
         with open('company_summary.csv', 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['Company', 'Top Market Segments', 'Top Technologies',
+            fieldnames = ['Company', 'Top Market Segments', 'New Market Opportunities',
                          'Geographic Reach',
-                         'Annual Report Year', 'Strategic Priorities', 'Tech Investments', 'Market Expansions']
+                         'Annual Report Year', 'Strategic Priorities', 'Market Expansions']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
 
             for result in analysis_results:
-                top_markets = ', '.join([seg['name'] for seg in result['market_segments'][:3]])
-                top_techs = ', '.join([tech['name'] for tech in result['technologies'][:3]])
+                top_markets = ', '.join([seg['name'] for seg in result['market_segments'][:5]])
+                new_opps = ', '.join([opp['name'] for opp in result.get('new_market_opportunities', [])[:3]])
 
                 # Extract annual report data if available
                 ar = result.get('annual_report_analysis')
                 ar_year = ar.get('year', 'N/A') if ar else 'N/A'
                 ar_priorities = ', '.join([p['name'] for p in ar.get('strategic_priorities', [])[:3]]) if ar else 'N/A'
-                ar_tech = ', '.join([t['name'] for t in ar.get('technology_investments', []) if t.get('investment_signal') == 'Strong'][:3]) if ar else 'N/A'
                 ar_expansions = ', '.join([f"{e['market']}/{e['region']}" for e in ar.get('market_expansions', [])[:3]]) if ar else 'N/A'
 
                 writer.writerow({
                     'Company': result['company'],
                     'Top Market Segments': top_markets,
-                    'Top Technologies': top_techs,
+                    'New Market Opportunities': new_opps if new_opps else 'None detected',
                     'Geographic Reach': len(result['geographic_presence']),
                     'Annual Report Year': ar_year,
                     'Strategic Priorities': ar_priorities,
-                    'Tech Investments': ar_tech,
                     'Market Expansions': ar_expansions
                 })
         

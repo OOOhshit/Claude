@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-AI-powered analysis module for oil company market presence and technologies.
+AI-powered analysis module for oil company market presence.
+Focused on market segments in the oil and energy domain.
+No technology/digital/AI/IT search - market-only analysis.
 """
 
 import json
@@ -15,13 +17,6 @@ logger = logging.getLogger(__name__)
 @dataclass
 class MarketSegment:
     name: str
-    confidence: float
-    evidence: List[str]
-
-@dataclass
-class Technology:
-    name: str
-    category: str
     confidence: float
     evidence: List[str]
 
@@ -48,7 +43,6 @@ class AnnualReportAnalysis:
     company: str
     year: int
     strategic_priorities: List[Dict]  # name, description, confidence
-    technology_investments: List[Dict]  # name, category, investment_signal, confidence
     market_expansions: List[Dict]  # market, region, confidence
     financial_highlights: Dict  # revenue_focus, capex_focus, investment_areas
     future_outlook: List[str]  # Key future focus areas mentioned
@@ -62,9 +56,7 @@ class AnnualReportAnalysis:
 class CompanyProfile:
     company: str
     market_segments: List[MarketSegment]
-    technologies: List[Technology]
     sustainability_focus: float
-    innovation_score: float
     geographic_presence: List[str]
     new_market_opportunities: List[NewMarketOpportunity]
     business_activities: List[BusinessActivity] = None  # Partnerships, investments, JVs
@@ -105,39 +97,8 @@ class AIAnalyzer:
             }
         }
 
-        # Base technology keywords (will be enhanced from technology.json)
-        self.technology_keywords = {
-            'digital_technologies': {
-                'keywords': ['artificial intelligence', 'ai', 'machine learning', 'digital twin', 'analytics'],
-                'category': 'Digital'
-            },
-            'automation': {
-                'keywords': ['automation', 'robotics', 'autonomous', 'remote operations'],
-                'category': 'Automation'
-            },
-            'iot_sensors': {
-                'keywords': ['iot', 'sensors', 'monitoring', 'smart systems', 'connected'],
-                'category': 'IoT'
-            },
-            'subsea_technology': {
-                'keywords': ['subsea', 'deepwater', 'underwater', 'subsea equipment'],
-                'category': 'Subsea'
-            },
-            'carbon_tech': {
-                'keywords': ['carbon capture', 'ccus', 'carbon utilization', 'co2 storage'],
-                'category': 'Carbon Management'
-            },
-            'renewable_tech': {
-                'keywords': ['solar panels', 'wind turbines', 'energy storage', 'battery', 'hydrogen production'],
-                'category': 'Renewable'
-            }
-        }
-
         # Load additional keywords from market.json
         self.market_keywords.update(self.extract_market_segments_from_json())
-
-        # Load and integrate technologies from technology.json
-        self.technology_keywords.update(self.load_technologies_from_json())
 
         self.geographic_indicators = [
             'north america', 'usa', 'canada', 'mexico',
@@ -175,7 +136,7 @@ class AIAnalyzer:
             r'(?:joint\s+venture|jv|alliance|agreement|mou|memorandum)',
         ]
 
-        # Semantic aliases: map alternative terms to canonical keywords
+        # Semantic aliases: map alternative terms to canonical keywords (oil & energy markets only)
         self.semantic_aliases = {
             'hydrogen': ['blue fuel', 'clean molecules', 'h2', 'green hydrogen', 'blue hydrogen',
                          'hydrogen economy', 'hydrogen hub', 'hydrogen valley'],
@@ -186,8 +147,6 @@ class AIAnalyzer:
             'wind': ['wind farm', 'wind power', 'offshore wind', 'onshore wind'],
             'biofuel': ['sustainable aviation fuel', 'saf', 'renewable diesel',
                         'hvo', 'bio-jet', 'green diesel'],
-            'digital twin': ['virtual model', 'virtual replica', 'simulation model'],
-            'automation': ['robotic process', 'autonomous operations', 'unmanned operations'],
             'lng': ['liquefied natural gas', 'liquid natural gas'],
             'electric vehicle': ['ev charging', 'e-mobility', 'electrification of transport'],
         }
@@ -290,70 +249,6 @@ class AIAnalyzer:
             logger.error(f"Error extracting market segments from JSON: {str(e)}")
             return {}
 
-    def load_technologies_from_json(self, filename: str = 'technology.json') -> Dict[str, Dict]:
-        """Load technologies from technology.json to enhance technology detection"""
-        try:
-            with open(filename, 'r') as f:
-                tech_data = json.load(f)
-
-            tech_keywords = {}
-
-            # Get technology list from the JSON
-            technologies = tech_data.get('technology', [])
-
-            if isinstance(technologies, list):
-                # Group technologies by category based on naming patterns
-                category_patterns = {
-                    'Hydrogen': ['hydrogen', 'ammonia cracking', 'electroly', 'fuel cell', 'green ammonia'],
-                    'Carbon Capture': ['ccus', 'carbon', 'co2', 'direct air capture', 'cpu'],
-                    'Refining': ['refin', 'crude', 'fcc', 'hydrocrack', 'catalytic', 'distillation'],
-                    'Petrochemicals': ['ethylene', 'propylene', 'polymer', 'polyethylene', 'polypropylene',
-                                       'styrene', 'benzene', 'aromatic', 'pvc', 'pet', 'pta'],
-                    'Biofuels': ['bio', 'hefa', 'saf', 'sustainable aviation', 'renewable diesel',
-                                 'ethanol', 'biodiesel', 'atj', 'alcohol-to-jet'],
-                    'Digital': ['digital', 'iems', 'spyro', 'sam'],
-                    'Fertilizers': ['ammonia', 'urea', 'nitric acid', 'fertilizer', 'granulation',
-                                    'phosphoric', 'sulfuric'],
-                    'Gas Processing': ['lng', 'gas', 'cryomax', 'nitrogen removal', 'ngl'],
-                    'Recycling': ['recycl', 'pyrolysis', 'r-pet', 'r-polymer', 'r-pvc', 'plas-tcat', 'volcat'],
-                    'Process Equipment': ['burner', 'reformer', 'reactor', 'furnace', 'coil', 'tray',
-                                          'heat exchang', 'psa', 'membrane']
-                }
-
-                # Categorize each technology
-                for tech in technologies:
-                    if not isinstance(tech, str) or not tech.strip():
-                        continue
-
-                    tech_lower = tech.lower()
-                    assigned_category = 'General Technology'
-
-                    # Find matching category
-                    for category, patterns in category_patterns.items():
-                        if any(pattern in tech_lower for pattern in patterns):
-                            assigned_category = category
-                            break
-
-                    # Create a unique key for this technology
-                    tech_key = tech_lower.replace(' ', '_').replace('/', '_').replace('-', '_')[:50]
-
-                    # Add as individual technology entry for precise matching
-                    tech_keywords[f'tech_{tech_key}'] = {
-                        'keywords': [tech_lower, tech_lower.replace('/', ' '), tech_lower.replace('-', ' ')],
-                        'category': assigned_category
-                    }
-
-                logger.info(f"Loaded {len(tech_keywords)} technologies from technology.json")
-
-            return tech_keywords
-
-        except FileNotFoundError:
-            logger.warning("technology.json not found, using default technology keywords")
-            return {}
-        except Exception as e:
-            logger.error(f"Error loading technologies from JSON: {str(e)}")
-            return {}
-
     def _split_sentences(self, text: str) -> List[str]:
         """Split text into sentences for contextual analysis."""
         # Split on sentence-ending punctuation, keeping reasonable chunks
@@ -430,10 +325,11 @@ class AIAnalyzer:
 
         # Medium signal: URL is a topic-related section
         topic_url_patterns = {
-            'technology': 1.5, 'innovation': 1.5, 'research': 1.5,
             'strategy': 1.4, 'business': 1.3, 'operations': 1.3,
             'sustainability': 1.4, 'energy': 1.2, 'investor': 1.3,
             'news': 1.1, 'press': 1.1, 'project': 1.3,
+            'market': 1.4, 'upstream': 1.4, 'downstream': 1.4,
+            'refining': 1.4, 'hydrogen': 1.5, 'renewable': 1.4,
         }
         for pattern, weight in topic_url_patterns.items():
             if pattern in url_path:
@@ -551,81 +447,6 @@ class AIAnalyzer:
 
         return sorted(segments, key=lambda x: x.confidence, reverse=True)
     
-    def extract_technologies(self, content: str, url_content_map: Dict[str, str] = None) -> List[Technology]:
-        """Extract technologies using contextual sentence-level analysis.
-
-        Same approach as extract_market_segments: analyses sentence context,
-        handles negation, weights by page type, and uses semantic aliases.
-        """
-        technologies = []
-        sentences = self._split_sentences(content)
-
-        for tech_name, tech_data in self.technology_keywords.items():
-            positive_score = 0.0
-            negative_count = 0
-            evidence = []
-            seen_evidence_keys = set()
-
-            for keyword in tech_data['keywords']:
-                for sentence in sentences:
-                    if self._is_boilerplate_context(sentence):
-                        continue
-
-                    matched_terms = self._find_keyword_with_aliases(keyword, sentence)
-                    if not matched_terms:
-                        continue
-
-                    sentiment = self._analyze_sentence_sentiment(sentence, matched_terms[0])
-                    if sentiment == 'negative':
-                        negative_count += 1
-                        continue
-
-                    mention_score = 1.5 if sentiment == 'positive' else 0.8
-
-                    if url_content_map:
-                        for url, page_content in url_content_map.items():
-                            if any(re.search(r'\b' + re.escape(t) + r'\b', page_content.lower()) for t in matched_terms):
-                                page_weight = self._get_page_type_weight(url, keyword)
-                                mention_score *= page_weight
-
-                                ev_key = f"{keyword}:{url}"
-                                if ev_key not in seen_evidence_keys and len(evidence) < 3:
-                                    seen_evidence_keys.add(ev_key)
-                                    evidence.append({
-                                        'keyword': matched_terms[0],
-                                        'context': sentence[:200],
-                                        'sentiment': sentiment,
-                                        'urls': [url]
-                                    })
-                                break
-                    else:
-                        ev_key = f"{keyword}:{sentence[:50]}"
-                        if ev_key not in seen_evidence_keys and len(evidence) < 3:
-                            seen_evidence_keys.add(ev_key)
-                            evidence.append({
-                                'keyword': matched_terms[0],
-                                'context': sentence[:200],
-                                'sentiment': sentiment,
-                                'urls': []
-                            })
-
-                    positive_score += mention_score
-
-            if positive_score > 0 and positive_score > negative_count:
-                confidence = min(0.95, positive_score / 6)
-                if negative_count > 0:
-                    neg_ratio = negative_count / (positive_score + negative_count)
-                    confidence *= (1.0 - neg_ratio * 0.5)
-
-                technologies.append(Technology(
-                    name=tech_name.replace('_', ' ').title(),
-                    category=tech_data['category'],
-                    confidence=round(confidence, 3),
-                    evidence=evidence[:3]
-                ))
-
-        return sorted(technologies, key=lambda x: x.confidence, reverse=True)
-    
     def calculate_sustainability_focus(self, content: str) -> float:
         """Calculate sustainability focus score using contextual analysis.
 
@@ -656,36 +477,6 @@ class AIAnalyzer:
 
         return round(min(1.0, weighted_score / 15), 3)
 
-    def calculate_innovation_score(self, content: str) -> float:
-        """Calculate innovation score using contextual analysis.
-
-        Weights active innovation signals (investing, launching, pioneering)
-        higher than passive mentions.
-        """
-        innovation_keywords = [
-            'innovation', 'research', 'development', 'r&d',
-            'breakthrough', 'cutting-edge', 'advanced',
-            'pioneering', 'patent', 'technology development',
-            'prototype', 'pilot project', 'first-of-its-kind',
-        ]
-
-        sentences = self._split_sentences(content)
-        weighted_score = 0.0
-
-        for sentence in sentences:
-            if self._is_boilerplate_context(sentence):
-                continue
-            sentence_lower = sentence.lower()
-            for keyword in innovation_keywords:
-                if re.search(r'\b' + re.escape(keyword) + r'\b', sentence_lower):
-                    sentiment = self._analyze_sentence_sentiment(sentence, keyword)
-                    if sentiment == 'negative':
-                        continue
-                    weighted_score += 1.5 if sentiment == 'positive' else 0.7
-                    break
-
-        return round(min(1.0, weighted_score / 12), 3)
-    
     def extract_geographic_presence(self, content: str) -> List[str]:
         """Extract geographic presence indicators"""
         content_lower = content.lower()
@@ -722,7 +513,7 @@ class AIAnalyzer:
         for pt in page_types:
             page_type_counts[pt] = page_type_counts.get(pt, 0) + 1
 
-        expected_types = ['technology', 'market', 'sustainability', 'research']
+        expected_types = ['market', 'sustainability', 'operations']
         missing_types = [t for t in expected_types if t not in page_type_counts]
         if missing_types:
             suggestions['missing_areas'].extend(missing_types)
@@ -738,14 +529,6 @@ class AIAnalyzer:
                 'priority': 'MEDIUM',
                 'issue': 'Limited market segment detection',
                 'recommendation': 'Check if the company has annual reports, investor presentations, or business unit pages that might contain more detailed market information.'
-            })
-
-        # Check technology coverage
-        if len(profile.technologies) < 2:
-            suggestions['suggestions'].append({
-                'priority': 'MEDIUM',
-                'issue': 'Limited technology detection',
-                'recommendation': 'Look for R&D pages, innovation hubs, technology partnerships, or digital transformation sections on the website.'
             })
 
         # Check geographic presence
@@ -775,7 +558,7 @@ class AIAnalyzer:
             {
                 'step': 'Cross-Reference with News',
                 'description': 'Recent news articles may reveal market activities not yet reflected on the corporate website.',
-                'search_terms': [f'{company_name} technology', f'{company_name} new market', f'{company_name} expansion']
+                'search_terms': [f'{company_name} new market', f'{company_name} expansion', f'{company_name} energy market']
             },
             {
                 'step': 'Check Regional Websites',
@@ -792,10 +575,9 @@ class AIAnalyzer:
         # Calculate completeness score
         score = 0.0
         score += min(0.3, len(scraped_data) / 15 * 0.3)  # Up to 30% for page count
-        score += min(0.2, len(page_type_counts) / 5 * 0.2)  # Up to 20% for content diversity
-        score += min(0.2, len(profile.market_segments) / 5 * 0.2)  # Up to 20% for market segments
-        score += min(0.15, len(profile.technologies) / 4 * 0.15)  # Up to 15% for technologies
-        score += min(0.15, len(profile.geographic_presence) / 10 * 0.15)  # Up to 15% for geography
+        score += min(0.25, len(page_type_counts) / 5 * 0.25)  # Up to 25% for content diversity
+        score += min(0.25, len(profile.market_segments) / 5 * 0.25)  # Up to 25% for market segments
+        score += min(0.2, len(profile.geographic_presence) / 10 * 0.2)  # Up to 20% for geography
 
         suggestions['completeness_score'] = round(score, 2)
 
@@ -811,13 +593,9 @@ class AIAnalyzer:
 
     def generate_summary(self, profile: CompanyProfile) -> str:
         """Generate a comprehensive summary including new market opportunities, business activities, and annual report insights"""
-        top_markets = [seg.name for seg in profile.market_segments[:3]]
-        top_techs = [tech.name for tech in profile.technologies[:3]]
+        top_markets = [seg.name for seg in profile.market_segments[:5]]
 
         summary = f"{profile.company} operates primarily in {', '.join(top_markets)} markets. "
-
-        if top_techs:
-            summary += f"Key technology focus areas include {', '.join(top_techs)}. "
 
         # Add business activities summary
         if profile.business_activities:
@@ -846,11 +624,6 @@ class AIAnalyzer:
                 top_priorities = [p['name'] for p in ar.strategic_priorities[:2]]
                 summary += f"[ANNUAL REPORT {ar.year}] Strategic priorities: {', '.join(top_priorities)}. "
 
-            if ar.technology_investments:
-                strong_investments = [t['name'] for t in ar.technology_investments if t.get('investment_signal') == 'Strong'][:2]
-                if strong_investments:
-                    summary += f"Strong technology investments in: {', '.join(strong_investments)}. "
-
             if ar.market_expansions:
                 expansions = [f"{e['market']} in {e['region']}" for e in ar.market_expansions[:2]]
                 summary += f"Market expansion focus: {', '.join(expansions)}. "
@@ -872,21 +645,21 @@ class AIAnalyzer:
         """
         sentences = self._split_sentences(content)
 
-        # Patterns that capture specific market/technology concepts
+        # Patterns that capture specific oil & energy market concepts
         # Each pattern requires a domain-qualifying adjective or noun
         new_market_patterns = [
-            # "<specific_adjective> <domain_noun>" patterns
-            r'\b((?:green|blue|clean|renewable|sustainable|advanced|smart|digital|offshore|onshore|floating|modular)\s+(?:hydrogen|ammonia|methanol|fuel|energy|power|gas|chemical|material|technology|solution|platform))\b',
+            # "<specific_adjective> <domain_noun>" patterns (oil & energy markets only, no digital/smart/AI)
+            r'\b((?:green|blue|clean|renewable|sustainable|offshore|onshore|floating|modular)\s+(?:hydrogen|ammonia|methanol|fuel|energy|power|gas|chemical|material))\b',
             # "emerging <specific_domain_term>"
-            r'\b(emerging\s+(?:hydrogen|ammonia|carbon|biofuel|lng|lithium|battery|geothermal|nuclear|wind|solar|fuel\s+cell|electrolysis)\s*(?:market|sector|industry|opportunity|technology)?)\b',
-            # "next-generation <specific_tech>"
+            r'\b(emerging\s+(?:hydrogen|ammonia|carbon|biofuel|lng|lithium|battery|geothermal|nuclear|wind|solar|fuel\s+cell|electrolysis)\s*(?:market|sector|industry|opportunity)?)\b',
+            # "next-generation <specific_energy_market>"
             r'\b(next[\s-]generation\s+(?:biofuel|catalyst|refining|reactor|battery|fuel\s+cell|electrolyzer|turbine|solar|polymer))\b',
-            # Specific compound market terms
+            # Specific compound market terms (oil & energy domain)
             r'\b((?:carbon\s+credit|emissions?\s+trading|green\s+bond|sustainable\s+finance|circular\s+economy|waste[\s-]to[\s-]energy|power[\s-]to[\s-]x|e[\s-]fuel|e[\s-]methanol|direct\s+air\s+capture|ocean\s+energy|tidal\s+energy|geothermal\s+energy|small\s+modular\s+reactor|floating\s+wind|green\s+ammonia|blue\s+ammonia))\b',
         ]
 
         # Words/phrases that should NEVER be considered a new market
-        # (too generic or not meaningful in energy context)
+        # (too generic, not meaningful, or IT/digital/AI related)
         garbage_filters = {
             'its business', 'the energy', 'of energy', 'our business',
             'the market', 'its market', 'the sector', 'the industry',
@@ -896,8 +669,10 @@ class AIAnalyzer:
             'all energy', 'more energy', 'other energy', 'any energy',
             'clean technology', 'energy technology',  # too broad
             'future energy', 'future market', 'future technology',
-            'digital technology', 'smart technology',  # too generic
+            'digital technology', 'smart technology',  # IT/digital - not oil & energy market
             'emerging market', 'emerging technology',  # the category itself
+            'advanced technology', 'smart solution', 'digital solution',
+            'smart platform', 'digital platform', 'advanced solution',
         }
 
         # Domain-relevance check: must contain at least one domain term
@@ -970,8 +745,8 @@ class AIAnalyzer:
             # Confidence: positive mentions count more; require at least 2 mentions for > 50% confidence
             confidence = min(0.8, (data['positive_count'] * 1.5 + data['neutral_count'] * 0.5) / 5)
 
-            # Categorize the new market
-            potential_category = "Emerging Market"
+            # Categorize the new market (oil & energy domain only)
+            potential_category = "Emerging Energy Market"
             if any(term in market for term in ['energy', 'fuel', 'power', 'wind', 'solar', 'tidal', 'geothermal']):
                 potential_category = "New Energy Solutions"
             elif any(term in market for term in ['hydrogen', 'ammonia', 'methanol', 'e-fuel', 'biofuel']):
@@ -979,7 +754,7 @@ class AIAnalyzer:
             elif any(term in market for term in ['carbon', 'capture', 'co2', 'emission', 'credit']):
                 potential_category = "Carbon & Emissions Management"
             elif any(term in market for term in ['battery', 'lithium', 'reactor', 'modular']):
-                potential_category = "Technology Innovation"
+                potential_category = "Energy Storage & Nuclear"
             elif any(term in market for term in ['chemical', 'material', 'polymer', 'catalyst']):
                 potential_category = "New Materials/Chemicals"
             elif any(term in market for term in ['circular', 'waste', 'recycl']):
@@ -1053,18 +828,19 @@ class AIAnalyzer:
             ]
         }
 
-        # Focus area keywords to categorize activities
+        # Focus area keywords to categorize activities (oil & energy markets only)
         focus_keywords = {
             'Hydrogen': ['hydrogen', 'h2', 'electrolyzer', 'fuel cell', 'green hydrogen', 'blue hydrogen'],
             'Carbon Capture': ['carbon capture', 'ccus', 'ccs', 'co2', 'carbon storage', 'decarbonization'],
             'Renewable Energy': ['solar', 'wind', 'renewable', 'clean energy', 'battery', 'energy storage'],
             'LNG/Gas': ['lng', 'natural gas', 'gas processing', 'liquefaction'],
             'Refining': ['refinery', 'refining', 'fuel', 'petrochemical'],
-            'Digital/Technology': ['digital', 'technology', 'ai', 'automation', 'software'],
             'Sustainability': ['sustainability', 'esg', 'net zero', 'emission', 'climate'],
             'Upstream': ['exploration', 'drilling', 'production', 'offshore', 'upstream'],
             'Chemicals': ['chemical', 'polymer', 'plastic', 'petrochemical'],
             'Biofuels': ['biofuel', 'biodiesel', 'saf', 'sustainable aviation', 'renewable diesel'],
+            'Mining & Metals': ['lithium', 'cobalt', 'mining', 'metals', 'rare earth'],
+            'Nuclear': ['nuclear', 'modular reactor', 'uranium'],
         }
 
         found_activities = {}  # Use dict to avoid duplicates
@@ -1163,20 +939,17 @@ class AIAnalyzer:
             annual_text = " ".join([r.get('content', '') for r in annual_report_content])
             all_content = all_content + " " + annual_text
 
-        # Extract different aspects with URL tracking
+        # Extract market-focused aspects with URL tracking
         market_segments = self.extract_market_segments(all_content, url_content_map)
-        technologies = self.extract_technologies(all_content, url_content_map)
         geographic_presence = self.extract_geographic_presence(all_content)
         new_market_opportunities = self.detect_new_market_opportunities(all_content, url_content_map)
         business_activities = self.extract_business_activities(all_content, url_content_map)
 
-        # Create profile
+        # Create profile (market-focused, no technology search)
         profile = CompanyProfile(
             company=company_name,
             market_segments=market_segments,
-            technologies=technologies,
             sustainability_focus=0.0,
-            innovation_score=0.0,
             geographic_presence=geographic_presence,
             new_market_opportunities=new_market_opportunities,
             business_activities=business_activities,
@@ -1232,9 +1005,6 @@ class AIAnalyzer:
         # Extract strategic priorities
         strategic_priorities = self._extract_strategic_priorities(content)
 
-        # Extract technology investments
-        technology_investments = self._extract_technology_investments(content)
-
         # Extract market expansions
         market_expansions = self._extract_market_expansions(content)
 
@@ -1257,7 +1027,6 @@ class AIAnalyzer:
             company=company_name,
             year=year,
             strategic_priorities=strategic_priorities,
-            technology_investments=technology_investments,
             market_expansions=market_expansions,
             financial_highlights=financial_highlights,
             future_outlook=future_outlook,
@@ -1298,7 +1067,6 @@ class AIAnalyzer:
             'energy transition': 'Energy Transition',
             'net zero': 'Net Zero Emissions',
             'carbon neutral': 'Carbon Neutrality',
-            'digital transformation': 'Digital Transformation',
             'operational excellence': 'Operational Excellence',
             'cost reduction': 'Cost Optimization',
             'portfolio optimization': 'Portfolio Optimization',
@@ -1307,6 +1075,8 @@ class AIAnalyzer:
             'hydrogen': 'Hydrogen Development',
             'electric vehicle': 'EV Infrastructure',
             'circular economy': 'Circular Economy',
+            'carbon capture': 'Carbon Capture & Storage',
+            'lng': 'LNG Market Expansion',
         }
 
         for theme, theme_name in strategic_themes.items():
@@ -1321,99 +1091,6 @@ class AIAnalyzer:
                         })
 
         return sorted(priorities, key=lambda x: x['confidence'], reverse=True)[:10]
-
-    def _extract_technology_investments(self, content: str) -> List[Dict]:
-        """Extract technology investment signals from annual report"""
-        investments = []
-        content_lower = content.lower()
-
-        # Technology categories with investment signals
-        tech_investment_keywords = {
-            'Artificial Intelligence & Machine Learning': [
-                'ai investment', 'machine learning', 'artificial intelligence',
-                'predictive analytics', 'data science', 'neural network'
-            ],
-            'Digital Twin & Simulation': [
-                'digital twin', 'simulation', 'virtual model', '3d modeling'
-            ],
-            'Cloud Computing': [
-                'cloud computing', 'cloud platform', 'cloud infrastructure',
-                'saas', 'digital platform'
-            ],
-            'Internet of Things (IoT)': [
-                'iot', 'internet of things', 'connected devices', 'smart sensors',
-                'industrial iot', 'iiot'
-            ],
-            'Automation & Robotics': [
-                'automation', 'robotics', 'autonomous', 'unmanned',
-                'robotic process', 'drone'
-            ],
-            'Carbon Capture (CCUS)': [
-                'carbon capture', 'ccus', 'ccs', 'carbon storage',
-                'direct air capture', 'co2 capture'
-            ],
-            'Hydrogen Technology': [
-                'hydrogen production', 'green hydrogen', 'blue hydrogen',
-                'hydrogen infrastructure', 'electrolysis', 'fuel cell'
-            ],
-            'Renewable Energy Tech': [
-                'solar technology', 'wind technology', 'battery storage',
-                'energy storage', 'offshore wind', 'solar panel'
-            ],
-            'Blockchain & Digital Ledger': [
-                'blockchain', 'distributed ledger', 'smart contract'
-            ],
-            'Advanced Materials': [
-                'advanced materials', 'nanomaterial', 'composite material',
-                'lightweight material'
-            ],
-            'Biofuels & Sustainable Aviation': [
-                'biofuel', 'sustainable aviation fuel', 'saf', 'renewable diesel',
-                'hvo', 'biodiesel'
-            ],
-        }
-
-        # Investment signal phrases
-        investment_signals = [
-            'invest', 'investment', 'investing', 'capex', 'capital expenditure',
-            'spending', 'allocated', 'committed', 'deployed', 'funding',
-            'development', 'expansion', 'partnership', 'acquisition'
-        ]
-
-        for tech_category, keywords in tech_investment_keywords.items():
-            found_keywords = []
-            has_investment_signal = False
-
-            for keyword in keywords:
-                if keyword in content_lower:
-                    count = content_lower.count(keyword)
-                    if count > 0:
-                        found_keywords.append({'keyword': keyword, 'count': count})
-
-                        # Check for nearby investment signals
-                        for signal in investment_signals:
-                            # Check within 200 characters of keyword mention
-                            idx = content_lower.find(keyword)
-                            while idx != -1:
-                                context = content_lower[max(0, idx-100):idx+len(keyword)+100]
-                                if signal in context:
-                                    has_investment_signal = True
-                                    break
-                                idx = content_lower.find(keyword, idx + 1)
-
-            if found_keywords:
-                total_mentions = sum(k['count'] for k in found_keywords)
-                confidence = min(0.9, total_mentions / 10)
-
-                investments.append({
-                    'name': tech_category,
-                    'category': 'Technology',
-                    'investment_signal': 'Strong' if has_investment_signal else 'Mentioned',
-                    'evidence': found_keywords[:3],
-                    'confidence': confidence if has_investment_signal else confidence * 0.6
-                })
-
-        return sorted(investments, key=lambda x: x['confidence'], reverse=True)
 
     def _extract_market_expansions(self, content: str) -> List[Dict]:
         """Extract market expansion signals from annual report"""
@@ -1505,10 +1182,11 @@ class AIAnalyzer:
                 if len(match.strip()) > 10:
                     highlights['capex_focus_areas'].append(match.strip().title())
 
-        # Check for specific investment mentions
+        # Check for specific investment mentions (oil & energy markets only)
         investment_areas = [
-            'low carbon', 'renewable', 'digital', 'technology', 'efficiency',
-            'hydrogen', 'carbon capture', 'electric', 'biofuel'
+            'low carbon', 'renewable', 'efficiency',
+            'hydrogen', 'carbon capture', 'electric', 'biofuel',
+            'lng', 'refining', 'petrochemical', 'upstream'
         ]
 
         for area in investment_areas:
@@ -1674,15 +1352,6 @@ class AIAnalyzer:
                     }
                     for seg in profile.market_segments
                 ],
-                'technologies': [
-                    {
-                        'name': tech.name,
-                        'category': tech.category,
-                        'confidence': tech.confidence,
-                        'evidence': tech.evidence  # Now contains keyword, mention_count, and urls
-                    }
-                    for tech in profile.technologies
-                ],
                 'new_market_opportunities': [
                     {
                         'name': opp.name,
@@ -1721,7 +1390,6 @@ class AIAnalyzer:
             'company': analysis.company,
             'year': analysis.year,
             'strategic_priorities': analysis.strategic_priorities,
-            'technology_investments': analysis.technology_investments,
             'market_expansions': analysis.market_expansions,
             'financial_highlights': analysis.financial_highlights,
             'future_outlook': analysis.future_outlook,

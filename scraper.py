@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Oil Companies Market & Technology Scanner
+Oil Companies Market Scanner
 
-Enhanced scraper using a 3-layer strategy:
+Market-focused scraper using a 3-layer strategy:
   Layer 1: requests + randomized headers (fast, low resource)
   Layer 2: Playwright headless browser (JS rendering, WAF bypass)
   Layer 3: Wayback Machine / Google Cache (last resort fallback)
 
+Focuses on oil & energy market segments only (no technology/AI/IT search).
 All 12 scraping challenges are handled via scraping_utils.py.
 """
 
@@ -309,7 +310,8 @@ class OilCompanyScanner:
         ]
 
         # --- Positive topic indicators (link text OR url path) ---
-        # Grouped by topic with weights.  Higher weight = more relevant.
+        # Grouped by topic with weights. Higher weight = more relevant.
+        # Focused on oil & energy market segments (no technology/AI/IT/digital)
         topic_indicators = {
             # Core market / strategy pages
             'strategy': (['strategy', 'strategic', 'our strategy',
@@ -318,13 +320,6 @@ class OilCompanyScanner:
                           'segments', 'divisions', 'business areas',
                           'portfolio', 'sectors', 'industries',
                           'our operations', 'operations', 'business units'], 5),
-            # Technology / R&D / digital
-            'technology': (['technology', 'technologies', 'innovation',
-                            'innovate', 'digital', 'digitalization',
-                            'research', 'r&d', 'development',
-                            'solutions', 'capabilities', 'advanced',
-                            'automation', 'artificial intelligence',
-                            'ai', 'machine learning'], 5),
             # Investment / financial
             'investment': (['investor', 'investors', 'investment',
                             'invest', 'annual report', 'financial',
@@ -356,8 +351,8 @@ class OilCompanyScanner:
                             'lng', 'natural gas', 'gas', 'oil',
                             'offshore', 'onshore', 'deepwater',
                             'subsea', 'drilling', 'well',
-                            'crude', 'petroleum', 'hydrocarbon'], 4),
-            # New energy / future
+                            'crude', 'petroleum', 'hydrocarbon'], 5),
+            # New energy / future markets
             'new_energy': (['hydrogen', 'solar', 'wind', 'biofuel',
                              'biofuels', 'battery', 'storage',
                              'electric', 'ev charging', 'fuel cell',
@@ -367,6 +362,10 @@ class OilCompanyScanner:
             'projects': (['project', 'projects', 'growth', 'expansion',
                            'development', 'major projects',
                            'key projects', 'new projects'], 3),
+            # Market-specific pages
+            'markets': (['market', 'markets', 'market segment',
+                          'fertilizer', 'mining', 'metals',
+                          'recycling', 'circular economy'], 4),
         }
 
         links = set()
@@ -500,18 +499,20 @@ class OilCompanyScanner:
         return "requests"
 
     def categorize_page(self, url: str, title: str, content: str) -> str:
-        """Categorize the page based on URL and content"""
+        """Categorize the page based on URL and content (market-focused)"""
         url_lower = url.lower()
         content_lower = (title + " " + content).lower()
 
-        if any(term in url_lower or term in content_lower for term in ['technolog', 'digital', 'innovation']):
-            return 'technology'
-        elif any(term in url_lower or term in content_lower for term in ['market', 'business', 'sector']):
+        if any(term in url_lower or term in content_lower for term in ['market', 'business', 'sector', 'segment']):
             return 'market'
-        elif any(term in url_lower or term in content_lower for term in ['research', 'development', 'r&d']):
-            return 'research'
-        elif any(term in url_lower or term in content_lower for term in ['renewable', 'sustain', 'clean']):
+        elif any(term in url_lower or term in content_lower for term in ['upstream', 'downstream', 'refin', 'petrochemical', 'lng', 'drilling']):
+            return 'operations'
+        elif any(term in url_lower or term in content_lower for term in ['renewable', 'sustain', 'clean', 'carbon', 'net zero']):
             return 'sustainability'
+        elif any(term in url_lower or term in content_lower for term in ['hydrogen', 'solar', 'wind', 'biofuel', 'ammonia', 'nuclear']):
+            return 'new_energy'
+        elif any(term in url_lower or term in content_lower for term in ['investor', 'annual report', 'financial', 'earning']):
+            return 'financial'
         else:
             return 'general'
 
@@ -704,20 +705,14 @@ class OilCompanyScanner:
         return results
 
     def analyze_with_ai(self, company_data: List[ScrapedContent]) -> CompanyAnalysis:
-        """Analyze scraped content using AI (placeholder for now)"""
+        """Analyze scraped content - market-focused analysis (placeholder for now)"""
         company_name = company_data[0].company if company_data else "Unknown"
 
-        tech_content = []
         market_content = []
-        innovation_content = []
 
         for data in company_data:
-            if data.page_type == 'technology':
-                tech_content.append(data.content)
-            elif data.page_type == 'market':
+            if data.page_type in ['market', 'operations', 'new_energy', 'sustainability']:
                 market_content.append(data.content)
-            elif data.page_type in ['research', 'innovation']:
-                innovation_content.append(data.content)
 
         all_content = " ".join([data.content for data in company_data])
 
@@ -726,7 +721,10 @@ class OilCompanyScanner:
             'downstream': ['refining', 'petrochemical', 'retail', 'marketing'],
             'renewable': ['solar', 'wind', 'renewable', 'clean energy', 'hydrogen'],
             'gas': ['natural gas', 'lng', 'pipeline', 'gas distribution'],
-            'chemicals': ['chemicals', 'petrochemicals', 'plastics', 'polymers']
+            'chemicals': ['chemicals', 'petrochemicals', 'plastics', 'polymers'],
+            'carbon_management': ['carbon capture', 'ccus', 'carbon storage', 'net zero'],
+            'hydrogen': ['hydrogen', 'green hydrogen', 'blue hydrogen', 'ammonia'],
+            'biofuels': ['biofuel', 'biodiesel', 'sustainable aviation fuel', 'renewable diesel'],
         }
 
         market_presence = []
@@ -734,20 +732,12 @@ class OilCompanyScanner:
             if any(keyword in all_content.lower() for keyword in keywords):
                 market_presence.append(market)
 
-        tech_keywords = [
-            'artificial intelligence', 'ai', 'machine learning', 'digital',
-            'automation', 'robotics', 'iot', 'blockchain', 'cloud',
-            'carbon capture', 'ccus', 'subsea', 'deepwater'
-        ]
-
-        technologies = [tech for tech in tech_keywords if tech in all_content.lower()]
-
         return CompanyAnalysis(
             company=company_name,
             market_presence=", ".join(market_presence) if market_presence else "Not clearly identified",
-            technologies=", ".join(technologies) if technologies else "Traditional oil & gas technologies",
-            innovations="Various innovation initiatives mentioned" if innovation_content else "Limited innovation content found",
-            summary=f"{company_name} operates in {len(market_presence)} identified market segments with {len(technologies)} technology areas mentioned."
+            technologies="N/A (market-focused analysis)",
+            innovations="N/A (market-focused analysis)",
+            summary=f"{company_name} operates in {len(market_presence)} identified market segments."
         )
 
     def run_analysis(self) -> None:
@@ -856,7 +846,7 @@ class OilCompanyScanner:
 
         # Create a readable summary report
         with open('analysis_report.txt', 'w', encoding='utf-8') as f:
-            f.write("Oil Companies Market & Technology Analysis Report\n")
+            f.write("Oil Companies Market Analysis Report\n")
             f.write("=" * 50 + "\n\n")
 
             for analysis in self.analysis_results:

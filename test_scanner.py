@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Test script for the oil company scanner.
+Test script for the oil company scanner (market-focused version).
 
-Tests both basic functionality and the contextual analysis improvements:
+Tests market analysis functionality and contextual improvements:
+  - Market segment detection from oil & energy domain
   - Negation handling (negative mentions should not count as positive evidence)
   - Context-aware scoring (dedicated pages weighted higher)
   - Boilerplate filtering (cookie banners, footers ignored)
   - New market detection filters out generic phrases
   - Semantic aliases expand keyword matching
+  - No technology/AI/IT/digital search
 """
 
 import json
@@ -15,22 +17,22 @@ from ai_analyzer import AIAnalyzer
 
 
 def test_analyzer():
-    """Test the AI analyzer with sample data"""
-    print("Testing AI Analyzer (basic)...")
+    """Test the AI analyzer with sample data (market-focused)"""
+    print("Testing AI Analyzer (market-focused)...")
 
     sample_data = [
         {
             'company': 'Test Company',
-            'url': 'https://example.com/technology',
-            'title': 'Digital Innovation and AI Technologies',
-            'content': 'Our company is investing heavily in artificial intelligence and machine learning technologies for upstream exploration and production. We are developing digital twin solutions for offshore drilling operations. Our renewable energy portfolio includes solar and wind projects. We are committed to carbon capture and storage technologies. We are exploring emerging quantum computing market and next-generation space energy solutions.',
-            'page_type': 'technology'
+            'url': 'https://example.com/operations',
+            'title': 'Our Operations and Market Presence',
+            'content': 'Our company is investing heavily in upstream exploration and production. We are expanding offshore drilling operations in deepwater fields. Our renewable energy portfolio includes solar and wind projects. We are committed to carbon capture and storage. We are exploring emerging green ammonia market and floating wind opportunities.',
+            'page_type': 'operations'
         },
         {
             'company': 'Test Company',
             'url': 'https://example.com/markets',
             'title': 'Market Operations',
-            'content': 'We operate in upstream exploration and production across North America and Europe. Our downstream operations include refining and petrochemicals. We have natural gas distribution networks and are expanding our renewable energy investments including hydrogen production.',
+            'content': 'We operate in upstream exploration and production across North America and Europe. Our downstream operations include refining and petrochemicals. We have natural gas distribution networks and are expanding our renewable energy investments including hydrogen production. Our LNG business continues to grow with new projects in Qatar and Australia.',
             'page_type': 'market'
         }
     ]
@@ -45,12 +47,7 @@ def test_analyzer():
         for segment in profile.market_segments:
             print(f"  - {segment.name}: {segment.confidence:.1%} confidence")
 
-        print(f"\nTechnologies Found: {len(profile.technologies)}")
-        for tech in profile.technologies:
-            print(f"  - {tech.name} ({tech.category}): {tech.confidence:.1%} confidence")
-
         print(f"\nSustainability Focus: {profile.sustainability_focus:.1%}")
-        print(f"Innovation Score: {profile.innovation_score:.1%}")
         print(f"Geographic Presence: {', '.join(profile.geographic_presence)}")
 
         print(f"\nNew Market Opportunities: {len(profile.new_market_opportunities)}")
@@ -59,7 +56,7 @@ def test_analyzer():
 
         print(f"\nSummary: {profile.summary}")
 
-        print("\n[OK] AI Analyzer basic test completed successfully!")
+        print("\n[OK] AI Analyzer market-focused test completed successfully!")
     else:
         print("[ERROR] AI Analyzer test failed!")
 
@@ -197,12 +194,12 @@ def test_new_market_filters_garbage():
 
 
 def test_semantic_aliases():
-    """Test that semantic aliases expand keyword matching"""
-    print("\nTesting semantic alias matching...")
+    """Test that semantic aliases expand keyword matching (market-focused)"""
+    print("\nTesting semantic alias matching (oil & energy markets)...")
 
     analyzer = AIAnalyzer()
 
-    # Content using alternative terms (aliases) instead of canonical keywords
+    # Content using alternative terms (aliases) for oil & energy market keywords
     alias_data = [
         {
             'company': 'Alias Corp',
@@ -212,11 +209,11 @@ def test_semantic_aliases():
                 'We are expanding our blue fuel production capabilities. '
                 'Our clean molecules initiative is a key strategic priority. '
                 'The company launched a new photovoltaic farm in Texas. '
-                'We are pioneering virtual model technology for reservoir management. '
                 'Sustainable aviation fuel production is accelerating at our facility. '
-                'Our e-mobility charging network now covers 500 locations.'
+                'Our e-mobility charging network now covers 500 locations. '
+                'We are investing in liquefied natural gas terminals across Asia.'
             ),
-            'page_type': 'technology'
+            'page_type': 'market'
         }
     ]
 
@@ -224,7 +221,6 @@ def test_semantic_aliases():
     if profiles:
         profile = profiles[0]
         print(f"  Market segments: {[s.name for s in profile.market_segments]}")
-        print(f"  Technologies: {[t.name for t in profile.technologies]}")
 
         # Check if alias terms were matched via semantic expansion
         all_evidence_keywords = set()
@@ -232,14 +228,11 @@ def test_semantic_aliases():
             for ev in seg.evidence:
                 if isinstance(ev, dict):
                     all_evidence_keywords.add(ev.get('keyword', '').lower())
-        for tech in profile.technologies:
-            for ev in tech.evidence:
-                if isinstance(ev, dict):
-                    all_evidence_keywords.add(ev.get('keyword', '').lower())
 
         print(f"  Evidence keywords found: {all_evidence_keywords}")
         if any(term in all_evidence_keywords for term in ['blue fuel', 'clean molecules', 'photovoltaic',
-                                                           'virtual model', 'sustainable aviation fuel', 'e-mobility']):
+                                                           'sustainable aviation fuel', 'e-mobility',
+                                                           'liquefied natural gas']):
             print("  [OK] Semantic aliases correctly expanded keyword matching")
         else:
             print("  [INFO] Alias matching may need tuning - check evidence keywords above")
@@ -278,4 +271,4 @@ if __name__ == "__main__":
     test_semantic_aliases()
 
     print("\n" + "=" * 60)
-    print("Tests completed. Run 'py main.py' to start the full analysis.")
+    print("Tests completed. Run 'py main.py' to start the full market analysis.")
